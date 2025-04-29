@@ -19,8 +19,6 @@ extension FastDescriptionExtension on FastDescription {
         return 'Atenção! Esta operação pode causar problemas.';
       case FastDescription.inProgress:
         return 'Ainda estamos trabalhando nesta funcionalidade, novidades em breve!.';
-      default:
-        return '';
     }
   }
 }
@@ -43,8 +41,6 @@ extension FastTextExtension on FastText {
         return 'Sucesso';
       case FastText.warning:
         return 'Aviso';
-      default:
-        return '';
-    }
+      }
   }
 }

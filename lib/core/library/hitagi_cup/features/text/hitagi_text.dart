@@ -52,18 +52,8 @@ class HitagiText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> children = [];
-    if (icon != null && iconPosition == IconPosition.left) {
-      children.add(Icon(
-        icon,
-        size: iconSize ?? typography.size,
-        color: iconColor,
-      ));
-      children.add(const SizedBox(width: 4));
-    }
-
-    children.add(
-      Text(
+    if (icon == null) {
+      return Text(
         text,
         maxLines: maxLines,
         overflow: overflow,
@@ -82,12 +72,52 @@ class HitagiText extends StatelessWidget {
             ),
         textAlign: textAlign,
         softWrap: softWrap ?? true,
+      );
+    }
+
+    List<Widget> children = [];
+
+    if (iconPosition == IconPosition.left) {
+      children.add(Icon(
+        icon,
+        size: iconSize ?? typography.size,
+        color: iconColor,
+      ));
+      children.add(const SizedBox(width: 4));
+    }
+
+    children.add(
+      Expanded(
+        child: Text(
+          text,
+          maxLines: maxLines,
+          overflow: overflow,
+          style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                fontSize: size ?? typography.size,
+                fontWeight: isBold ?? typography.isBold
+                    ? FontWeight.bold
+                    : FontWeight.normal,
+                foreground: Paint()
+                  ..style = PaintingStyle.fill
+                  ..color = color ?? Colors.black
+                  ..maskFilter = MaskFilter.blur(
+                    BlurStyle.normal,
+                    maskFilter ?? 0,
+                  ),
+              ),
+          textAlign: textAlign,
+          softWrap: softWrap ?? true,
+        ),
       ),
     );
 
-    if (icon != null && iconPosition == IconPosition.right) {
+    if (iconPosition == IconPosition.right) {
       children.add(const SizedBox(width: 8));
-      children.add(Icon(icon, size: iconSize ?? typography.size));
+      children.add(Icon(
+        icon,
+        size: iconSize ?? typography.size,
+        color: iconColor,
+      ));
     }
 
     return Row(
@@ -101,6 +131,8 @@ class HitagiText extends StatelessWidget {
     String text,
     IconData icon, {
     Color? iconColor,
+    TextOverflow overflow = TextOverflow.ellipsis,
+    int maxLines = 1,
     double? iconSize,
     double size = 15,
     HitagiTypography typography = HitagiTypography.body,
@@ -114,6 +146,8 @@ class HitagiText extends StatelessWidget {
       iconPosition: iconPosition,
       iconColor: iconColor,
       iconSize: iconSize,
+      overflow: overflow,
+      maxLines: maxLines,
     );
   }
 }

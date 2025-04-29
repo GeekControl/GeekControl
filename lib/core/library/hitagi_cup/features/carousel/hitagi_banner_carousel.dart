@@ -2,11 +2,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class HitagiCarousel extends StatelessWidget {
+class HitagiBanner extends StatelessWidget {
   final List<String> images;
   final String title;
 
-  const HitagiCarousel({
+  const HitagiBanner({
     super.key,
     required this.images,
     required this.title,

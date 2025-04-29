@@ -10,13 +10,13 @@ class CarouselSkeletonizer extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Skeletonizer(
-        enabled: true,
+        enabled: false,
         child: CarouselSlider(
           options: CarouselOptions(
             height: 180,
-            enlargeCenterPage: true,
+            enlargeCenterPage: false,
             enlargeFactor: 0.3,
-            autoPlay: true,
+            autoPlay: false,
             autoPlayCurve: Curves.easeInOutBack,
             viewportFraction: 0.4,
           ),
