@@ -1,6 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:geekcontrol/services/sites/wallpapers/atoms/copy_button.dart';
+import 'package:geekcontrol/services/sites/wallpapers/pages/wallpapers_fullscreen_page.dart';
 import 'package:geekcontrol/services/sites/wallpapers/webscraper/wallpaper.dart';
+import 'package:go_router/go_router.dart';
 
 class WallpaperListScreen extends StatefulWidget {
   const WallpaperListScreen({super.key});
@@ -10,56 +13,52 @@ class WallpaperListScreen extends StatefulWidget {
 }
 
 class _WallpaperListScreenState extends State<WallpaperListScreen> {
+  final WallpaperController _controller = WallpaperController();
   List<String> _images = [];
   String _searchQuery = 'anime';
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _refreshContent();
+    _fetchWallpapers();
   }
 
-  Future<void> _refreshContent() async {
-    final images = await WallpapersWebscrap().getWallpapers(_searchQuery);
+  Future<void> _fetchWallpapers() async {
+    setState(() => _isLoading = true);
+    final images = await _controller.getWallpapers(_searchQuery);
     setState(() {
       _images = images;
+      _isLoading = false;
     });
-  }
-
-  void _downloadImage(String imageUrl) async {
-    await WallpapersWebscrap().downloadWallpaper(imageUrl);
   }
 
   void _showSearchPopup() {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        String searchInput = '';
+      builder: (context) {
+        final TextEditingController searchController = TextEditingController();
         return AlertDialog(
-          title: const Text('Search Wallpapers'),
+          title: const Text('Pesquisar Wallpapers'),
           content: TextField(
-            onChanged: (value) {
-              searchInput = value;
-            },
-            decoration:
-                const InputDecoration(hintText: 'Pesquisar wallpaper...'),
+            controller: searchController,
+            decoration: const InputDecoration(hintText: 'Digite o tema...'),
           ),
-          actions: <Widget>[
+          actions: [
             TextButton(
+              onPressed: () => Navigator.of(context).pop(),
               child: const Text('Cancelar'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
             ),
             TextButton(
-              child: const Text('Pesquisar'),
               onPressed: () {
-                setState(() {
-                  _searchQuery = searchInput;
-                });
+                final query = searchController.text.trim();
+                if (query.isNotEmpty) {
+                  _searchQuery = query;
+                  _fetchWallpapers();
+                }
                 Navigator.of(context).pop();
-                _refreshContent();
               },
+              child: const Text('Pesquisar'),
             ),
           ],
         );
@@ -79,73 +78,58 @@ class _WallpaperListScreenState extends State<WallpaperListScreen> {
           ),
         ],
       ),
-      body: _images.isEmpty
+      body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : RefreshIndicator(
-              onRefresh: _refreshContent,
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  childAspectRatio: 0.9,
-                  crossAxisSpacing: 6.0,
-                  mainAxisSpacing: 6.0,
-                ),
-                itemCount: _images.length,
-                itemBuilder: (context, index) {
-                  return Stack(
-                    children: [
-                      Card(
-                        shadowColor: Colors.black,
-                        elevation: 6.0,
-                        margin: const EdgeInsets.all(4.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12.0),
-                          child: Image.network(
-                            _images[index],
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            height: double.infinity,
+          : GridView.builder(
+              padding: const EdgeInsets.all(8),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                childAspectRatio: 0.7,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+              ),
+              itemCount: _images.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () => GoRouter.of(context)
+                      .push(WallpaperFullscreen.route, extra: {
+                    'images': _images,
+                    'index': index,
+                  }),
+                  child: Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    clipBehavior: Clip.antiAlias,
+                    child: Stack(
+                      children: [
+                        Positioned.fill(
+                          child: CachedNetworkImage(
+                            imageUrl: _images[index],
                           ),
                         ),
-                      ),
-                      Positioned(
-                        bottom: 0.0,
-                        right: 0.0,
-                        child: IconButton(
-                          icon: const Icon(Icons.download),
-                          color: Colors.white,
-                          onPressed: () => _downloadImage(_images[index]),
+                        Positioned(
+                          bottom: 4,
+                          right: 4,
+                          child: Row(
+                            children: [
+                              CoppyButton(image: _images[index]),
+                              IconButton(
+                                icon: const Icon(Icons.download, size: 20),
+                                color: Colors.white,
+                                onPressed: () => _controller
+                                    .downloadWallpaper(_images[index]),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      Positioned(
-                        bottom: 0.0,
-                        right: 25,
-                        child: IconButton(
-                            icon: const Icon(Icons.copy),
-                            color: Colors.white,
-                            onPressed: () {
-                              Clipboard.setData(
-                                ClipboardData(
-                                  text: _images[index],
-                                ),
-                              );
-                              SnackBar snackBar = const SnackBar(
-                                content: Text('Link copiado'),
-                              );
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackBar);
-                            }),
-                      ),
-                    ],
-                  );
-                },
-              ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _refreshContent,
-        tooltip: 'Atualizar',
-        child: const Icon(Icons.refresh),
-      ),
     );
   }
 }

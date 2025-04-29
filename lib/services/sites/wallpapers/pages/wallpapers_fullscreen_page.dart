@@ -1,0 +1,111 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:geekcontrol/services/sites/wallpapers/atoms/copy_button.dart';
+import 'package:geekcontrol/services/sites/wallpapers/webscraper/wallpaper.dart';
+
+class WallpaperFullscreen extends StatefulWidget {
+  static const route = '/wallpaper-fullscreen';
+  final List<String> images;
+  final int index;
+
+  const WallpaperFullscreen({
+    super.key,
+    required this.images,
+    required this.index,
+  });
+
+  @override
+  State<WallpaperFullscreen> createState() => _WallpaperFullscreenState();
+}
+
+class _WallpaperFullscreenState extends State<WallpaperFullscreen> {
+  bool fullscreen = false;
+  late final PageController _pageController;
+  final ct = WallpaperController();
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: widget.index);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          PageView.builder(
+            controller: _pageController,
+            scrollDirection: Axis.vertical,
+            itemCount: widget.images.length,
+            itemBuilder: (context, index) {
+              final imageUrl = widget.images[index];
+              return GestureDetector(
+                onLongPress: () => setState(() => fullscreen = false),
+                onTap: () => setState(() => fullscreen = true),
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
+                  fit: BoxFit.cover,
+                ),
+              );
+            },
+          ),
+          if (!fullscreen)
+            Positioned(
+              top: 40,
+              left: 16,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.black.withValues(alpha: 0.5),
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  icon: const Icon(Icons.arrow_back, color: Colors.white),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ),
+            ),
+          if (!fullscreen)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 32,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Builder(
+                    builder: (context) {
+                      final currentIndex = _pageController.hasClients
+                          ? _pageController.page?.round() ?? 0
+                          : widget.index;
+                      final imageUrl = widget.images[currentIndex];
+                      return Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.5),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(width: 16),
+                            CoppyButton(image: imageUrl),
+                            const SizedBox(width: 16),
+                            IconButton(
+                              icon: const Icon(Icons.download,
+                                  color: Colors.white),
+                              onPressed: () => ct.downloadWallpaper(imageUrl),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
