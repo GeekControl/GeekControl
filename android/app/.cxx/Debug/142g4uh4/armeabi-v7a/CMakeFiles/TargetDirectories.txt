@@ -1,0 +1,2 @@
+C:/Users/gabri/OneDrive/Documentos/GitHub/GeekControl/android/app/.cxx/Debug/142g4uh4/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/gabri/OneDrive/Documentos/GitHub/GeekControl/android/app/.cxx/Debug/142g4uh4/armeabi-v7a/CMakeFiles/rebuild_cache.dir
