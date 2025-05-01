@@ -10,12 +10,25 @@ class AnilistUtils {
 
   static final uri = Uri.parse(dotenv.env['ANILIST_URL'].toString());
 
-  static Future<http.Response> basicResponse(
-      {String? title, required String query}) async {
-    final queryBody = {'query': query};
-    final response = await http.post(AnilistUtils.uri,
-        headers: headers, body: jsonEncode(queryBody));
-    return response;
+  static Future<http.Response> basicResponse({
+    String? title,
+    required String query,
+    Map<String, dynamic>? variables,
+  }) async {
+    try {
+      final queryBody = {
+        'query': query,
+        if (variables != null) 'variables': variables,
+      };
+      final response = await http.post(
+        AnilistUtils.uri,
+        headers: headers,
+        body: jsonEncode(queryBody),
+      );
+      return response;
+    } catch (e) {
+      rethrow;
+    }
   }
 }
 
