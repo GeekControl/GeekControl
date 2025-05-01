@@ -17,6 +17,8 @@ class ReleasesAnilistEntity {
   final String artist;
   final int? nextEpisode;
   final int airingAt;
+  final int meanScore;
+  final int averageScore;
   final Map<String, dynamic> startDate;
   final Map<String, dynamic>? endDate;
   final String createdAt;
@@ -40,6 +42,8 @@ class ReleasesAnilistEntity {
     required this.nextEpisode,
     required this.airingAt,
     required this.actuallyEpisode,
+    required this.meanScore,
+    required this.averageScore,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -49,6 +53,8 @@ class ReleasesAnilistEntity {
     List<ReleasesAnilistEntity> entities = mediaList.map((media) {
       return ReleasesAnilistEntity(
         id: media['id'],
+        meanScore: media['meanScore'] ?? 0,
+        averageScore: media['averageScore'] ?? 0,
         episodeId: media['id'],
         englishTitle: media['title']?['english'] ?? media['title']?['romaji'],
         episodes: media['episodes'] ?? 0,
@@ -76,6 +82,8 @@ class ReleasesAnilistEntity {
   factory ReleasesAnilistEntity.fromJson(Map<String, dynamic> media) {
     return ReleasesAnilistEntity(
       id: media['id'],
+      meanScore: media['meanScore'] ?? 0,
+      averageScore: media['averageScore'] ?? 0,
       episodeId: media['id'],
       englishTitle: media['title']?['english'] ?? '',
       episodes: media['episodes'] ?? 0,
@@ -101,6 +109,8 @@ class ReleasesAnilistEntity {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'meanScore': meanScore,
+      'averageScore': averageScore,
       'episodeId': episodeId,
       'englishTitle': englishTitle,
       'episodes': episodes,
@@ -124,6 +134,8 @@ class ReleasesAnilistEntity {
 
   ReleasesAnilistEntity.empty()
       : id = 0,
+        meanScore = 0,
+        averageScore = 0,
         nextEpisode = 0,
         airingAt = 0,
         episodeId = 0,
