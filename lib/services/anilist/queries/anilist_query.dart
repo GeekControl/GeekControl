@@ -7,6 +7,10 @@ class Query {
       id
       averageScore
       meanScore
+      status
+      episodes
+      source
+      format
       coverImage {
         large
         extraLarge
@@ -24,7 +28,7 @@ class Query {
 
   static String releasesQuery(String? title) {
     return '''
-  query {
+query {
   Page {
     media(${title != null && title.isNotEmpty ? 'search: "$title"' : 'sort: TRENDING_DESC'}, type: ANIME) {
       id
@@ -41,7 +45,9 @@ class Query {
       status
       season
       seasonYear
-      episodes
+      meanScore
+      averageScore
+      popularity
       nextAiringEpisode {
         id
         airingAt
@@ -58,7 +64,7 @@ class Query {
         day
       }
       staff {
-				edges {
+        edges {
           role
           node {
             name {
@@ -71,5 +77,60 @@ class Query {
   }
 }
     ''';
+  }
+
+  static String detailsQuery() {
+    return '''
+query (\$id: Int) {
+  Media(id: \$id) {
+    id
+    title {
+      romaji
+      english
+    }
+    description(asHtml: false)
+    coverImage {
+      large
+    }
+    bannerImage
+    startDate {
+      year
+      month
+      day
+    }
+    endDate {
+      year
+      month
+      day
+    }
+    format
+    status
+    episodes
+    chapters
+    volumes
+    duration
+    meanScore
+    averageScore
+    popularity
+    genres
+    source
+    studios {
+      nodes {
+        name
+      }
+    }
+    characters(perPage: 10) {
+      nodes {
+        name {
+          full
+        }
+        image {
+          large
+        }
+      }
+    }
+  }
+}
+  ''';
   }
 }
