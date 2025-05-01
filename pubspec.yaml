@@ -65,6 +65,9 @@ dependencies:
   cached_network_image: ^3.3.1
   saver_gallery: ^4.0.1
   device_info_plus: ^11.4.0
+  test: ^1.25.15
+  shimmer: ^3.0.0
+  translator: ^0.1.7
 
 dev_dependencies:
   flutter_test:
