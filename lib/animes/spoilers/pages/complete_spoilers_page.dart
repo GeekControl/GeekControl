@@ -56,7 +56,7 @@ class _SpoilersDetailPageState extends State<SpoilersDetailPage> {
                 boxShadow: [
                   BoxShadow(
                     color:
-                        const Color.fromARGB(255, 60, 60, 60).withOpacity(0.5),
+                        const Color.fromARGB(255, 60, 60, 60).withValues(alpha: 0.5),
                     spreadRadius: 2,
                     blurRadius: 5,
                     offset: const Offset(0, 3),

@@ -82,7 +82,7 @@ class _DetailsPageState extends State<DetailsPage>
                                   filter:
                                       ImageFilter.blur(sigmaX: 3, sigmaY: 3),
                                   child: Container(
-                                    color: Colors.black.withOpacity(0),
+                                    color: Colors.black.withValues(alpha: 0),
                                   ),
                                 ),
                               ),
