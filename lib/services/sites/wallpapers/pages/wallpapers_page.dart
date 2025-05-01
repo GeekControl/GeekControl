@@ -1,5 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
 import 'package:geekcontrol/services/sites/wallpapers/atoms/copy_button.dart';
 import 'package:geekcontrol/services/sites/wallpapers/pages/wallpapers_fullscreen_page.dart';
 import 'package:geekcontrol/services/sites/wallpapers/webscraper/wallpaper.dart';
@@ -105,9 +105,7 @@ class _WallpaperListScreenState extends State<WallpaperListScreen> {
                     child: Stack(
                       children: [
                         Positioned.fill(
-                          child: CachedNetworkImage(
-                            imageUrl: _images[index],
-                          ),
+                          child: HitagiImages(image: _images[index]),
                         ),
                         Positioned(
                           bottom: 4,
