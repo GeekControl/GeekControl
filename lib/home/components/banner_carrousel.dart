@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:geekcontrol/animes/articles/controller/articles_controller.dart';
 import 'package:geekcontrol/animes/articles/entities/articles_entity.dart';
 import 'package:geekcontrol/animes/articles/pages/complete_article_page.dart';
+import 'package:geekcontrol/home/components/carousel_skeletonizer.dart';
 import 'package:logger/logger.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 class BannerCarousel extends StatelessWidget {
   const BannerCarousel({super.key});
@@ -14,37 +14,12 @@ class BannerCarousel extends StatelessWidget {
     return FutureBuilder<List<ArticlesEntity>>(
       future: ArticlesController().bannerNews(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Skeletonizer(
-            enabled: true,
-            child: CarouselSlider(
-              options: CarouselOptions(
-                height: 150,
-                enlargeCenterPage: true,
-                autoPlay: false,
-                aspectRatio: 16 / 9,
-                enableInfiniteScroll: false,
-                viewportFraction: 0.8,
-              ),
-              items: List.generate(5, (index) {
-                return Container(
-                  width: MediaQuery.of(context).size.width,
-                  margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                );
-              }),
-            ),
-          );
-        } else if (snapshot.hasData) {
+        if (snapshot.hasData) {
           List<ArticlesEntity> articles = snapshot.data!;
           return CarouselSlider(
             options: CarouselOptions(
-              height: 110,
+              height: 150,
               enlargeCenterPage: true,
-              autoPlay: true,
               aspectRatio: 16 / 9,
               autoPlayInterval: const Duration(seconds: 3),
               autoPlayAnimationDuration: const Duration(seconds: 1),
@@ -88,7 +63,7 @@ class BannerCarousel extends StatelessWidget {
                       child: Container(
                         width: MediaQuery.of(context).size.width - 20,
                         padding: const EdgeInsets.all(4.0),
-                        color: Colors.black.withOpacity(0.7),
+                        color: Colors.black.withValues(alpha: 0.7),
                         child: Text(
                           entry.title,
                           maxLines: 3,
@@ -108,12 +83,7 @@ class BannerCarousel extends StatelessWidget {
           );
         } else {
           Logger().e(snapshot.error);
-          return const Center(
-            child: Text(
-              'Nenhum dado disponível',
-              style: TextStyle(color: Colors.red),
-            ),
-          );
+          return const CarouselSkeletonizer();
         }
       },
     );
