@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 enum HitagiTypography {
-  giga(true, 28),
-  title(true, 20),
-  button(true, 16),
-  body(false, 17);
+  giga(true, 25),
+  title(true, 19),
+  button(true, 14),
+  alternative(false, 12),
+  small(true, 11),
+  body(false, 15);
 
   final bool isBold;
   final double size;
@@ -31,6 +34,7 @@ class HitagiText extends StatelessWidget {
   final Color? iconColor;
   final bool? isBold;
   final bool? softWrap;
+  final TextStyle Function(TextStyle)? googleFont;
 
   const HitagiText({
     super.key,
@@ -48,28 +52,33 @@ class HitagiText extends StatelessWidget {
     this.iconSize,
     this.iconPosition = IconPosition.left,
     this.iconColor = Colors.black,
+    this.googleFont,
   });
 
   @override
   Widget build(BuildContext context) {
+    final baseStyle = TextStyle(
+      fontSize: size ?? typography.size,
+      fontWeight:
+          (isBold ?? typography.isBold) ? FontWeight.bold : FontWeight.normal,
+      foreground: Paint()
+        ..style = PaintingStyle.fill
+        ..color = color ?? Colors.black
+        ..maskFilter = MaskFilter.blur(
+          BlurStyle.normal,
+          maskFilter ?? 0,
+        ),
+    );
+
+    final styledFont = (googleFont ??
+        ((style) => GoogleFonts.poppins(textStyle: style)))(baseStyle);
+
     if (icon == null) {
       return Text(
         text,
         maxLines: maxLines,
         overflow: overflow,
-        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-              fontSize: size ?? typography.size,
-              fontWeight: isBold ?? typography.isBold
-                  ? FontWeight.bold
-                  : FontWeight.normal,
-              foreground: Paint()
-                ..style = PaintingStyle.fill
-                ..color = color ?? Colors.black
-                ..maskFilter = MaskFilter.blur(
-                  BlurStyle.normal,
-                  maskFilter ?? 0,
-                ),
-            ),
+        style: styledFont,
         textAlign: textAlign,
         softWrap: softWrap ?? true,
       );
@@ -92,19 +101,7 @@ class HitagiText extends StatelessWidget {
           text,
           maxLines: maxLines,
           overflow: overflow,
-          style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                fontSize: size ?? typography.size,
-                fontWeight: isBold ?? typography.isBold
-                    ? FontWeight.bold
-                    : FontWeight.normal,
-                foreground: Paint()
-                  ..style = PaintingStyle.fill
-                  ..color = color ?? Colors.black
-                  ..maskFilter = MaskFilter.blur(
-                    BlurStyle.normal,
-                    maskFilter ?? 0,
-                  ),
-              ),
+          style: styledFont,
           textAlign: textAlign,
           softWrap: softWrap ?? true,
         ),
@@ -137,6 +134,7 @@ class HitagiText extends StatelessWidget {
     double size = 15,
     HitagiTypography typography = HitagiTypography.body,
     IconPosition iconPosition = IconPosition.left,
+    TextStyle Function(TextStyle)? googleFont,
   }) {
     return HitagiText(
       text: text,
@@ -148,6 +146,7 @@ class HitagiText extends StatelessWidget {
       iconSize: iconSize,
       overflow: overflow,
       maxLines: maxLines,
+      googleFont: googleFont,
     );
   }
 }
