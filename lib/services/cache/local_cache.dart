@@ -3,7 +3,6 @@ import 'package:geekcontrol/animes/articles/entities/articles_entity.dart';
 import 'package:geekcontrol/services/anilist/entities/releases_anilist_entity.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 
 class LocalCache {
