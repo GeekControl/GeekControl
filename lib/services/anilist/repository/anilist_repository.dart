@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:geekcontrol/core/utils/api_utils.dart';
+import 'package:geekcontrol/services/anilist/entities/details_entity.dart';
 import 'package:geekcontrol/services/anilist/entities/releases_anilist_entity.dart';
 import 'package:geekcontrol/services/anilist/entities/rates_entity.dart';
 import 'package:geekcontrol/services/anilist/queries/anilist_query.dart';
@@ -7,27 +8,52 @@ import 'package:logger/logger.dart';
 
 class AnilistRepository {
   Future<List<MangasRates>> getRateds() async {
-    final response =
-        await AnilistUtils.basicResponse(query: Query.ratedsQuery());
+    try {
+      final response =
+          await AnilistUtils.basicResponse(query: Query.ratedsQuery());
 
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> jsonResponse = json.decode(response.body);
-      final mangas = MangasRates.toEntityList(jsonResponse);
-      return mangas;
-    } else {
-      Logger().e('Error: ${response.statusCode}');
-      return [MangasRates.empty()];
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        final mangas = MangasRates.toEntityList(jsonResponse);
+        return mangas;
+      } else {
+        Logger().e('Error: ${response.statusCode}');
+        return [MangasRates.empty()];
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 
   Future<List<ReleasesAnilistEntity>> getReleasesAnimes() async {
-    final response = await AnilistUtils.basicResponse(
-      query: Query.releasesQuery(''),
-    );
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> jsonResponse = json.decode(response.body);
-      return ReleasesAnilistEntity.toEntityList(jsonResponse);
+    try {
+      final response = await AnilistUtils.basicResponse(
+        query: Query.releasesQuery(''),
+      );
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        return ReleasesAnilistEntity.toEntityList(jsonResponse);
+      }
+      return [ReleasesAnilistEntity.empty()];
+    } catch (e) {
+      rethrow;
     }
-    return [ReleasesAnilistEntity.empty()];
+  }
+
+  Future<DetailsEntity> getDetails(int id) async {
+    try {
+      final response = await AnilistUtils.basicResponse(
+        query: Query.detailsQuery(),
+        variables: {'id': id},
+      );
+      Logger().i('Resposta: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        return DetailsEntity.fromJson(jsonResponse);
+      }
+      return DetailsEntity.empty;
+    } catch (e) {
+      rethrow;
+    }
   }
 }
