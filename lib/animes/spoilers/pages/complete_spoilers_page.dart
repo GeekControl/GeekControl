@@ -3,7 +3,6 @@ import 'package:geekcontrol/animes/spoilers/entities/spoiler_entity.dart';
 import 'package:geekcontrol/services/sites/intoxi_animes/webscraper/spoilers_scraper.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 class SpoilersDetailPage extends StatefulWidget {
   final SpoilersEntity spoiler;
@@ -108,22 +107,6 @@ class _SpoilersDetailPageState extends State<SpoilersDetailPage> {
                     textAlign: TextAlign.start,
                   );
                 }).toList(),
-              ),
-              
-            if (_spoilerContent == null)
-              const Skeletonizer(
-                enabled: true,
-                child: SizedBox(
-                  width: 150,
-                  height: 150,
-                  child: Card(
-                    surfaceTintColor: Colors.black,
-                    elevation: 4,
-                    child: ListTile(
-                      style: ListTileStyle.drawer,
-                    ),
-                  ),
-                ),
               ),
           ],
         ),
