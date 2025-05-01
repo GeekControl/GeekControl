@@ -5,10 +5,11 @@ import 'package:geekcontrol/animes/articles/pages/complete_article_page.dart';
 import 'package:geekcontrol/animes/articles/pages/components/article_card.dart';
 import 'package:geekcontrol/animes/components/floating_button.dart';
 import 'package:geekcontrol/animes/sites_enum.dart';
-import 'package:geekcontrol/core/utils/loader_indicator.dart';
+import 'package:geekcontrol/core/utils/skeletonizer/cards_skeletonizer.dart';
 import 'package:go_router/go_router.dart';
 
 class ArticlesPage extends StatefulWidget {
+  static const route = '/articles';
   const ArticlesPage({super.key});
 
   @override
@@ -49,10 +50,9 @@ class _ArticlesPageState extends State<ArticlesPage> {
       body: FutureBuilder<List<ArticlesEntity>>(
         future: ct.articles,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Loader.pacman();
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Erro ao carregar ${snapshot.error}'));
+          if (snapshot.connectionState == ConnectionState.waiting ||
+              !snapshot.hasData) {
+            return const CardsSkeletonizer();
           } else {
             final newsList = snapshot.data!;
             return AnimatedList(
