@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'animes/articles/entities/articles_entity.dart';
-import 'services/sites/animes_united/animes_united_scraper.dart';
 
 class TestScreen extends StatefulWidget {
   const TestScreen({super.key});
@@ -18,9 +17,7 @@ class _TestScreenState extends State<TestScreen> {
     _refreshContent();
   }
 
-  void _refreshContent() async {
-    await OtakuPT().fetchArticles();
-  }
+  void _refreshContent() async {}
 
   @override
   Widget build(BuildContext context) {
