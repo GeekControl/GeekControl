@@ -62,4 +62,23 @@ class LocalCache {
     await store.record(key).delete(db);
     Logger().i('Cache deletado');
   }
+
+  Future<void> clearCache() async {
+    final db = await _getDatabase();
+    var store = StoreRef.main();
+    await store.delete(db);
+    Logger().i('Todos os dados do cache foram apagados.');
+  }
+
+  Future<int> getCacheSize() async {
+    final db = await _getDatabase();
+    var store = StoreRef.main();
+    final records = await store.find(db);
+    int size = 0;
+    for (var record in records) {
+      size += record.value.toString().length;
+    }
+    Logger().i('Tamanho do cache: $size bytes');
+    return size;
+  }
 }

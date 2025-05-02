@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geekcontrol/services/cache/local_cache.dart';
 import 'package:go_router/go_router.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -14,7 +15,6 @@ class SettingsPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          // Personalização Section
           SettingsSection(
             title: 'Funcionalidades',
             tiles: [
@@ -37,6 +37,22 @@ class SettingsPage extends StatelessWidget {
                 icon: Icons.notification_add,
                 title: 'Últimos lançamentos',
                 onTap: () => GoRouter.of(context).push('/releases'),
+              ),
+              FutureBuilder<int>(
+                future: LocalCache().getCacheSize(),
+                builder: (context, snapshot) {
+                  final sizeMB = (snapshot.data ?? 0) / (1024 * 1024);
+                  final sizeText = sizeMB.toStringAsFixed(2);
+
+                  return SettingsTile(
+                    icon: Icons.cleaning_services_outlined,
+                    title: 'Limpar cache - $sizeText MB',
+                    onTap: () async {
+                      await LocalCache().clearCache();
+                      (context as Element).markNeedsBuild();
+                    },
+                  );
+                },
               ),
             ],
           ),
