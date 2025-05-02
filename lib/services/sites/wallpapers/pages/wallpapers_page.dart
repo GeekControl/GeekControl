@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
 import 'package:geekcontrol/services/sites/wallpapers/atoms/copy_button.dart';
 import 'package:geekcontrol/services/sites/wallpapers/pages/wallpapers_fullscreen_page.dart';
-import 'package:geekcontrol/services/sites/wallpapers/webscraper/wallpaper.dart';
+import 'package:geekcontrol/services/sites/wallpapers/controller/wallpapers_controller.dart';
 import 'package:go_router/go_router.dart';
 
 class WallpaperListScreen extends StatefulWidget {
