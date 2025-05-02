@@ -7,52 +7,67 @@ import 'package:geekcontrol/services/cache/local_cache.dart';
 import 'package:geekcontrol/services/sites/otakupt/otakupt_scraper.dart';
 import 'package:geekcontrol/services/sites/intoxi_animes/webscraper/intoxi_articles_scraper.dart';
 import 'package:geekcontrol/services/sites/mangas_news/webscraper/all_articles.dart';
+import 'package:logger/logger.dart';
 
 class ArticlesController extends ChangeNotifier {
   final IntoxiArticles _intoxi = IntoxiArticles();
   final OtakuPT _otakuPt = OtakuPT();
   final MangaNews _animewsNews = MangaNews();
+  final _cache = LocalCache();
+  final _logger = Logger();
 
   Future<List<ArticlesEntity>> articles = Future.value([]);
   Future<List<ArticlesEntity>> articlesSearch = Future.value([]);
   int currenctIndex = 0;
-
-  final _cache = LocalCache();
   var currentSite = SitesEnum.animesNew;
 
   Future<void> changedSite(SitesEnum site) async {
-    if (SitesEnum.animesNew.key == site.key && currenctIndex != 1) {
-      articles = _animewsNews.scrapeArticles();
-      currenctIndex = 1;
-      currentSite = site;
+    final key = site.key;
+    final cacheKey = 'site_cache_$key';
+    final cacheRaw = await _cache.get(cacheKey);
+
+    List<ArticlesEntity> result;
+
+    if (cacheRaw is List) {
+      final timestamps = cacheRaw
+          .map((e) => DateTime.tryParse(e['updatedAt'] ?? ''))
+          .whereType<DateTime>()
+          .toList();
+
+      final shouldUpdate = timestamps.isEmpty ||
+          DateTime.now().difference(
+                timestamps.reduce((a, b) => a.isAfter(b) ? a : b),
+              ) >
+              const Duration(minutes: 30);
+
+      if (!shouldUpdate) {
+        _logger.i('Usando cache para $key');
+        result = cacheRaw.map((e) => ArticlesEntity.fromMap(e)).toList();
+      } else {
+        result = await _fetchAndCacheSiteArticles(site, cacheKey);
+      }
+    } else {
+      result = await _fetchAndCacheSiteArticles(site, cacheKey);
     }
-    if (SitesEnum.otakuPt.key == site.key && currenctIndex != 2) {
-      articles = _otakuPt.scrapeArticles();
-      currenctIndex = 2;
-      currentSite = site;
-    }
-    if (SitesEnum.intoxi.key == site.key && currenctIndex != 3) {
-      articles = _intoxi.scrapeArticles(IntoxiUtils.uriStr);
-      currenctIndex = 3;
-      currentSite = site;
-    }
+
+    articles = Future.value(result);
+    currenctIndex = site.index;
+    currentSite = site;
     notifyListeners();
   }
 
   Future<void> changedSearchSite(SitesEnum site,
       {required String article}) async {
-    if (SitesEnum.animesNew.key == site.key) {
+    currenctIndex = site.index;
+
+    if (site == SitesEnum.animesNew) {
       articlesSearch = _animewsNews.searchArticle(article);
-      currenctIndex = 1;
-    }
-    if (SitesEnum.otakuPt.key == site.key) {
+    } else if (site == SitesEnum.otakuPt) {
       articlesSearch = _otakuPt.searchArticles(article);
-      currenctIndex = 2;
-    }
-    if (SitesEnum.intoxi.key == site.key) {
+    } else if (site == SitesEnum.intoxi) {
       articlesSearch = _intoxi.searchArticles(article: article);
-      currenctIndex = 3;
     }
+
     notifyListeners();
   }
 
@@ -61,24 +76,40 @@ class ArticlesController extends ChangeNotifier {
   }
 
   Future<List<ArticlesEntity>> bannerNews() async {
-    final newsCache = await _cache.get(CacheKeys.articles.key);
-    final updateCache = await _cache.updateArticles(CacheKeys.articles.key);
+    final cacheKey = CacheKeys.articles.key;
+    final newsCacheRaw = await _cache.get(cacheKey);
 
-    if (await newsCache != null && !updateCache) {
-      List<dynamic> cacheArticles = newsCache as List<dynamic>;
+    if (newsCacheRaw is List) {
+      final timestamps = newsCacheRaw
+          .map((e) => DateTime.tryParse(e['updatedAt'] ?? ''))
+          .whereType<DateTime>()
+          .toList();
 
-      return cacheArticles.map((json) => ArticlesEntity.fromMap(json)).toList();
-    } else {
-      final otakupt = await _otakuPt.scrapeArticles();
-      final intoxi = await _intoxi.scrapeArticles(IntoxiUtils.uriStr);
+      final shouldUpdate = timestamps.isEmpty ||
+          DateTime.now().difference(
+                timestamps.reduce((a, b) => a.isAfter(b) ? a : b),
+              ) >
+              const Duration(hours: 1);
 
-      final news = [
-        ...otakupt.getRange(0, 3),
-        ...intoxi.getRange(0, 3),
-      ];
-      await _cache.putArticles(CacheKeys.articles.key, news);
-      return news;
+      if (!shouldUpdate) {
+        _logger.i('Usando cache do bannerNews');
+        return newsCacheRaw
+            .map((json) => ArticlesEntity.fromMap(json))
+            .toList();
+      }
     }
+
+    _logger.i('Buscando bannerNews da web');
+    final otakupt = await _otakuPt.scrapeArticles();
+    final intoxi = await _intoxi.scrapeArticles(IntoxiUtils.uriStr);
+    final news = [...otakupt.take(3), ...intoxi.take(3)];
+
+    await _cache.putList<ArticlesEntity>(
+      cacheKey,
+      news,
+      (a) => a.toMap(),
+    );
+    return news;
   }
 
   Future<ArticlesEntity> fetchArticleDetails(
@@ -96,12 +127,12 @@ class ArticlesController extends ChangeNotifier {
       notifyListeners();
       return articles;
     } catch (e) {
-      throw Exception('Error fetching article details: $e');
+      throw Exception('Erro ao buscar detalhes do artigo: $e');
     }
   }
 
   Future<void> loadReadArticles() async {
-    _cache.get(CacheKeys.reads.key);
+    await _cache.get(CacheKeys.reads.key);
     notifyListeners();
   }
 
@@ -115,7 +146,7 @@ class ArticlesController extends ChangeNotifier {
 
   Future<bool> isRead(String title, List<String> readArticles) async {
     final reads = await _cache.get(CacheKeys.reads.key);
-    return reads.contains(title);
+    return reads is List && reads.contains(title);
   }
 
   Future<void> markAsUnread(String title, List<String> readArticles) async {
@@ -124,5 +155,26 @@ class ArticlesController extends ChangeNotifier {
       await _cache.put(CacheKeys.reads.key, readArticles);
       notifyListeners();
     }
+  }
+
+  Future<List<ArticlesEntity>> _fetchAndCacheSiteArticles(
+      SitesEnum site, String cacheKey) async {
+    List<ArticlesEntity> result = [];
+
+    if (site == SitesEnum.animesNew) {
+      result = await _animewsNews.scrapeArticles();
+    } else if (site == SitesEnum.otakuPt) {
+      result = await _otakuPt.scrapeArticles();
+    } else if (site == SitesEnum.intoxi) {
+      result = await _intoxi.scrapeArticles(IntoxiUtils.uriStr);
+    }
+
+    _logger.i('Cache atualizado para $cacheKey');
+    await _cache.putList<ArticlesEntity>(
+      cacheKey,
+      result,
+      (a) => a.toMap(),
+    );
+    return result;
   }
 }
