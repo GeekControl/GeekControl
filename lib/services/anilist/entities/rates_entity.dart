@@ -50,19 +50,29 @@ class MangasRates {
   }
 
   static MangasRates fromMap(Map<String, dynamic> map) {
+    DateTime parseDate(dynamic value) {
+      if (value is String) {
+        return DateTime.tryParse(value) ?? DateTime.now();
+      }
+      if (value is int) {
+        return DateTime.fromMillisecondsSinceEpoch(value);
+      }
+      return DateTime.now();
+    }
+
     return MangasRates(
-      id: map['id'],
+      id: map['id'] ?? 0,
       format: map['format'] ?? '',
       alternativeTitle: map['alternativeTitle'] ?? '',
       source: map['source'] ?? '',
-      title: map['title']['english'] ?? '',
+      title: map['title'] ?? '',
       episodes: map['episodes'] ?? 0,
-      coverImage: map['coverImage']['large'] ?? map['coverImage']['extraLarge'],
+      coverImage: map['coverImage'] ?? '',
       meanScore: map['meanScore'] ?? 0,
       averageScore: map['averageScore'] ?? 0,
       status: map['status'] ?? '',
-      createdAt: DateTime.parse(map['createdAt']),
-      updatedAt: DateTime.parse(map['updatedAt']),
+      createdAt: parseDate(map['createdAt']),
+      updatedAt: parseDate(map['updatedAt']),
     );
   }
 
@@ -72,21 +82,23 @@ class MangasRates {
       'title': title,
       'alternativeTitle': alternativeTitle,
       'source': source,
+      'format': format,
       'meanScore': meanScore,
       'averageScore': averageScore,
       'coverImage': coverImage,
       'status': status,
-      'episodes': episodes, 
-      format: format,
+      'episodes': episodes,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
     };
   }
 
   MangasRates.empty()
       : title = '',
-      id = 0,
-      format = '',
-      alternativeTitle = '',
-      source = '',
+        id = 0,
+        format = '',
+        alternativeTitle = '',
+        source = '',
         episodes = 0,
         meanScore = 0,
         averageScore = 0,
