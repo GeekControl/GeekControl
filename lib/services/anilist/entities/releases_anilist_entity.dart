@@ -80,29 +80,33 @@ class ReleasesAnilistEntity {
   }
 
   factory ReleasesAnilistEntity.fromJson(Map<String, dynamic> media) {
+    final updatedAtRaw = media['updatedAt'];
+    final animeUpdatedAt = updatedAtRaw is int
+        ? updatedAtRaw
+        : DateTime.tryParse(updatedAtRaw ?? '')?.millisecondsSinceEpoch ?? 0;
+
     return ReleasesAnilistEntity(
       id: media['id'],
       meanScore: media['meanScore'] ?? 0,
       averageScore: media['averageScore'] ?? 0,
-      episodeId: media['id'],
-      englishTitle: media['title']?['english'] ?? '',
+      episodeId: media['episodeId'] ?? media['id'],
+      englishTitle: media['englishTitle'] ?? '',
       episodes: media['episodes'] ?? 0,
-      animeUpdatedAt: media['updatedAt'] ?? 0,
-      status: MangaStates.toPortuguese(media['status'] ?? ''),
+      animeUpdatedAt: animeUpdatedAt,
+      status: media['status'] ?? '',
       season: media['season'] ?? '',
       seasonYear: media['seasonYear'] ?? 0,
       startDate: media['startDate'] ?? {},
       endDate: media['endDate'] ?? {},
-      bannerImage: media['bannerImage'] ?? media['coverImage']['extraLarge'],
-      coverImage: media['coverImage']['extraLarge'] ?? '',
-      author:
-          EntityMappers.roleEntity(media)?['node']?['name']?['full'] ?? 'N/A',
-      artist: '',
-      nextEpisode: media['nextAiringEpisode']?['episode'] ?? 0,
-      airingAt: media['nextAiringEpisode']?['airingAt'] ?? 0,
-      actuallyEpisode: EntityMappers.episodes(media),
-      createdAt: DateTime.now().toIso8601String(),
-      updatedAt: DateTime.now().toIso8601String(),
+      bannerImage: media['bannerImage'] ?? '',
+      coverImage: media['coverImage'] ?? '',
+      author: media['author'] ?? 'N/A',
+      artist: media['artist'] ?? '',
+      nextEpisode: media['nextEpisode'] ?? 0,
+      airingAt: media['airingAt'] ?? 0,
+      actuallyEpisode: media['actuallyEpisode'] ?? 0,
+      createdAt: media['createdAt'] ?? DateTime.now().toIso8601String(),
+      updatedAt: media['updatedAt'] ?? DateTime.now().toIso8601String(),
     );
   }
 
