@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:geekcontrol/animes/articles/pages/articles_page.dart';
+import 'package:geekcontrol/animes/ui/pages/latest_releases_page.dart';
 import 'package:geekcontrol/services/cache/local_cache.dart';
+import 'package:geekcontrol/services/sites/wallpapers/pages/wallpapers_page.dart';
+import 'package:geekcontrol/settings/controller/settings_controller.dart';
 import 'package:go_router/go_router.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -15,84 +19,52 @@ class SettingsPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          SettingsSection(
-            title: 'Funcionalidades',
-            tiles: [
-              SettingsTile(
-                icon: Icons.image,
-                title: 'Wallpapers',
-                onTap: () => GoRouter.of(context).push('/wallpapers'),
-              ),
-              SettingsTile(
-                icon: Icons.movie,
-                title: 'Spoilers',
-                onTap: () => GoRouter.of(context).push('/spoilers'),
-              ),
-              SettingsTile(
-                icon: Icons.newspaper,
-                title: 'Artigos',
-                onTap: () => GoRouter.of(context).push('/articles'),
-              ),
-              SettingsTile(
-                icon: Icons.notification_add,
-                title: 'Últimos lançamentos',
-                onTap: () => GoRouter.of(context).push('/releases'),
-              ),
-              FutureBuilder<int>(
-                future: LocalCache().getCacheSize(),
-                builder: (context, snapshot) {
-                  final sizeMB = (snapshot.data ?? 0) / (1024 * 1024);
-                  final sizeText = sizeMB.toStringAsFixed(2);
-
-                  return SettingsTile(
-                    icon: Icons.cleaning_services_outlined,
-                    title: 'Limpar cache - $sizeText MB',
-                    onTap: () async {
-                      await LocalCache().clearCache();
-                      (context as Element).markNeedsBuild();
-                    },
-                  );
-                },
-              ),
-            ],
+          const Text(
+            'Funcionalidades',
+            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
           ),
-          SettingsSection(
-            title: 'Outros',
-            tiles: [
-              SettingsTile(
-                icon: Icons.text_snippet,
-                title: 'Página de teste',
-                onTap: () => GoRouter.of(context).push('/test'),
-              ),
-            ],
+          SettingsTile(
+            icon: Icons.image,
+            title: 'Wallpapers',
+            onTap: () => GoRouter.of(context).push(WallpapersPage.route),
+          ),
+          SettingsTile(
+            icon: Icons.newspaper,
+            title: 'Artigos',
+            onTap: () => GoRouter.of(context).push(ArticlesPage.route),
+          ),
+          SettingsTile(
+            icon: Icons.notification_add,
+            title: 'Últimos lançamentos',
+            onTap: () => GoRouter.of(context).push(LatestReleasesPage.route),
+          ),
+          FutureBuilder<double>(
+            future: SettingsController().getCacheSize(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) return const SizedBox.shrink();
+              final size = snapshot.data!.toStringAsFixed(2);
+              return SettingsTile(
+                icon: Icons.cleaning_services_outlined,
+                title: 'Limpar cache - $size MB',
+                onTap: () async {
+                  await LocalCache().clearCache();
+                  (context as Element).markNeedsBuild();
+                },
+              );
+            },
+          ),
+          const SizedBox(height: 24.0),
+          const Text(
+            'Outros',
+            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+          ),
+          SettingsTile(
+            icon: Icons.text_snippet,
+            title: 'Página de teste',
+            onTap: () => GoRouter.of(context).push('/test'),
           ),
         ],
       ),
-    );
-  }
-}
-
-class SettingsSection extends StatelessWidget {
-  final String title;
-  final List<Widget> tiles;
-
-  const SettingsSection({super.key, required this.title, required this.tiles});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text(
-            title,
-            style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-          ),
-        ),
-        ...tiles,
-        const SizedBox(height: 16.0),
-      ],
     );
   }
 }
@@ -103,7 +75,6 @@ class SettingsTile extends StatelessWidget {
   final String? subtitle;
   final VoidCallback? onTap;
   final Color? titleColor;
-
   final bool? switchValue;
   final ValueChanged<bool>? onChanged;
 
