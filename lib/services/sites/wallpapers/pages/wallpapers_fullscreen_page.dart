@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
 import 'package:geekcontrol/services/sites/wallpapers/atoms/copy_button.dart';
-import 'package:geekcontrol/services/sites/wallpapers/webscraper/wallpaper.dart';
+import 'package:geekcontrol/services/sites/wallpapers/controller/wallpapers_controller.dart';
 
 class WallpaperFullscreen extends StatefulWidget {
   static const route = '/wallpaper-fullscreen';

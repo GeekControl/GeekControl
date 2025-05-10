@@ -67,7 +67,7 @@ class ItemCard extends StatelessWidget {
                               color: Colors.grey[900],
                             ),
                             child: Hero(
-                              tag: '${item.id}',
+                              tag: 'release-${item.id}',
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
                                 child: CachedNetworkImage(
@@ -88,10 +88,9 @@ class ItemCard extends StatelessWidget {
                               height: 10,
                               width: 10,
                               decoration: BoxDecoration(
-                                color:
-                                    item.status == 'Em Lançamento'
-                                        ? Colors.green
-                                        : Colors.red,
+                                color: item.status == 'Em Lançamento'
+                                    ? Colors.green
+                                    : Colors.red,
                                 border: Border.all(
                                   width: 1.5,
                                   color: Colors.black,
@@ -107,7 +106,7 @@ class ItemCard extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
-                                color: Colors.black.withValues(alpha: 0.7),
+                                color: Colors.black.withAlpha(180),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Row(

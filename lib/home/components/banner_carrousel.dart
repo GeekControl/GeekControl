@@ -82,8 +82,12 @@ class BannerCarousel extends StatelessWidget {
             }).toList(),
           );
         } else {
-          Logger().e(snapshot.error);
-          return const CarouselSkeletonizer();
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CarouselSkeletonizer();
+          } else {
+            Logger().e(snapshot.error);
+            return const CarouselSkeletonizer();
+          }
         }
       },
     );

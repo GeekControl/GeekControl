@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
 import 'package:geekcontrol/services/sites/wallpapers/atoms/copy_button.dart';
 import 'package:geekcontrol/services/sites/wallpapers/pages/wallpapers_fullscreen_page.dart';
-import 'package:geekcontrol/services/sites/wallpapers/webscraper/wallpaper.dart';
+import 'package:geekcontrol/services/sites/wallpapers/controller/wallpapers_controller.dart';
 import 'package:go_router/go_router.dart';
 
-class WallpaperListScreen extends StatefulWidget {
-  const WallpaperListScreen({super.key});
+class WallpapersPage extends StatefulWidget {
+  static const route = '/wallpapers';
+  const WallpapersPage({super.key});
 
   @override
-  State<WallpaperListScreen> createState() => _WallpaperListScreenState();
+  State<WallpapersPage> createState() => _WallpapersPageState();
 }
 
-class _WallpaperListScreenState extends State<WallpaperListScreen> {
+class _WallpapersPageState extends State<WallpapersPage> {
   final WallpaperController _controller = WallpaperController();
   List<String> _images = [];
   String _searchQuery = 'anime';

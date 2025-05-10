@@ -8,7 +8,7 @@ import 'package:geekcontrol/home/pages/home_page.dart';
 import 'package:geekcontrol/services/sites/otakupt/profile.dart';
 import 'package:geekcontrol/services/sites/wallpapers/pages/wallpapers_fullscreen_page.dart';
 import 'package:geekcontrol/services/sites/wallpapers/pages/wallpapers_page.dart';
-import 'package:geekcontrol/settings_page/pages/settings_page.dart';
+import 'package:geekcontrol/settings/pages/settings_page.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRoutes {
@@ -48,7 +48,7 @@ class AppRoutes {
       ),
       GoRoute(
         path: '/wallpapers',
-        builder: (context, state) => const WallpaperListScreen(),
+        builder: (context, state) => const WallpapersPage(),
       ),
       GoRoute(
         path: '/wallpaper-fullscreen',

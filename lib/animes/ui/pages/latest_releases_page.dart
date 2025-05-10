@@ -45,27 +45,27 @@ class _LatestReleasesPageState extends State<LatestReleasesPage> {
             return ListView.builder(
               itemCount: snapshot.data?.length ?? 0,
               itemBuilder: (context, index) {
-                ReleasesAnilistEntity releases = snapshot.data![index];
+                final release = snapshot.data![index];
                 return GestureDetector(
                   onTap: () => GoRouter.of(context)
-                      .push(DetailsPage.route, extra: releases.id),
+                      .push(DetailsPage.route, extra: release.id),
                   child: Card(
                     margin: const EdgeInsets.all(8),
                     elevation: 4,
-                    color: readers.contains(releases.id)
+                    color: readers.contains(release.id)
                         ? const Color.fromARGB(255, 169, 191, 209)
                         : Colors.white,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Hero(
-                          tag: releases.bannerImage,
+                          tag: 'release-${release.id}',
                           child: ClipRRect(
                             borderRadius: const BorderRadius.all(
                               Radius.circular(8),
                             ),
                             child: Image.network(
-                              releases.bannerImage,
+                              release.bannerImage,
                               height: 130,
                               width: double.infinity,
                               fit: BoxFit.cover,
@@ -80,14 +80,14 @@ class _LatestReleasesPageState extends State<LatestReleasesPage> {
                           children: [
                             Center(
                               child: Text(
-                                releases.englishTitle,
+                                release.englishTitle,
                                 style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
-                            FieldsComponent(releases: releases),
+                            FieldsComponent(releases: release),
                           ],
                         ),
                       ],

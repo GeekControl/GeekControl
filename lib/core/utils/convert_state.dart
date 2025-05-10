@@ -17,8 +17,6 @@ enum MangaStates {
         return 'Cancelado';
       case MangaStates.hiatus:
         return 'Hiato';
-      default:
-        return 'Desconhecido';
     }
   }
 
