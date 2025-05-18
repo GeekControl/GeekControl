@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:geekcontrol/services/cache/keys_enum.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast_io.dart';
@@ -16,15 +17,18 @@ class LocalCache {
     return _db!;
   }
 
-  Future<void> putList<T>(
-      String key, List<T> items, Map<String, dynamic> Function(T) toMap) async {
+  Future<void> putList<T>({
+    required CacheKeys key,
+    required List<T> items,
+    required Map<String, dynamic> Function(T) toMap,
+  }) async {
     final db = await _getDatabase();
     var store = StoreRef.main();
     final jsonList = items.map(toMap).toList();
-    await store.record(key).put(db, jsonList);
+    await store.record(key.value).put(db, jsonList);
   }
 
-  Future<bool> shouldUpdateCache(String key, Duration maxAge) async {
+  Future<bool> shouldUpdateCache(CacheKeys key, Duration maxAge) async {
     final cache = await get(key);
 
     if (cache is List) {
@@ -44,22 +48,22 @@ class LocalCache {
     return false;
   }
 
-  Future<void> put(String key, dynamic value) async {
+  Future<void> put(CacheKeys key, dynamic value) async {
     final db = await _getDatabase();
     var store = StoreRef.main();
-    await store.record(key).put(db, value);
+    await store.record(key.value).put(db, value);
   }
 
-  Future<dynamic> get(String key) async {
+  Future<dynamic> get(CacheKeys key) async {
     final db = await _getDatabase();
     var store = StoreRef.main();
-    return await store.record(key).get(db);
+    return await store.record(key.value).get(db);
   }
 
-  Future<void> delete(String key) async {
+  Future<void> delete(CacheKeys key) async {
     final db = await _getDatabase();
     var store = StoreRef.main();
-    await store.record(key).delete(db);
+    await store.record(key.value).delete(db);
     Logger().i('Cache deletado');
   }
 
