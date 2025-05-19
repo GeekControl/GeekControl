@@ -5,15 +5,21 @@ import 'package:geekcontrol/home/components/carousel_skeletonizer.dart';
 import 'package:geekcontrol/home/components/itemcard.dart';
 import 'package:geekcontrol/home/components/slide_animation.dart';
 import 'package:geekcontrol/services/anilist/controller/anilist_controller.dart';
+import 'package:geekcontrol/services/anilist/entities/anilist_types_enum.dart';
 import 'package:geekcontrol/services/anilist/entities/rates_entity.dart';
 
 class TopRatedsCarousel extends StatelessWidget {
-  const TopRatedsCarousel({super.key});
+  final AnilistTypes type;
+
+  const TopRatedsCarousel({
+    super.key,
+    required this.type,
+  });
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<MangasRates>>(
-      future: AnilistController().getRates(),
+      future: AnilistController().getRates(type: type),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const CarouselSkeletonizer();
@@ -23,7 +29,6 @@ class TopRatedsCarousel extends StatelessWidget {
             .map((anime) => HitagiCarouselItem(
                   image: anime.coverImage,
                   title: anime.title,
-                  route: TopRatedsPage.route,
                   badge: anime.meanScore.toString(),
                   badgeIcon: Icons.star,
                   id: anime.id,
@@ -39,6 +44,7 @@ class TopRatedsCarousel extends StatelessWidget {
               items: items,
               title: 'Favoritos da galera',
               route: TopRatedsPage.route,
+              type: type,
             ),
           ),
         );
