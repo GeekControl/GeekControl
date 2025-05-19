@@ -5,6 +5,7 @@ import 'package:geekcontrol/animes/articles/pages/components/article_card.dart';
 import 'package:geekcontrol/animes/components/floating_button.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/core/utils/skeletonizer/cards_skeletonizer.dart';
+import 'package:geekcontrol/home/atoms/search_page.dart';
 import 'package:go_router/go_router.dart';
 
 class ArticlesPage extends StatefulWidget {
@@ -45,6 +46,13 @@ class _ArticlesPageState extends State<ArticlesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          Padding(padding: const EdgeInsets.only(right: 8.0)),
+          IconButton(
+            onPressed: () => GoRouter.of(context).push(SearchPage.route),
+            icon: const Icon(Icons.search_off_outlined),
+          ),
+        ],
         leading: IconButton(
           onPressed: () => context.pop(),
           icon: const Icon(Icons.arrow_back),
