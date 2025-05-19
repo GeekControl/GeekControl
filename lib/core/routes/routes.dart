@@ -1,4 +1,5 @@
 import 'package:geekcontrol/animes/articles/pages/articles_page.dart';
+import 'package:geekcontrol/animes/articles/pages/complete_article_page.dart';
 import 'package:geekcontrol/animes/season/season_releases.dart';
 import 'package:geekcontrol/animes/spoilers/pages/spoilers_page.dart';
 import 'package:geekcontrol/animes/ui/pages/details_page.dart';
@@ -22,6 +23,16 @@ class AppRoutes {
       GoRoute(
         path: '/articles',
         builder: (context, state) => const ArticlesPage(),
+      ),
+      GoRoute(
+        path: '/articles/details',
+        builder: (context, state) {
+          final data = state.extra as Map;
+          return CompleteArticlePage(
+            news: data['news'],
+            current: data['current'],
+          );
+        },
       ),
       GoRoute(
         path: '/releases',
