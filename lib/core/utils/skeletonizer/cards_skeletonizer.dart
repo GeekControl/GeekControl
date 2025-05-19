@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class CardsSkeletonizer extends StatelessWidget {
-  const CardsSkeletonizer({super.key});
+  final int itemCount;
+  const CardsSkeletonizer({super.key, this.itemCount = 3});
 
   @override
   Widget build(BuildContext context) {
     return Skeletonizer(
       enabled: true,
       child: ListView.builder(
-        itemCount: 3,
+        itemCount: itemCount,
         padding: const EdgeInsets.all(8),
         itemBuilder: (context, index) {
           return Card(
