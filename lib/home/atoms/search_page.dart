@@ -7,6 +7,7 @@ import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/default_dia
 import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/hitagi_search_dialog.dart';
 
 class SearchPage extends StatefulWidget {
+  static const route = '/search';
   const SearchPage({super.key});
 
   @override
