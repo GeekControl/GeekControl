@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:geekcontrol/core/utils/api_utils.dart';
+import 'package:geekcontrol/services/anilist/entities/anilist_types_enum.dart';
 import 'package:geekcontrol/services/anilist/entities/details_entity.dart';
 import 'package:geekcontrol/services/anilist/entities/releases_anilist_entity.dart';
 import 'package:geekcontrol/services/anilist/entities/rates_entity.dart';
@@ -7,10 +8,10 @@ import 'package:geekcontrol/services/anilist/queries/anilist_query.dart';
 import 'package:logger/logger.dart';
 
 class AnilistRepository {
-  Future<List<MangasRates>> getRateds() async {
+  Future<List<MangasRates>> getRateds({required AnilistTypes type}) async {
     try {
-      final response =
-          await AnilistUtils.basicResponse(query: Query.ratedsQuery());
+      final response = await AnilistUtils.basicResponse(
+          query: Query.ratedsQuery(type));
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
@@ -25,10 +26,10 @@ class AnilistRepository {
     }
   }
 
-  Future<List<ReleasesAnilistEntity>> getReleasesAnimes() async {
+  Future<List<ReleasesAnilistEntity>> getReleasesAnimes({required AnilistTypes type}) async {
     try {
       final response = await AnilistUtils.basicResponse(
-        query: Query.releasesQuery(''),
+        query: Query.releasesQuery('', type),
       );
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
