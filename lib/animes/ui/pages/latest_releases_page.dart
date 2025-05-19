@@ -34,7 +34,7 @@ class _LatestReleasesPageState extends State<LatestReleasesPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () => GoRouter.of(context).pop(),
+          onPressed: () => context.pop(),
           icon: const Icon(Icons.arrow_back),
         ),
         title: const Center(
