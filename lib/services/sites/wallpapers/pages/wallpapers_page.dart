@@ -35,43 +35,77 @@ class _WallpapersPageState extends State<WallpapersPage> {
     });
   }
 
-  void _showSearchPopup() {
-    showDialog(
+  void _showSearchBottomSheet() {
+    final TextEditingController searchController = TextEditingController();
+    showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
       builder: (context) {
-        final TextEditingController searchController = TextEditingController();
-        return AlertDialog(
-          title: const HitagiText(
-            text: 'Pesquisar Wallpapers',
-            typography: HitagiTypography.title,
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+            left: 24,
+            right: 24,
+            top: 32,
           ),
-          content: TextField(
-            controller: searchController,
-            decoration: const InputDecoration(hintText: 'Digite o tema...'),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const HitagiText(
+                text: 'Pesquisar wallpapers',
+                typography: HitagiTypography.title,
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: searchController,
+                decoration: const InputDecoration(
+                  hintText: 'Digite o termo de pesquisa...',
+                  hintStyle: TextStyle(color: Colors.grey),
+                  filled: true,
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.search),
+                ),
+                textInputAction: TextInputAction.search,
+                onSubmitted: (value) {
+                  final query = value.trim();
+                  if (query.isNotEmpty) {
+                    _searchQuery = query;
+                    _fetchWallpapers();
+                    Navigator.of(context).pop();
+                  }
+                },
+              ),
+              const SizedBox(height: 24),
+              Align(
+                child: ElevatedButton(
+                  onPressed: () {
+                    final query = searchController.text.trim();
+                    if (query.isNotEmpty) {
+                      _searchQuery = query;
+                      _fetchWallpapers();
+                    }
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Center(
+                    child: const HitagiText(
+                      text: 'Buscar',
+                      typography: HitagiTypography.button,
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const HitagiText(
-                text: 'Cancelar',
-                typography: HitagiTypography.button,
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                final query = searchController.text.trim();
-                if (query.isNotEmpty) {
-                  _searchQuery = query;
-                  _fetchWallpapers();
-                }
-                Navigator.of(context).pop();
-              },
-              child: const HitagiText(
-                text: 'Pesquisar',
-                typography: HitagiTypography.button,
-              ),
-            ),
-          ],
         );
       },
     );
@@ -81,11 +115,16 @@ class _WallpapersPageState extends State<WallpapersPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Wallpapers'),
+        title: Center(
+          child: const HitagiText(
+            text: 'Wallpapers',
+            typography: HitagiTypography.title,
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
-            onPressed: _showSearchPopup,
+            onPressed: _showSearchBottomSheet,
           ),
         ],
       ),
