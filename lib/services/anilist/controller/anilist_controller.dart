@@ -15,9 +15,8 @@ class AnilistController {
   String? translatedDescription = '';
 
   Future<List<ReleasesAnilistEntity>> getReleasesAnimes() async {
-    const cacheKey = CacheKeys.releases;
     try {
-      final cached = await _cache.get(cacheKey.key);
+      final cached = await _cache.get(CacheKeys.releases);
 
       if (cached is List) {
         final timestamps = cached
@@ -40,9 +39,9 @@ class AnilistController {
       _logger.i('Buscando releases da web');
       final releases = await _repository.getReleasesAnimes();
       await _cache.putList<ReleasesAnilistEntity>(
-        cacheKey.key,
-        releases,
-        (r) => r.toMap(),
+        key: CacheKeys.releases,
+        items: releases,
+        toMap: (r) => r.toMap(),
       );
       return releases;
     } catch (e) {
@@ -52,10 +51,8 @@ class AnilistController {
   }
 
   Future<List<MangasRates>> getRates() async {
-    const cacheKey = CacheKeys.rates;
-
     try {
-      final cached = await _cache.get(cacheKey.key);
+      final cached = await _cache.get(CacheKeys.rates);
 
       if (cached is List) {
         final timestamps = cached
@@ -88,7 +85,7 @@ class AnilistController {
         return map;
       }).toList();
 
-      await _cache.put(cacheKey.key, ratesWithTimestamps);
+      await _cache.put(CacheKeys.rates, ratesWithTimestamps);
       return rates;
     } catch (e) {
       _logger.e('Erro ao carregar rates: $e');
