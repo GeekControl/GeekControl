@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/hitagi_toast.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
 import 'package:geekcontrol/services/sites/wallpapers/atoms/copy_button.dart';
 import 'package:geekcontrol/services/sites/wallpapers/controller/wallpapers_controller.dart';
+import 'package:logger/web.dart';
 
 class WallpaperFullscreen extends StatefulWidget {
   static const route = '/wallpaper-fullscreen';
@@ -102,7 +104,23 @@ class _WallpaperFullscreenState extends State<WallpaperFullscreen> {
                             IconButton(
                               icon: const Icon(Icons.download,
                                   color: Colors.white),
-                              onPressed: () => ct.downloadWallpaper(imageUrl),
+                              onPressed: () {
+                                try {
+                                  ct.downloadWallpaper(imageUrl);
+                                  HitagiToast.show(
+                                    context,
+                                    message: 'Wallpaper baixado com sucesso!',
+                                    type: ToastType.success,
+                                  );
+                                } catch (e) {
+                                  Logger().e('Error downloading wallpaper: $e');
+                                  HitagiToast.show(
+                                    context,
+                                    message: 'Erro ao baixar o wallpaper: $e',
+                                    type: ToastType.error,
+                                  );
+                                }
+                              },
                             ),
                           ],
                         ),
