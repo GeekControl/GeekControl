@@ -1,3 +1,4 @@
+import 'package:geekcontrol/services/anilist/entities/anilist_types_enum.dart';
 import 'package:geekcontrol/services/anilist/entities/details_entity.dart';
 import 'package:geekcontrol/services/anilist/entities/releases_anilist_entity.dart';
 import 'package:geekcontrol/services/anilist/entities/rates_entity.dart';
@@ -14,9 +15,14 @@ class AnilistController {
 
   String? translatedDescription = '';
 
-  Future<List<ReleasesAnilistEntity>> getReleasesAnimes() async {
+  Future<List<ReleasesAnilistEntity>> getReleasesAnimes({
+    required AnilistTypes type,
+  }) async {
     try {
-      final cached = await _cache.get(CacheKeys.releases);
+      final cached = await _cache.get(
+        CacheKeys.releases,
+        site: type.value,
+      );
 
       if (cached is List) {
         final timestamps = cached
@@ -37,11 +43,12 @@ class AnilistController {
       }
 
       _logger.i('Buscando releases da web');
-      final releases = await _repository.getReleasesAnimes();
+      final releases = await _repository.getReleasesAnimes(type: type);
       await _cache.putList<ReleasesAnilistEntity>(
         key: CacheKeys.releases,
         items: releases,
         toMap: (r) => r.toMap(),
+        site: type.value,
       );
       return releases;
     } catch (e) {
@@ -50,9 +57,12 @@ class AnilistController {
     }
   }
 
-  Future<List<MangasRates>> getRates() async {
+  Future<List<MangasRates>> getRates({required AnilistTypes type}) async {
     try {
-      final cached = await _cache.get(CacheKeys.rates);
+      final cached = await _cache.get(
+        CacheKeys.rates,
+        site: type.value,
+      );
 
       if (cached is List) {
         final timestamps = cached
@@ -75,7 +85,7 @@ class AnilistController {
       }
 
       _logger.i('Buscando rates da web');
-      final rates = await _repository.getRateds();
+      final rates = await _repository.getRateds(type: type);
       rates.sort((a, b) => b.meanScore.compareTo(a.meanScore));
 
       final timestamp = DateTime.now().toIso8601String();
@@ -85,7 +95,11 @@ class AnilistController {
         return map;
       }).toList();
 
-      await _cache.put(CacheKeys.rates, ratesWithTimestamps);
+      await _cache.put(
+        CacheKeys.rates,
+        ratesWithTimestamps,
+        site: type.value,
+      );
       return rates;
     } catch (e) {
       _logger.e('Erro ao carregar rates: $e');
