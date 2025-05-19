@@ -4,7 +4,7 @@ import 'package:geekcontrol/animes/ui/pages/details_page.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/carousel/hitagi_image_carousel.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/utils.dart';
-import 'package:geekcontrol/home/components/shimmer_efect.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/skeletonizer/hitagi_shimmer_efect.dart';
 import 'package:go_router/go_router.dart';
 
 class ItemCard extends StatelessWidget {
@@ -74,7 +74,7 @@ class ItemCard extends StatelessWidget {
                                   imageUrl: item.image,
                                   fit: BoxFit.cover,
                                   placeholder: (context, url) =>
-                                      ShimmerEffect(height: 150, width: 103),
+                                      HitagiShimmerEffect(height: 150, width: 103),
                                   errorWidget: (context, url, error) =>
                                       const Center(child: Icon(Icons.error)),
                                 ),
