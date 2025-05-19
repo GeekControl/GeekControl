@@ -13,10 +13,10 @@ packages:
     dependency: transitive
     description:
       name: analyzer
-      sha256: "13c1e6c6fd460522ea840abec3f677cc226f5fec7872c04ad7b425517ccf54f7"
+      sha256: "904ae5bb474d32c38fb9482e2d925d5454cda04ddd0e55d2e6826bc72f6ba8c0"
       url: "https://pub.dev"
     source: hosted
-    version: "7.4.4"
+    version: "7.4.5"
   animated_floating_buttons:
     dependency: "direct main"
     description:
@@ -157,10 +157,10 @@ packages:
     dependency: transitive
     description:
       name: coverage
-      sha256: "7436ae7fbbf8f09c70079ce132a0a8ca67e197d5b8da3e441bc89af708c5a13b"
+      sha256: "802bd084fb82e55df091ec8ad1553a7331b61c08251eef19a508b6f3f3a9858d"
       url: "https://pub.dev"
     source: hosted
-    version: "1.13.0"
+    version: "1.13.1"
   crypto:
     dependency: transitive
     description:
@@ -369,10 +369,10 @@ packages:
     dependency: "direct main"
     description:
       name: go_router
-      sha256: "2b9ba6d4c247457c35a6622f1dee6aab6694a4e15237ff7c32320345044112b6"
+      sha256: "0b1e06223bee260dee31a171fb1153e306907563a0b0225e8c1733211911429a"
       url: "https://pub.dev"
     source: hosted
-    version: "15.1.1"
+    version: "15.1.2"
   google_fonts:
     dependency: "direct main"
     description:
@@ -745,10 +745,10 @@ packages:
     dependency: transitive
     description:
       name: provider
-      sha256: "489024f942069c2920c844ee18bb3d467c69e48955a4f32d1677f71be103e310"
+      sha256: "4abbd070a04e9ddc287673bf5a030c7ca8b685ff70218720abab8b092f53dd84"
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.4"
+    version: "6.1.5"
   pub_semver:
     dependency: transitive
     description:
@@ -1058,6 +1058,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.8"
+  toasty_box:
+    dependency: "direct main"
+    description:
+      name: toasty_box
+      sha256: f43694033701ca181de719e2487bf2b39b80b6c9fa4e9e3f27ae99b7f5ce5db3
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   translator:
     dependency: "direct main"
     description:
@@ -1198,10 +1206,10 @@ packages:
     dependency: transitive
     description:
       name: web_socket
-      sha256: bfe6f435f6ec49cb6c01da1e275ae4228719e59a6b067048c51e72d9d63bcc4b
+      sha256: "34d64019aa8e36bf9842ac014bb5d2f5586ca73df5e4d9bf5c936975cae6982c"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.0"
+    version: "1.0.1"
   web_socket_channel:
     dependency: transitive
     description:
@@ -1222,10 +1230,10 @@ packages:
     dependency: transitive
     description:
       name: win32
-      sha256: dc6ecaa00a7c708e5b4d10ee7bec8c270e9276dfcab1783f57e9962d7884305f
+      sha256: "329edf97fdd893e0f1e3b9e88d6a0e627128cc17cc316a8d67fda8f1451178ba"
       url: "https://pub.dev"
     source: hosted
-    version: "5.12.0"
+    version: "5.13.0"
   win32_registry:
     dependency: transitive
     description:
