@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/animes/articles/controller/articles_controller.dart';
-import 'package:geekcontrol/animes/articles/entities/articles_entity.dart';
 import 'package:geekcontrol/animes/articles/pages/complete_article_page.dart';
 import 'package:geekcontrol/animes/articles/pages/components/article_card.dart';
 import 'package:geekcontrol/animes/components/floating_button.dart';
-import 'package:geekcontrol/animes/sites_enum.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/core/utils/skeletonizer/cards_skeletonizer.dart';
 import 'package:go_router/go_router.dart';
 
@@ -19,15 +18,21 @@ class ArticlesPage extends StatefulWidget {
 class _ArticlesPageState extends State<ArticlesPage> {
   final ArticlesController ct = ArticlesController();
   final List<String> readArticles = [];
+  bool isLoading = true;
 
   @override
   void initState() {
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => ct.changedSite(SitesEnum.defaultSite));
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await ct.init();
+      setState(() {
+        isLoading = false;
+      });
+    });
+
     ct.addListener(() {
       setState(() {});
     });
-    super.initState();
   }
 
   @override
@@ -44,65 +49,37 @@ class _ArticlesPageState extends State<ArticlesPage> {
           onPressed: () => context.pop(),
           icon: const Icon(Icons.arrow_back),
         ),
-        title: const Center(child: Text('Últimas Notícias')),
+        title: const Center(
+            child: HitagiText(
+          text: 'Últimas notícias',
+          typography: HitagiTypography.title,
+        )),
       ),
       floatingActionButton: HitagiFloattingButton(ct: ct),
-      body: FutureBuilder<List<ArticlesEntity>>(
-        future: ct.articles,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting ||
-              !snapshot.hasData) {
-            return const CardsSkeletonizer();
-          } else {
-            final newsList = snapshot.data!;
-            return AnimatedList(
-              initialItemCount: newsList.length,
-              itemBuilder: (context, index, animation) {
-                final news = newsList[index];
-
-                return FutureBuilder<bool>(
-                  future: ct.isRead(news.title, readArticles),
-                  builder: (context, isReadSnapshot) {
-                    if (isReadSnapshot.connectionState ==
-                        ConnectionState.waiting) {
-                      return Container();
-                    }
-                    return SlideTransition(
-                      position: Tween<Offset>(
-                        begin: const Offset(0, 1),
-                        end: Offset.zero,
-                      ).animate(animation),
-                      child: ArticleCard(
-                        news: news,
-                        isRead: isReadSnapshot.data ?? false,
-                        onLongPress: () async {
-                          await ct.markAsUnread(news.title, readArticles);
-                        },
-                        onTap: () async {
-                          await Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) {
-                                return FadeTransition(
-                                  opacity: animation,
-                                  child: CompleteArticlePage(
-                                      news: news, current: news.site),
-                                );
-                              },
-                            ),
-                          );
-                          await ct.markAsRead(news.title, readArticles);
-                        },
-                      ),
+      body: isLoading
+          ? const CardsSkeletonizer()
+          : ListView.builder(
+              itemCount: ct.articlesList.length,
+              itemBuilder: (context, index) {
+                final news = ct.articlesList[index];
+                final alreadyRead = ct.isReadSync(news.title);
+                return ArticleCard(
+                  news: news,
+                  isRead: alreadyRead,
+                  onLongPress: () => ct.markAsUnread(news.title),
+                  onTap: () async {
+                    await context.push(
+                      CompleteArticlePage.route,
+                      extra: {
+                        'news': news,
+                        'current': ct.currentSite.name,
+                      },
                     );
+                    await ct.markAsRead(news.title);
                   },
                 );
               },
-            );
-          }
-        },
-      ),
+            ),
     );
   }
 }

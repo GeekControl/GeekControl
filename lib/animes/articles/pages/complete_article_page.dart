@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:geekcontrol/animes/articles/controller/articles_controller.dart';
 import 'package:geekcontrol/animes/articles/entities/articles_entity.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/carousel/hitagi_banner_carousel.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/core/utils/loader_indicator.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'package:logger/logger.dart';
 
 class CompleteArticlePage extends StatelessWidget {
+  static const route = '/articles/details';
   final ArticlesEntity news;
   final String current;
   final ArticlesController _articlesController = ArticlesController();
@@ -18,7 +19,11 @@ class CompleteArticlePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detalhes da Notícia'),
+        title: Center(
+            child: HitagiText(
+          text: 'Detalhes da Notícia',
+          typography: HitagiTypography.title,
+        )),
       ),
       body: FutureBuilder<ArticlesEntity>(
         future: _articlesController.fetchArticleDetails(
@@ -28,9 +33,7 @@ class CompleteArticlePage extends StatelessWidget {
         ),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-              child: Loader.pacman(),
-            );
+            return Center(child: Loader.pacman());
           } else if (snapshot.hasError) {
             Logger().e(snapshot.error);
             return Center(
@@ -53,22 +56,11 @@ class CompleteArticlePage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          'Por ${article.author} | ${article.date}',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
+                        HitagiText(
+                          text: 'Por ${article.author} | ${article.date}',
                         ),
                         const SizedBox(height: 16),
-                        Text(
-                          article.content,
-                          style: GoogleFonts.aBeeZee(
-                            fontSize: 14,
-                            color: const Color.fromARGB(255, 4, 46, 80),
-                          ),
-                        ),
-                        const SizedBox(height: 4),
+                        HitagiText(text: article.content),
                       ],
                     ),
                   ),
