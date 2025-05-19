@@ -23,10 +23,13 @@ class _WallpaperFullscreenState extends State<WallpaperFullscreen> {
   late final PageController _pageController;
   final ct = WallpaperController();
 
+  int currentIndex = 0;
+
   @override
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: widget.index);
+    currentIndex = widget.index;
   }
 
   @override
@@ -38,8 +41,13 @@ class _WallpaperFullscreenState extends State<WallpaperFullscreen> {
             controller: _pageController,
             scrollDirection: Axis.vertical,
             itemCount: widget.images.length,
+            onPageChanged: (index) {
+              setState(() {
+                currentIndex = index;
+              });
+            },
             itemBuilder: (context, index) {
-              final imageUrl = widget.images[index];
+              final imageUrl = widget.images[currentIndex];
               return GestureDetector(
                 onLongPress: () => setState(() => fullscreen = false),
                 onTap: () => setState(() => fullscreen = true),
