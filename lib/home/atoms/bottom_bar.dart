@@ -1,43 +1,94 @@
 import 'package:flutter/material.dart';
-import 'package:convex_bottom_bar/convex_bottom_bar.dart';
-import 'package:go_router/go_router.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/containter/hitagi_container.dart';
 
-class BottomBarWidget extends StatelessWidget {
-  const BottomBarWidget({super.key});
+// ignore: must_be_immutable
+class CustomNavBar extends StatelessWidget {
+  final List<Widget> screens;
+  int index;
+  final Function(int) onChanged;
+
+  CustomNavBar({
+    super.key,
+    required this.screens,
+    required this.index,
+    required this.onChanged,
+  });
+
+  final List<IconData> _icons = [
+    Icons.movie_filter,
+    Icons.book_rounded,
+    Icons.settings_outlined,
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return ConvexAppBar(
-      style: TabStyle.react,
-      initialActiveIndex: 0,
-      backgroundColor: Colors.transparent,
-      activeColor: Colors.black,
-      color: Colors.black,
-      height: 30,
-      items: const [
-        TabItem(icon: Icons.home),
-        TabItem(icon: Icons.newspaper),
-        TabItem(icon: Icons.notification_add),
-      ],
-      onTap: (index) => GoRouter.of(context).push(routesIndex(index)),
+    return HitagiContainer(
+      margin: const EdgeInsets.fromLTRB(120, 0, 130, 0),
+      padding: const EdgeInsets.all(2),
+      decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceContainerLowest,
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context)
+                  .colorScheme
+                  .surfaceContainer
+                  .withValues(alpha: 0.7),
+              blurRadius: 10,
+              spreadRadius: 2,
+            )
+          ]),
+      clipBehavior: Clip.antiAlias,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: screens.asMap().entries.map((item) {
+          final isActive = index == item.key;
+          return GestureDetector(
+            onTap: () => onChanged(item.key),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.fastOutSlowIn,
+              decoration: BoxDecoration(
+                color: isActive
+                    ? Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withValues(alpha: 0.6)
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(50),
+                boxShadow: [
+                  BoxShadow(
+                    color: isActive
+                        ? Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withValues(alpha: 0.6)
+                        : Colors.transparent,
+                    blurRadius: 10,
+                    spreadRadius: 2,
+                  )
+                ],
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+              child: TweenAnimationBuilder<double>(
+                tween: Tween<double>(begin: 0.0, end: isActive ? 1.1 : 0.9),
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+                builder: (context, scale, child) {
+                  return Transform.scale(
+                    scale: scale,
+                    child: Icon(
+                      _icons[item.key],
+                      size: 25,
+                      color: Theme.of(context).colorScheme.inverseSurface,
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+        }).toList(),
+      ),
     );
-  }
-
-  routesIndex(int index) {
-    switch (index) {
-      case 0:
-        return '/';
-      case 1:
-        return '/articles';
-      case 2:
-        return '/releases';
-      case 3:
-        return '/spoilers';
-      case 4:
-        return '/profile';
-      case 5:
-        return 'animeDetails';
-      default:
-    }
   }
 }
