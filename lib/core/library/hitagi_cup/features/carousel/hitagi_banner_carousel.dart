@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HitagiBanner extends StatelessWidget {
@@ -60,16 +61,13 @@ class HitagiBanner extends StatelessWidget {
                     color: Colors.black.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Text(
-                    title,
+                  child: HitagiText(
+                    text: title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    color: Colors.white,
+                    typography: HitagiTypography.button,
                   ),
                 ),
               ),
