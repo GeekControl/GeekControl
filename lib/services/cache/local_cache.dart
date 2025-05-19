@@ -21,11 +21,14 @@ class LocalCache {
     required CacheKeys key,
     required List<T> items,
     required Map<String, dynamic> Function(T) toMap,
+    String? site,
   }) async {
     final db = await _getDatabase();
     var store = StoreRef.main();
     final jsonList = items.map(toMap).toList();
-    await store.record(key.value).put(db, jsonList);
+    await store
+        .record(site != null ? key.value + site : key.value)
+        .put(db, jsonList);
   }
 
   Future<bool> shouldUpdateCache(CacheKeys key, Duration maxAge) async {
@@ -48,16 +51,22 @@ class LocalCache {
     return false;
   }
 
-  Future<void> put(CacheKeys key, dynamic value) async {
+  Future<void> put(CacheKeys key, dynamic value, {String? site}) async {
     final db = await _getDatabase();
     var store = StoreRef.main();
-    await store.record(key.value).put(db, value);
+    final k = site != null ? key.value + site : key.value;
+    Logger().i('Adicionando ao cache: $k');
+    await store.record(k).put(db, value);
   }
 
-  Future<dynamic> get(CacheKeys key) async {
+  Future<dynamic> get(CacheKeys key, {String? site}) async {
     final db = await _getDatabase();
     var store = StoreRef.main();
-    return await store.record(key.value).get(db);
+
+    final k = site != null ? key.value + site : key.value;
+    Logger().i('Buscando do cache: $k');
+
+    return await store.record(k).get(db);
   }
 
   Future<void> delete(CacheKeys key) async {
