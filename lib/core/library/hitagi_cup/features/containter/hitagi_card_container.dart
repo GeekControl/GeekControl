@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/containter/hitagi_container.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
+import 'package:geekcontrol/services/anilist/entities/anilist_types_enum.dart';
 import 'package:go_router/go_router.dart';
 
 class HitagiCardContainer extends StatelessWidget {
@@ -9,6 +10,7 @@ class HitagiCardContainer extends StatelessWidget {
   final String description;
   final List<Color>? gradient;
   final String route;
+  final AnilistTypes type;
   final String? backgroundImageAsset;
 
   const HitagiCardContainer({
@@ -17,6 +19,7 @@ class HitagiCardContainer extends StatelessWidget {
     required this.subtitle,
     required this.description,
     required this.route,
+    this.type = AnilistTypes.anime,
     this.gradient,
     this.backgroundImageAsset,
   });
@@ -114,14 +117,17 @@ class HitagiCardContainer extends StatelessWidget {
                         color: Colors.transparent,
                         child: InkWell(
                           borderRadius: BorderRadius.circular(20),
-                          onTap: () =>
-                              GoRouter.of(context).push(route, extra: title),
+                          onTap: () => GoRouter.of(context).push(route, extra: {
+                            'season': title,
+                            'type': type,
+                          }),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: Center(
                               child: HitagiText(
                                 text: 'Ver todos',
-                                color: gradient?.last ?? Color.fromARGB(255, 41, 2, 114),
+                                color: gradient?.last ??
+                                    Color.fromARGB(255, 41, 2, 114),
                                 typography: HitagiTypography.button,
                               ),
                             ),
