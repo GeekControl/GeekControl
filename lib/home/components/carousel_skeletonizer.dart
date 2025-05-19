@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/skeletonizer/hitagi_shimmer_efect.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class CarouselSkeletonizer extends StatelessWidget {
@@ -20,15 +21,8 @@ class CarouselSkeletonizer extends StatelessWidget {
             autoPlayCurve: Curves.easeInOutBack,
             viewportFraction: 0.4,
           ),
-          items: List.generate(5, (index) {
-            return Container(
-              width: MediaQuery.of(context).size.width,
-              margin: const EdgeInsets.symmetric(horizontal: 5.0),
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-            );
+          items: List<Widget>.generate(3, (index) {
+            return HitagiShimmerEffect(height: 150, width: 160);
           }),
         ),
       ),
