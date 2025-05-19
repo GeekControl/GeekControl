@@ -22,7 +22,7 @@ class MangasCardContainer extends StatelessWidget {
             Color.fromRGBO(74, 73, 73, 1),
             const Color.fromARGB(255, 0, 0, 0),
           ],
-          type: AnilistTypes.anime,
+          type: AnilistTypes.manga,
         ),
       ],
     );
