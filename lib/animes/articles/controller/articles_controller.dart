@@ -69,9 +69,32 @@ class ArticlesController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<ArticlesEntity>> bannerNews() => _adapters[SitesEnum.otakuPt]!
-      .scrapeArticles()
-      .then((l) => l.take(3).toList());
+  Future<List<ArticlesEntity>> bannerNews() async {
+    final cached = await _cache.get(CacheKeys.articles, site: currentSite.name);
+
+    final updateCache = await _cache.shouldUpdateCache(
+      CacheKeys.articles,
+      title: currentSite.name,
+      _cacheDuration,
+    );
+
+    if (cached == null || updateCache) {
+      final articles = await _adapters[currentSite]!.scrapeArticles();
+      await _cache.putList<ArticlesEntity>(
+        key: CacheKeys.articles,
+        items: articles,
+        toMap: (a) => a.toMap(),
+        site: currentSite.name,
+      );
+      return articles.take(3).toList();
+    }
+    return cached
+        .map((e) => ArticlesEntity.fromMap(e))
+        .whereType<ArticlesEntity>()
+        .toList()
+        .take(3)
+        .toList();
+  }
 
   Future<ArticlesEntity> fetchArticleDetails(
     String url,
