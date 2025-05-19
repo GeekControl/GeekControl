@@ -2,6 +2,7 @@ import 'package:animated_floating_buttons/animated_floating_buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/animes/articles/controller/articles_controller.dart';
 import 'package:geekcontrol/animes/sites_enum.dart';
+import 'package:geekcontrol/core/utils/assets_enum.dart';
 
 class HitagiFloattingButton extends StatelessWidget {
   final ArticlesController _ct;
@@ -14,28 +15,28 @@ class HitagiFloattingButton extends StatelessWidget {
     return AnimatedFloatingActionButton(
       fabButtons: <Widget>[
         _buildImageFabButton(
-          image: 'assets/intoxi.png',
+          image: AssetsEnum.intoxiLogo,
           heroTag: 'intoxi',
           onPressed: () {
-            _ct.changedSite(SitesEnum.intoxi);
+            _ct.changeSite(SitesEnum.intoxi);
           },
-          isSelected: _ct.currenctIndex == 3,
+          isSelected: _ct.currentIndex == SitesEnum.intoxi.index,
         ),
         _buildImageFabButton(
-          image: 'assets/otakuPT_icon.png',
+          image: AssetsEnum.otakuPtLogo,
           heroTag: 'otakuPT',
           onPressed: () {
-            _ct.changedSite(SitesEnum.otakuPt);
+            _ct.changeSite(SitesEnum.otakuPt);
           },
-          isSelected: _ct.currenctIndex == 2,
+          isSelected: _ct.currentIndex == SitesEnum.otakuPt.index,
         ),
         _buildImageFabButton(
-          image: 'assets/animes_new.png',
+          image: AssetsEnum.animesNewLogo,
           heroTag: 'animes_new',
           onPressed: () {
-            _ct.changedSite(SitesEnum.animesNew);
+            _ct.changeSite(SitesEnum.animesNew);
           },
-          isSelected: _ct.currenctIndex == 1,
+          isSelected: _ct.currentIndex == SitesEnum.animesNew.index,
         ),
       ],
       animatedIconData: AnimatedIcons.list_view,
@@ -45,7 +46,7 @@ class HitagiFloattingButton extends StatelessWidget {
   }
 
   Widget _buildImageFabButton({
-    required String image,
+    required AssetsEnum image,
     required VoidCallback onPressed,
     required String heroTag,
     required bool isSelected,
@@ -60,10 +61,10 @@ class HitagiFloattingButton extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Image.asset(
-          image,
-          width: double.infinity,
-          height: double.infinity,
+          image.path,
           fit: BoxFit.cover,
+          width: 50,
+          height: 50,
         ),
       ),
     );
