@@ -5,7 +5,6 @@ import 'package:geekcontrol/home/components/releases_carousel.dart';
 import 'package:geekcontrol/home/components/top_rateds_carousel.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/home/components/banner_carrousel.dart';
-import 'package:geekcontrol/home/components/top_bar_widget.dart';
 import 'package:geekcontrol/services/anilist/entities/anilist_types_enum.dart';
 import 'package:go_router/go_router.dart';
 
@@ -16,10 +15,6 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
-        child: TopBarWidget(),
-      ),
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
@@ -31,9 +26,12 @@ class HomePage extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const HitagiText(
-                        text: 'Últimas notícias',
-                        typography: HitagiTypography.button,
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: const HitagiText(
+                          text: 'Últimas notícias',
+                          typography: HitagiTypography.button,
+                        ),
                       ),
                       IconButton(
                         onPressed: () =>
