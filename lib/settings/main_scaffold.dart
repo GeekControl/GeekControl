@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/home/atoms/bottom_bar.dart';
-import 'package:geekcontrol/home/pages/home_page.dart';
-import 'package:geekcontrol/home/pages/mangas_page.dart';
+import 'package:geekcontrol/home/components/card_container/animes_card_container.dart';
+import 'package:geekcontrol/home/components/card_container/mangas_card_container.dart';
+import 'package:geekcontrol/home/pages/home_default.dart';
+import 'package:geekcontrol/services/anilist/entities/anilist_types_enum.dart';
 import 'package:geekcontrol/settings/pages/settings_page.dart';
 import 'package:get/get.dart';
 
@@ -11,8 +13,14 @@ class MainScaffold extends StatelessWidget {
   final RxInt index = 0.obs;
 
   final List<Widget> screens = [
-    HomePage(),
-    MangasPage(),
+    HomeDefaultWidget(
+      cardContainters: [AnimesCardContainer()],
+      type: AnilistTypes.anime,
+    ),
+    HomeDefaultWidget(
+      cardContainters: [MangasCardContainer()],
+      type: AnilistTypes.manga,
+    ),
     SettingsPage(),
   ];
 

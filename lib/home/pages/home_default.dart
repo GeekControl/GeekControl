@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/animes/articles/pages/articles_page.dart';
-import 'package:geekcontrol/home/components/card_container/animes_card_container.dart';
 import 'package:geekcontrol/home/components/releases_carousel.dart';
 import 'package:geekcontrol/home/components/top_rateds_carousel.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
@@ -8,9 +7,15 @@ import 'package:geekcontrol/home/components/banner_carrousel.dart';
 import 'package:geekcontrol/services/anilist/entities/anilist_types_enum.dart';
 import 'package:go_router/go_router.dart';
 
-class HomePage extends StatelessWidget {
-  static const route = '/';
-  const HomePage({super.key});
+class HomeDefaultWidget extends StatelessWidget {
+  final List<Widget> cardContainters;
+  final AnilistTypes type;
+
+  const HomeDefaultWidget({
+    super.key,
+    required this.cardContainters,
+    required this.type,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -49,12 +54,16 @@ class HomePage extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 6.0),
                   child: Column(
                     children: [
-                      const ReleasesCarousel(type: AnilistTypes.anime),
-                      const TopRatedsCarousel(type: AnilistTypes.anime),
+                      ReleasesCarousel(type: type),
+                      TopRatedsCarousel(type: type),
                     ],
                   ),
                 ),
-                AnimesCardContainer(),
+                cardContainters.isNotEmpty
+                    ? Column(
+                        children: cardContainters,
+                      )
+                    : const SizedBox.shrink(),
               ],
             ),
           ),
