@@ -22,7 +22,9 @@ class ArticlesController extends ChangeNotifier {
   List<ArticlesEntity> get articlesList => _memoryCache[currentSite] ?? [];
 
   bool _isLoading = true;
+  bool changedSite = false;
   bool get isLoading => _isLoading;
+  String _lastSearchTerm = '';
 
   ArticlesController()
       : _adapters = {
@@ -39,8 +41,19 @@ class ArticlesController extends ChangeNotifier {
   List<String> get readArticles => _memoryRead;
   bool isReadSync(String title) => _memoryRead.contains(title);
 
-  Future<void> changeSite(SitesEnum site) async =>
-      _loadSite(site, isChangeSite: true);
+  Future<void> changeSite(SitesEnum site) async {
+    currentSite = site;
+    currentIndex = site.index;
+
+    if (_lastSearchTerm.isNotEmpty) {
+      changedSite = true;
+      articlesSearch = _adapters[site]!.searchArticles(_lastSearchTerm);
+    } else {
+      await _loadSite(site, isChangeSite: true);
+    }
+
+    notifyListeners();
+  }
 
   Future<void> _loadSite(SitesEnum site, {bool isChangeSite = false}) async {
     notifyListeners();
@@ -67,10 +80,13 @@ class ArticlesController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> changeSearchSite(SitesEnum site,
-      {required String article}) async {
+  Future<void> changeSearchSite(
+    SitesEnum site, {
+    required String article,
+  }) async {
     currentSite = site;
     currentIndex = site.index;
+    _lastSearchTerm = article;
     articlesSearch = _adapters[site]!.searchArticles(article);
     notifyListeners();
   }

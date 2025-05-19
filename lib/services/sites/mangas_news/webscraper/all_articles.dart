@@ -6,7 +6,6 @@ import 'package:geekcontrol/services/sites/utils_scrap.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
-import 'package:logger/logger.dart';
 
 class MangaNews {
   final _scraper = ScraperV2();
@@ -127,7 +126,6 @@ class MangaNews {
           imagesPage: [],
         ),
       );
-      Logger().i('Result: ${articlesList.first}');
     }
     if (articlesList.isEmpty) {
       throw Exception('No articles found for the search term: $article');

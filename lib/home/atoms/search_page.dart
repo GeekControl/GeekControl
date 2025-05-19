@@ -5,6 +5,7 @@ import 'package:geekcontrol/animes/articles/pages/complete_article_page.dart';
 import 'package:geekcontrol/animes/components/floating_button.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/default_dialogs.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/hitagi_search_dialog.dart';
+import 'package:geekcontrol/core/utils/skeletonizer/cards_skeletonizer.dart';
 
 class SearchPage extends StatefulWidget {
   static const route = '/search';
@@ -38,18 +39,19 @@ class _SearchPageState extends State<SearchPage> {
             children: [
               const SizedBox(height: 30),
               HitagiSearchDialog(
-                controller: _controller,
-                hintText: 'Pesquise por uma notícia...',
-                onSubmitted: (query) {
-                  _ct.changeSearchSite(_ct.currentSite, article: query);
-                },
-              ),
+                  controller: _controller,
+                  hintText: 'Pesquise por uma notícia...',
+                  onSubmitted: (query) => _ct.changeSearchSite(
+                        _ct.currentSite,
+                        article: query,
+                      )),
               Expanded(
                 child: FutureBuilder<List<ArticlesEntity>>(
                   future: _ct.articlesSearch,
                   builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
+                    if (snapshot.connectionState == ConnectionState.waiting ||
+                        snapshot.data == null) {
+                      return CardsSkeletonizer(itemCount: 5);
                     }
                     if (snapshot.hasError) {
                       return Center(
