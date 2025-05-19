@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 class HitagiCarouselItem {
   final String image;
   final String title;
-  final String route;
   final String? badge;
   final IconData? badgeIcon;
   final String? score;
@@ -18,7 +17,6 @@ class HitagiCarouselItem {
   HitagiCarouselItem({
     required this.image,
     required this.title,
-    required this.route,
     this.badge,
     this.badgeIcon,
     this.id,
@@ -30,13 +28,11 @@ class HitagiCarouselItem {
 class HitagiCarousel extends StatelessWidget {
   final String title;
   final List<HitagiCarouselItem> items;
-  final String? seeMoreRoute;
 
   const HitagiCarousel({
     super.key,
     required this.title,
     required this.items,
-    this.seeMoreRoute,
   });
 
   @override
@@ -57,11 +53,6 @@ class HitagiCarousel extends StatelessWidget {
                     text: title,
                     typography: HitagiTypography.button,
                   ),
-                  if (seeMoreRoute != null)
-                    IconButton(
-                      onPressed: () => GoRouter.of(context).push(seeMoreRoute!),
-                      icon: const Icon(Icons.arrow_forward),
-                    ),
                 ],
               ),
               const SizedBox(height: 4),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/animes/articles/entities/articles_entity.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
 
 class ArticleCard extends StatelessWidget {
   final ArticlesEntity news;
@@ -37,13 +38,10 @@ class ArticleCard extends StatelessWidget {
               ),
             Hero(
               tag: news.title,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.network(
-                  news.imageUrl!,
-                  fit: BoxFit.cover,
-                  height: 200,
-                ),
+              child: HitagiImages(
+                image: news.imageUrl,
+                width: double.infinity,
+                height: 150,
               ),
             ),
             Padding(

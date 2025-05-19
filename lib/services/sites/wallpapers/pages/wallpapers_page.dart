@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/services/sites/wallpapers/atoms/copy_button.dart';
 import 'package:geekcontrol/services/sites/wallpapers/pages/wallpapers_fullscreen_page.dart';
 import 'package:geekcontrol/services/sites/wallpapers/controller/wallpapers_controller.dart';
@@ -40,7 +41,10 @@ class _WallpapersPageState extends State<WallpapersPage> {
       builder: (context) {
         final TextEditingController searchController = TextEditingController();
         return AlertDialog(
-          title: const Text('Pesquisar Wallpapers'),
+          title: const HitagiText(
+            text: 'Pesquisar Wallpapers',
+            typography: HitagiTypography.title,
+          ),
           content: TextField(
             controller: searchController,
             decoration: const InputDecoration(hintText: 'Digite o tema...'),
@@ -48,7 +52,10 @@ class _WallpapersPageState extends State<WallpapersPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancelar'),
+              child: const HitagiText(
+                text: 'Cancelar',
+                typography: HitagiTypography.button,
+              ),
             ),
             TextButton(
               onPressed: () {
@@ -59,7 +66,10 @@ class _WallpapersPageState extends State<WallpapersPage> {
                 }
                 Navigator.of(context).pop();
               },
-              child: const Text('Pesquisar'),
+              child: const HitagiText(
+                text: 'Pesquisar',
+                typography: HitagiTypography.button,
+              ),
             ),
           ],
         );

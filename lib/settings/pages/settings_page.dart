@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:geekcontrol/animes/articles/pages/articles_page.dart';
-import 'package:geekcontrol/animes/ui/pages/latest_releases_page.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/hitagi_toast.dart';
 import 'package:geekcontrol/services/cache/local_cache.dart';
-import 'package:geekcontrol/services/sites/wallpapers/pages/wallpapers_page.dart';
 import 'package:geekcontrol/settings/controller/settings_controller.dart';
 import 'package:go_router/go_router.dart';
 
@@ -23,21 +21,6 @@ class SettingsPage extends StatelessWidget {
             'Funcionalidades',
             style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
           ),
-          SettingsTile(
-            icon: Icons.image,
-            title: 'Wallpapers',
-            onTap: () => GoRouter.of(context).push(WallpapersPage.route),
-          ),
-          SettingsTile(
-            icon: Icons.newspaper,
-            title: 'Artigos',
-            onTap: () => GoRouter.of(context).push(ArticlesPage.route),
-          ),
-          SettingsTile(
-            icon: Icons.notification_add,
-            title: 'Últimos lançamentos',
-            onTap: () => GoRouter.of(context).push(LatestReleasesPage.route),
-          ),
           FutureBuilder<double>(
             future: SettingsController().getCacheSize(),
             builder: (context, snapshot) {
@@ -47,8 +30,25 @@ class SettingsPage extends StatelessWidget {
                 icon: Icons.cleaning_services_outlined,
                 title: 'Limpar cache - $size MB',
                 onTap: () async {
-                  await LocalCache().clearCache();
-                  (context as Element).markNeedsBuild();
+                  try {
+                    await LocalCache().clearCache();
+                    if (context.mounted) {
+                      HitagiToast.show(
+                        context,
+                        message: 'Cache limpo com sucesso!',
+                        type: ToastType.success,
+                      );
+                      context.pop();
+                    }
+                  } catch (e) {
+                    if (context.mounted) {
+                      HitagiToast.show(
+                        context,
+                        message: 'Erro ao limpar o cache: $e',
+                        type: ToastType.error,
+                      );
+                    }
+                  }
                 },
               );
             },

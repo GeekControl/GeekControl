@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/animes/components/fields_component.dart';
 import 'package:geekcontrol/animes/ui/pages/details_page.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/core/utils/skeletonizer/cards_skeletonizer.dart';
-import 'package:geekcontrol/home/pages/home_page.dart';
 import 'package:geekcontrol/services/anilist/controller/anilist_controller.dart';
+import 'package:geekcontrol/services/anilist/entities/anilist_types_enum.dart';
 import 'package:geekcontrol/services/anilist/entities/releases_anilist_entity.dart';
 import 'package:go_router/go_router.dart';
 
 class LatestReleasesPage extends StatefulWidget {
   static const route = '/releases';
-  const LatestReleasesPage({super.key});
+  final AnilistTypes type;
+  const LatestReleasesPage({super.key, required this.type});
 
   @override
   State<LatestReleasesPage> createState() => _LatestReleasesPageState();
@@ -23,7 +26,7 @@ class _LatestReleasesPageState extends State<LatestReleasesPage> {
   @override
   void initState() {
     super.initState();
-    _future = _ct.getReleasesAnimes();
+    _future = _ct.getReleasesAnimes(type: widget.type);
   }
 
   @override
@@ -31,10 +34,14 @@ class _LatestReleasesPageState extends State<LatestReleasesPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () => GoRouter.of(context).pushReplacement(HomePage.route),
+          onPressed: () => GoRouter.of(context).pop(),
           icon: const Icon(Icons.arrow_back),
         ),
-        title: const Center(child: Text('Últimos lançamentos')),
+        title: const Center(
+            child: HitagiText(
+          text: 'Últimos Lançamentos',
+          typography: HitagiTypography.title,
+        )),
       ),
       body: FutureBuilder(
         future: _future,
@@ -61,16 +68,13 @@ class _LatestReleasesPageState extends State<LatestReleasesPage> {
                         Hero(
                           tag: 'release-${release.id}',
                           child: ClipRRect(
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(8),
-                            ),
-                            child: Image.network(
-                              release.bannerImage,
-                              height: 130,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(8),
+                              ),
+                              child: HitagiImages(
+                                image: release.bannerImage,
+                                height: 150,
+                              )),
                         ),
                         const Padding(
                           padding: EdgeInsets.all(6),

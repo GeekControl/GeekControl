@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/animes/articles/pages/articles_page.dart';
-import 'package:geekcontrol/animes/season/season_releases.dart';
-import 'package:geekcontrol/core/library/hitagi_cup/features/containter/hitagi_card_container.dart';
+import 'package:geekcontrol/home/components/card_container/animes_card_container.dart';
 import 'package:geekcontrol/home/components/releases_carousel.dart';
 import 'package:geekcontrol/home/components/top_rateds_carousel.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/home/components/banner_carrousel.dart';
 import 'package:geekcontrol/home/components/top_bar_widget.dart';
+import 'package:geekcontrol/services/anilist/entities/anilist_types_enum.dart';
 import 'package:go_router/go_router.dart';
 
 class HomePage extends StatelessWidget {
@@ -51,18 +51,12 @@ class HomePage extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 6.0),
                   child: Column(
                     children: [
-                      const ReleasesCarousel(),
-                      const TopRatedsCarousel(),
+                      const ReleasesCarousel(type: AnilistTypes.anime),
+                      const TopRatedsCarousel(type: AnilistTypes.anime),
                     ],
                   ),
                 ),
-                HitagiCardContainer(
-                  title: 'Primavera 2025',
-                  subtitle: 'Novos animes chegaram!',
-                  description:
-                      'Confira os destaques e estreias mais esperadas desta primavera',
-                  route: SeasonReleasesPage.route,
-                ),
+                AnimesCardContainer(),
               ],
             ),
           ),

@@ -7,6 +7,7 @@ import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/default_dia
 import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/hitagi_search_dialog.dart';
 
 class SearchPage extends StatefulWidget {
+  static const route = '/search';
   const SearchPage({super.key});
 
   @override
@@ -40,7 +41,7 @@ class _SearchPageState extends State<SearchPage> {
                 controller: _controller,
                 hintText: 'Pesquise por uma notícia...',
                 onSubmitted: (query) {
-                  _ct.changedSearchSite(_ct.currentSite, article: query);
+                  _ct.changeSearchSite(_ct.currentSite, article: query);
                 },
               ),
               Expanded(

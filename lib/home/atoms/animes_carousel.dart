@@ -3,17 +3,21 @@ import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.da
 import 'package:geekcontrol/core/library/hitagi_cup/utils.dart';
 import 'package:geekcontrol/core/utils/convert_state.dart';
 import 'package:geekcontrol/core/utils/loader_indicator.dart';
+import 'package:geekcontrol/services/anilist/entities/anilist_types_enum.dart';
 import 'package:geekcontrol/services/anilist/entities/releases_anilist_entity.dart';
 import 'package:geekcontrol/services/anilist/repository/anilist_repository.dart';
 
-
 class AnimesCarouselWidget extends StatelessWidget {
-  const AnimesCarouselWidget({super.key});
+  final AnilistTypes type;
+  const AnimesCarouselWidget({
+    super.key,
+    required this.type,
+  });
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<dynamic>>(
-      future: AnilistRepository().getReleasesAnimes(),
+      future: AnilistRepository().getReleasesAnimes(type: type),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: Loader.pacman());
@@ -72,8 +76,7 @@ class AnimesCarouselWidget extends StatelessWidget {
                             iconColor: Color.fromARGB(255, 223, 201, 4),
                           ),
                           HitagiText(
-                            text: MangaStates.toPortuguese(
-                                releases.artist),
+                            text: MangaStates.toPortuguese(releases.artist),
                             typography: HitagiTypography.title,
                             icon: Icons.remove_red_eye_sharp,
                           ),

@@ -44,6 +44,7 @@ dependencies:
   test: ^1.25.15
   shimmer: ^3.0.0
   translator: ^0.1.7
+  toasty_box: ^1.0.4
 
 dev_dependencies:
   flutter_test:
@@ -62,3 +63,6 @@ flutter:
     - assets/geekcontrol_logo.png
     - assets/default.png
     - assets/anime_united_logo.png
+    - assets/banners_assets/luffy.png
+    - assets/banners_assets/hitagi.png
+    - assets/banners_assets/berserker.png

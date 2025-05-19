@@ -1,12 +1,12 @@
 enum CacheKeys {
-  releases(key: 'releases'),
-  favorites(key: 'favorites'),
-  reads(key: 'reads'),
-  anilist(key: 'anilist'),
-  articles(key: 'articles'),
-  rates(key: 'rates');
+  releases(value: 'releases'),
+  favorites(value: 'favorites'),
+  reads(value: 'reads'),
+  anilist(value: 'anilist'),
+  articles(value: 'articles'),
+  rates(value: 'rates');
 
-  final String key;
+  final String value;
 
-  const CacheKeys({required this.key});
+  const CacheKeys({required this.value});
 }

@@ -3,14 +3,15 @@ import 'package:geekcontrol/animes/ui/pages/details_page.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/utils.dart';
 import 'package:geekcontrol/core/utils/skeletonizer/cards_skeletonizer.dart';
-import 'package:geekcontrol/home/pages/home_page.dart';
 import 'package:geekcontrol/services/anilist/controller/anilist_controller.dart';
+import 'package:geekcontrol/services/anilist/entities/anilist_types_enum.dart';
 import 'package:geekcontrol/services/anilist/entities/rates_entity.dart';
 import 'package:go_router/go_router.dart';
 
 class TopRatedsPage extends StatefulWidget {
+  final AnilistTypes type;
   static const route = '/top-rateds';
-  const TopRatedsPage({super.key});
+  const TopRatedsPage({super.key, required this.type});
 
   @override
   State<TopRatedsPage> createState() => _TopRatedsPageState();
@@ -23,7 +24,7 @@ class _TopRatedsPageState extends State<TopRatedsPage> {
   @override
   void initState() {
     super.initState();
-    _future = _ct.getRates();
+    _future = _ct.getRates(type: widget.type);
   }
 
   @override
@@ -31,7 +32,7 @@ class _TopRatedsPageState extends State<TopRatedsPage> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () => GoRouter.of(context).pushReplacement(HomePage.route),
+          onPressed: () => GoRouter.of(context).pop(),
           icon: const Icon(Icons.arrow_back),
         ),
         title: HitagiText(
@@ -56,7 +57,8 @@ class _TopRatedsPageState extends State<TopRatedsPage> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8)),
                   child: InkWell(
-                    onTap: () => GoRouter.of(context).push(DetailsPage.route, extra: manga.id),
+                    onTap: () => GoRouter.of(context)
+                        .push(DetailsPage.route, extra: manga.id),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [

@@ -1,9 +1,11 @@
+import 'package:geekcontrol/services/anilist/entities/anilist_types_enum.dart';
+
 class Query {
-  static String ratedsQuery() {
+  static String ratedsQuery(AnilistTypes type) {
     return '''
 {
   Page {
-    media(sort: POPULARITY_DESC, type: ANIME) {
+    media(sort: POPULARITY_DESC, type: ${type.value}) {
       id
       averageScore
       meanScore
@@ -26,11 +28,11 @@ class Query {
     ''';
   }
 
-  static String releasesQuery(String? title) {
+  static String releasesQuery(String? title, AnilistTypes type) {
     return '''
 query {
   Page {
-    media(${title != null && title.isNotEmpty ? 'search: "$title"' : 'sort: TRENDING_DESC'}, type: ANIME) {
+    media(${title != null && title.isNotEmpty ? 'search: "$title"' : 'sort: TRENDING_DESC'}, type: ${type.value}) {
       id
       bannerImage
       coverImage {
