@@ -21,6 +21,9 @@ class ArticlesController extends ChangeNotifier {
   Future<List<ArticlesEntity>> articlesSearch = Future.value([]);
   List<ArticlesEntity> get articlesList => _memoryCache[currentSite] ?? [];
 
+  bool _isLoading = true;
+  bool get isLoading => _isLoading;
+
   ArticlesController()
       : _adapters = {
           SitesEnum.animesNew: ScraperAdapter.fromMangaNews(MangaNews()),
@@ -36,9 +39,11 @@ class ArticlesController extends ChangeNotifier {
   List<String> get readArticles => _memoryRead;
   bool isReadSync(String title) => _memoryRead.contains(title);
 
-  Future<void> changeSite(SitesEnum site) async => _loadSite(site);
+  Future<void> changeSite(SitesEnum site) async =>
+      _loadSite(site, isChangeSite: true);
 
   Future<void> _loadSite(SitesEnum site, {bool isChangeSite = false}) async {
+    notifyListeners();
     currentSite = site;
     currentIndex = site.index;
 
@@ -58,6 +63,7 @@ class ArticlesController extends ChangeNotifier {
         site: site.name,
       );
     }
+    _isLoading = false;
     notifyListeners();
   }
 

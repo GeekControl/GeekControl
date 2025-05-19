@@ -19,16 +19,13 @@ class ArticlesPage extends StatefulWidget {
 class _ArticlesPageState extends State<ArticlesPage> {
   final ArticlesController ct = ArticlesController();
   final List<String> readArticles = [];
-  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await ct.init();
-      setState(() {
-        isLoading = false;
-      });
+      setState(() {});
     });
 
     ct.addListener(() {
@@ -64,7 +61,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
         )),
       ),
       floatingActionButton: HitagiFloattingButton(ct: ct),
-      body: isLoading
+      body: ct.isLoading
           ? const CardsSkeletonizer()
           : ListView.builder(
               itemCount: ct.articlesList.length,

@@ -38,7 +38,9 @@ class SettingsPage extends StatelessWidget {
                         message: 'Cache limpo com sucesso!',
                         type: ToastType.success,
                       );
-                      context.pop();
+                    }
+                    if (context.mounted) {
+                      GoRouter.of(context).push(SettingsPage.route);
                     }
                   } catch (e) {
                     if (context.mounted) {
