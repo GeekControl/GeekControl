@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:geekcontrol/settings/pages/settings_page.dart';
+import 'package:geekcontrol/home/atoms/search_page.dart';
 import 'package:go_router/go_router.dart';
 
 class TopBarWidget extends StatelessWidget {
@@ -11,8 +11,8 @@ class TopBarWidget extends StatelessWidget {
       automaticallyImplyLeading: true,
       actions: [
         IconButton(
-          icon: const Icon(Icons.settings_outlined),
-          onPressed: () => GoRouter.of(context).push(SettingsPage.route),
+          icon: const Icon(Icons.search_outlined),
+          onPressed: () => GoRouter.of(context).push(SearchPage.route),
         ),
       ],
     );
