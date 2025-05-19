@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:geekcontrol/animes/season/controller/season_controller.dart';
 import 'package:geekcontrol/animes/ui/pages/details_page.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/utils.dart';
 import 'package:geekcontrol/services/anilist/controller/anilist_controller.dart';
+import 'package:geekcontrol/services/anilist/entities/anilist_types_enum.dart';
 import 'package:geekcontrol/services/anilist/entities/releases_anilist_entity.dart';
 import 'package:go_router/go_router.dart';
 
 class SeasonReleasesPage extends StatelessWidget {
   static const route = '/season-releases';
   final String season;
-  const SeasonReleasesPage({super.key, required this.season});
+  final AnilistTypes type;
+
+  const SeasonReleasesPage({
+    super.key,
+    required this.season,
+    required this.type,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +29,7 @@ class SeasonReleasesPage extends StatelessWidget {
         typography: HitagiTypography.title,
       )),
       body: FutureBuilder<List<ReleasesAnilistEntity>>(
-        future: AnilistController().getReleasesAnimes(),
+        future: AnilistController().getReleasesAnimes(type: type),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
@@ -162,7 +170,7 @@ class _AnimeListItem extends StatelessWidget {
                         ),
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () => SeasonController().aondeAssistir(),
                     child: const HitagiText(
                       text: 'Aonde assistir',
                       typography: HitagiTypography.button,
