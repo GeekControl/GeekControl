@@ -31,9 +31,8 @@ class LocalCache {
         .put(db, jsonList);
   }
 
-  Future<bool> shouldUpdateCache(CacheKeys key, Duration maxAge) async {
-    final cache = await get(key);
-
+  Future<bool> shouldUpdateCache(CacheKeys key, Duration maxAge, {String? title}) async {
+    final cache = await get(key, site: title);
     if (cache is List) {
       final timestamps = cache
           .map((e) => DateTime.tryParse(e['updatedAt'] ?? ''))
