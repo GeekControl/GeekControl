@@ -40,7 +40,7 @@ class _SearchPageState extends State<SearchPage> {
                 controller: _controller,
                 hintText: 'Pesquise por uma notícia...',
                 onSubmitted: (query) {
-                  _ct.changedSearchSite(_ct.currentSite, article: query);
+                  _ct.changeSearchSite(_ct.currentSite, article: query);
                 },
               ),
               Expanded(
