@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:geekcontrol/animes/season/controller/season_controller.dart';
 import 'package:geekcontrol/animes/ui/pages/details_page.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
@@ -170,7 +169,7 @@ class _AnimeListItem extends StatelessWidget {
                         ),
                       ),
                     ),
-                    onPressed: () => SeasonController().aondeAssistir(),
+                    onPressed: () {},
                     child: const HitagiText(
                       text: 'Aonde assistir',
                       typography: HitagiTypography.button,
