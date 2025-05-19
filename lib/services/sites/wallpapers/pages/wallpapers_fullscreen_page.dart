@@ -97,7 +97,7 @@ class _WallpaperFullscreenState extends State<WallpaperFullscreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             const SizedBox(width: 16),
-                            CoppyButton(image: imageUrl),
+                            CopyButton(image: imageUrl),
                             const SizedBox(width: 16),
                             IconButton(
                               icon: const Icon(Icons.download,

@@ -123,7 +123,7 @@ class _WallpapersPageState extends State<WallpapersPage> {
                           right: 4,
                           child: Row(
                             children: [
-                              CoppyButton(image: _images[index]),
+                              CopyButton(image: _images[index]),
                               IconButton(
                                 icon: const Icon(Icons.download, size: 20),
                                 color: Colors.white,

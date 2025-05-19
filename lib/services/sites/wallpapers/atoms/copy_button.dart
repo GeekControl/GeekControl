@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class CoppyButton extends StatelessWidget {
+class CopyButton extends StatelessWidget {
   final String image;
-  const CoppyButton({super.key, required this.image});
+  const CopyButton({super.key, required this.image});
 
   @override
   Widget build(BuildContext context) {
