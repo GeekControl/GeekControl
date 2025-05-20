@@ -3,6 +3,7 @@ import 'package:geekcontrol/animes/articles/entities/articles_entity.dart';
 import 'package:geekcontrol/animes/components/scraper_adapter.dart';
 import 'package:geekcontrol/animes/sites_enum.dart';
 import 'package:geekcontrol/core/utils/api_utils.dart';
+import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/services/cache/keys_enum.dart';
 import 'package:geekcontrol/services/cache/local_cache.dart';
 import 'package:geekcontrol/services/sites/otakupt/otakupt_scraper.dart';
@@ -10,7 +11,7 @@ import 'package:geekcontrol/services/sites/intoxi_animes/webscraper/intoxi_artic
 import 'package:geekcontrol/services/sites/mangas_news/webscraper/all_articles.dart';
 
 class ArticlesController extends ChangeNotifier {
-  final LocalCache _cache = LocalCache();
+  final LocalCache _cache = di<LocalCache>();
   final Map<SitesEnum, ScraperAdapter> _adapters;
   final Duration _cacheDuration = Duration(minutes: 30);
   final Map<SitesEnum, List<ArticlesEntity>> _memoryCache = {};
