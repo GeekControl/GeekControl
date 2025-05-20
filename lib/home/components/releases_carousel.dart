@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/animes/ui/pages/latest_releases_page.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/carousel/hitagi_image_carousel.dart';
+import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/home/components/carousel_skeletonizer.dart';
 import 'package:geekcontrol/home/components/itemcard.dart';
 import 'package:geekcontrol/home/components/slide_animation.dart';
@@ -15,7 +16,7 @@ class ReleasesCarousel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<ReleasesAnilistEntity>>(
-      future: AnilistController().getReleasesAnimes(type: type),
+      future: di<AnilistController>().getReleasesAnimes(type: type),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const CarouselSkeletonizer();
