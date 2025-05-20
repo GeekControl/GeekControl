@@ -1,27 +1,50 @@
 import 'package:geekcontrol/animes/articles/entities/articles_entity.dart';
 import 'package:geekcontrol/animes/sites_enum.dart';
-import 'package:geekcontrol/services/sites/utils_scrap.dart';
-
+import 'package:scraper/scraper.dart';
 
 class OtakuPT {
+  final _scraper = Scraper();
+
   Future<List<ArticlesEntity>> scrapeArticles() async {
     const String uri = 'https://www.otakupt.com/category/anime';
 
-    final doc = await Scraper().document(uri);
+    final doc = await _scraper.getDocument(url: uri);
 
     final List<ArticlesEntity> articlesList = [];
     final element = doc.querySelectorAll(
         '.tdb_module_loop.td_module_wrap.td-animation-stack.td-cpt-post');
 
     for (final e in element) {
-      final title = Scraper.elementSelec(e, '.entry-title.td-module-title a');
-      final imageElement =
-          Scraper.elementSelecAttr(e, '.entry-thumb.td-thumb-css', 'style');
-      final image = Scraper.formatImage(imageElement);
-      final author = Scraper.elementSelec(e, '.td-post-author-name a');
-      final date = Scraper.elementSelec(e, '.td-post-date');
-      final url =
-          Scraper.elementSelecAttr(e, '.entry-title.td-module-title a', 'href');
+      final title = _scraper.elementSelect(
+            element: e,
+            selector: '.entry-title.td-module-title a',
+          ) ??
+          '';
+      final imageElement = _scraper.elementSelectAttr(
+            element: e,
+            selector: '.entry-thumb.td-thumb-css',
+            attr: 'style',
+          ) ??
+          '';
+      final image = _formatImage(imageElement);
+      final author = _scraper.elementSelect(
+            element: e,
+            selector: '.td-post-author-name a',
+          ) ??
+          'N/A';
+      final date = _scraper.elementSelect(
+            element: e,
+            selector: '.td-post-date',
+          ) ??
+          '';
+      final url = _scraper.elementSelectAttr(
+            element: e,
+            selector: '.entry-title.td-module-title a',
+            attr: 'href',
+          ) ??
+          '';
+
+      if (url.isEmpty) continue;
 
       final articles = ArticlesEntity(
         title: title,
@@ -46,20 +69,40 @@ class OtakuPT {
   Future<List<ArticlesEntity>> searchArticles(String article) async {
     final List<ArticlesEntity> articlesList = [];
     final doc =
-        await Scraper().document('https://www.otakupt.com/?s=$article');
+        await _scraper.getDocument(url: 'https://www.otakupt.com/?s=$article');
 
     final elements = doc.querySelectorAll(
         '.tdb_module_loop.td_module_wrap.td-animation-stack.td-cpt-post');
 
     for (final e in elements) {
-      final title = Scraper.elementSelec(e, '.entry-title.td-module-title a');
-      final url =
-          Scraper.elementSelecAttr(e, '.entry-title.td-module-title a', 'href');
-      final author = Scraper.elementSelec(e, '.td-post-author-name a');
-      final date = Scraper.elementSelec(e, '.td-post-date');
-      final imageElement =
-          Scraper.elementSelecAttr(e, '.entry-thumb.td-thumb-css', 'style');
-      final image = Scraper.formatImage(imageElement);
+      final title = _scraper.elementSelect(
+            element: e,
+            selector: '.entry-title.td-module-title a',
+          ) ??
+          '';
+      final url = _scraper.elementSelectAttr(
+            element: e,
+            selector: '.entry-title.td-module-title a',
+            attr: 'href',
+          ) ??
+          '';
+      final author = _scraper.elementSelect(
+            element: e,
+            selector: '.td-post-author-name a',
+          ) ??
+          '';
+      final date = _scraper.elementSelect(
+            element: e,
+            selector: '.td-post-date',
+          ) ??
+          '';
+      final imageElement = _scraper.elementSelectAttr(
+            element: e,
+            selector: '.entry-thumb.td-thumb-css',
+            attr: 'style',
+          ) ??
+          '';
+      final image = _formatImage(imageElement);
 
       final articles = ArticlesEntity(
         title: title,
@@ -82,22 +125,26 @@ class OtakuPT {
 
   Future<ArticlesEntity> scrapeArticleDetails(
       String url, ArticlesEntity entity) async {
-    final doc = await Scraper().document(url);
+    final doc = await _scraper.getDocument(url: url);
 
-    final List<String?> contentElements = Scraper.extractText(
-      doc,
-      '.tdb-block-inner.td-fix-index',
-      {
-        'p': 'p',
-      },
-    );
+    final List<String> contentElements = _scraper.extractText(
+          doc: doc,
+          query: ['.tdb-block-inner.td-fix-index'],
+          tagToSelector: ['p'],
+        ) ??
+        [];
 
     var content = contentElements
-        .where((element) => element != null && element.trim().isNotEmpty)
+        .where((element) => element.trim().isNotEmpty)
         .join('\n');
 
-    Scraper.removeHtmlElementsList(contentElements,
-        ['<span style', 'Δdocument', 'Tags', 'Diário Otaku', 'IberAnime']);
+    _scraper.removeHtmlElement(content: contentElements, elements: [
+      '<span style',
+      'Δdocument',
+      'Tags',
+      'Diário Otaku',
+      'IberAnime'
+    ]);
 
     content = contentElements.join('\n');
 
@@ -120,21 +167,43 @@ class OtakuPT {
 
   Future<List<ArticlesEntity>> _mangasArticles() async {
     const String uri = 'https://www.otakupt.com/category/manga/';
-    final doc = await Scraper().document(uri);
+    final doc = await _scraper.getDocument(url: uri);
 
     final List<ArticlesEntity> articlesList = [];
     final element = doc.querySelectorAll(
         '.tdb_module_loop.td_module_wrap.td-animation-stack.td-cpt-post');
 
     for (final e in element) {
-      final title = Scraper.elementSelec(e, '.entry-title.td-module-title a');
-      final imageElement =
-          Scraper.elementSelecAttr(e, '.entry-thumb.td-thumb-css', 'style');
-      final image = Scraper.formatImage(imageElement);
-      final author = Scraper.elementSelec(e, '.td-post-author-name a');
-      final date = Scraper.elementSelec(e, '.td-post-date');
-      final url =
-          Scraper.elementSelecAttr(e, '.entry-title.td-module-title a', 'href');
+      final title = _scraper.elementSelect(
+            element: e,
+            selector: '.entry-title.td-module-title a',
+          ) ??
+          '';
+      final imageElement = _scraper.elementSelectAttr(
+            element: e,
+            selector: '.entry-thumb.td-thumb-css',
+            attr: 'style',
+          ) ??
+          '';
+      final image = _formatImage(imageElement);
+      final author = _scraper.elementSelect(
+            element: e,
+            selector: '.td-post-author-name a',
+          ) ??
+          '';
+      final date = _scraper.elementSelect(
+            element: e,
+            selector: '.td-post-date',
+          ) ??
+          '';
+      final href = _scraper.elementSelectAttr(
+            element: e,
+            selector: '.entry-title.td-module-title a',
+            attr: 'href',
+          ) ??
+          '';
+
+      if (href.isEmpty) continue;
 
       final articles = ArticlesEntity(
         title: title,
@@ -143,8 +212,8 @@ class OtakuPT {
         author: author,
         category: '',
         content: '',
-        url: url,
-        sourceUrl: url,
+        url: href,
+        sourceUrl: href,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         resume: '',
@@ -153,5 +222,9 @@ class OtakuPT {
       articlesList.add(articles);
     }
     return articlesList;
+  }
+
+  String _formatImage(String image) {
+    return '${image.replaceAll("'", '').replaceAll('background-image: url(', '').replaceAll(');', '').split('.jpg')[0]}.jpg';
   }
 }

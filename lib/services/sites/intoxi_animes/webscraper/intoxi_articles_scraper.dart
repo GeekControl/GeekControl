@@ -1,38 +1,64 @@
 import 'package:geekcontrol/animes/articles/entities/articles_entity.dart';
 import 'package:geekcontrol/animes/sites_enum.dart';
 import 'package:geekcontrol/core/utils/api_utils.dart';
-import 'package:geekcontrol/services/sites/utils_scrap.dart';
+import 'package:scraper/scraper.dart';
 
 class IntoxiArticles {
+  final _scraper = Scraper();
   Future<List<ArticlesEntity>> scrapeArticles(String uri) async {
+    final doc = await _scraper.getDocument(url: uri);
+
     final List<ArticlesEntity> scrapeList = [];
-    final doc = await Scraper().document(uri);
     final element = doc.querySelectorAll('article');
 
     for (final e in element) {
-      final title = Scraper.elementSelec(e, '.post-title.entry-title a');
-      final date = Scraper.elementSelecAttr(e, 'time.published', 'datetime');
-      final author = Scraper.elementSelec(e, '.post-byline .fn a');
-      final url =
-          Scraper.elementSelecAttr(e, '.post-title.entry-title a', 'href');
-      final category = Scraper.elementSelec(e, '.post-category a');
-      final imageUrl =
-          Scraper.elementSelecAttr(e, '.post-thumbnail img', 'src');
-      final resume = Scraper.elementSelec(e, '.entry.excerpt.entry-summary');
+      final title = _scraper.elementSelect(
+        element: e,
+        selector: '.post-title.entry-title a',
+      );
+      final date = _scraper.elementSelectAttr(
+        element: e,
+        selector: 'time.published',
+        attr: 'datetime',
+      );
+      final author = _scraper.elementSelect(
+        element: e,
+        selector: '.post-byline .fn a',
+      );
+      final href = _scraper.elementSelectAttr(
+        element: e,
+        selector: '.post-title.entry-title a',
+        attr: 'href',
+      );
+      final category = _scraper.elementSelect(
+        element: e,
+        selector: '.post-category a',
+      );
+      final imageUrl = _scraper.elementSelectAttr(
+        element: e,
+        selector: '.post-thumbnail img',
+        attr: 'src',
+      );
+      final resume = _scraper.elementSelect(
+        element: e,
+        selector: '.entry.excerpt.entry-summary',
+      );
+
+      if (href == null || href.isEmpty) continue;
 
       if (!scrapeList.any((article) => article.title == title)) {
         final articles = ArticlesEntity(
-          title: title,
+          title: title ?? '',
           imageUrl: imageUrl,
-          date: date,
-          author: author,
-          category: category,
+          date: date ?? '',
+          author: author ?? 'N/A',
+          category: category ?? '',
           content: '',
-          url: url,
-          sourceUrl: url,
+          url: href,
+          sourceUrl: href,
           createdAt: DateTime.now(),
           updatedAt: DateTime.now(),
-          resume: resume,
+          resume: resume ?? '',
           site: SitesEnum.intoxi.name,
         );
         scrapeList.add(articles);
@@ -47,27 +73,47 @@ class IntoxiArticles {
 
   Future<ArticlesEntity> scrapeArticleDetails(
       String articleUrl, ArticlesEntity articles) async {
-    final doc = await Scraper().document(articleUrl);
+    final doc = await _scraper.getDocument(url: articleUrl);
 
-    final title = Scraper.docSelec(doc, 'h1.post-title.entry-title');
-    final author = Scraper.docSelec(doc, '.post-byline .fn a');
-    final date = Scraper.docSelecAttr(doc, 'time.published', 'datetime');
-    final content = Scraper.docSelecAll(doc, '.entry p');
-    var imageUrl = Scraper.docSelecAttr(doc, '.entry-inner img', 'src');
+    final title = _scraper.querySelector(
+      doc: doc,
+      query: 'h1.post-title.entry-title',
+    );
+    final author = _scraper.querySelector(
+      doc: doc,
+      query: '.post-byline .fn a',
+    );
+    final date = _scraper.querySelectAttr(
+      doc: doc,
+      query: 'time.published',
+      attr: 'datetime',
+    );
+    final content = _scraper.querySelectorAll(
+      doc: doc,
+      query: '.entry p',
+    );
+    var imageUrl = _scraper.querySelectAttr(
+      doc: doc,
+      query: '.entry-inner img',
+      attr: 'src',
+    );
 
-    Scraper.removeHtmlElementsList(content, [
-      'twitter',
-      '@',
-      'Relacionado',
-      'Staff',
-      'Visual liberado junto do trailer'
-    ]);
+    if (content != null && content.isNotEmpty) {
+      _scraper.removeHtmlElement(content: content, elements: [
+        'twitter',
+        '@',
+        'Relacionado',
+        'Staff',
+        'Visual liberado junto do trailer'
+      ]);
+    }
 
     return ArticlesEntity(
-      title: title,
-      author: author,
-      date: date,
-      content: content.join('\n'),
+      title: title ?? '',
+      author: author ?? '',
+      date: date ?? '',
+      content:
+          (content != null && content.isNotEmpty) ? content.join('\n') : '',
       imageUrl: imageUrl != 'NA' ? imageUrl : articles.imageUrl,
       resume: '',
       sourceUrl: articles.url,
