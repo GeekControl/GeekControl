@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geekcontrol/core/routes/routes.dart';
+import 'package:geekcontrol/core/service_modules.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized();
+  ServiceModules.of.initialize();
   runApp(const MyApp());
 }
 
