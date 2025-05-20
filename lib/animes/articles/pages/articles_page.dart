@@ -4,6 +4,7 @@ import 'package:geekcontrol/animes/articles/pages/complete_article_page.dart';
 import 'package:geekcontrol/animes/articles/pages/components/article_card.dart';
 import 'package:geekcontrol/animes/components/floating_button.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
+import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/core/utils/skeletonizer/cards_skeletonizer.dart';
 import 'package:geekcontrol/home/atoms/search_page.dart';
 import 'package:go_router/go_router.dart';
@@ -17,7 +18,7 @@ class ArticlesPage extends StatefulWidget {
 }
 
 class _ArticlesPageState extends State<ArticlesPage> {
-  final ArticlesController ct = ArticlesController();
+  final ArticlesController ct = di<ArticlesController>();
   final List<String> readArticles = [];
 
   @override
