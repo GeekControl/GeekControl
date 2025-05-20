@@ -4,6 +4,7 @@ import 'package:geekcontrol/animes/season/season_releases.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/containter/hitagi_card_container.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/utils.dart';
 import 'package:geekcontrol/core/utils/assets_enum.dart';
+import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/home/components/card_container/visual_config.dart';
 import 'package:geekcontrol/services/anilist/controller/anilist_controller.dart';
 import 'package:geekcontrol/services/anilist/entities/anilist_types_enum.dart';
@@ -17,7 +18,7 @@ class AnimesCardContainer extends StatefulWidget {
 }
 
 class _AnimesCardContainerState extends State<AnimesCardContainer> {
-  final ct = AnilistController();
+  final ct = di<AnilistController>();
 
   @override
   void initState() {
