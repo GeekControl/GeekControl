@@ -1,58 +1,70 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/hitagi_toast.dart';
-import 'package:geekcontrol/services/cache/local_cache.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/settings/controller/settings_controller.dart';
 import 'package:go_router/go_router.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   static const route = '/settings';
   const SettingsPage({super.key});
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  final ct = SettingsController();
+
+  @override
+  void initState() {
+    super.initState();
+    ct.init();
+    ct.addListener(() {
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Configurações'),
+        title: Center(
+          child: const HitagiText(
+            text: 'Configurações',
+            typography: HitagiTypography.title,
+          ),
+        ),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          const Text(
-            'Funcionalidades',
-            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+          const HitagiText(
+            text: 'Funcionalidades',
+            typography: HitagiTypography.button,
           ),
-          FutureBuilder<double>(
-            future: SettingsController().getCacheSize(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) return const SizedBox.shrink();
-              final size = snapshot.data!.toStringAsFixed(2);
-              return SettingsTile(
-                icon: Icons.cleaning_services_outlined,
-                title: 'Limpar cache - $size MB',
-                onTap: () async {
-                  try {
-                    await LocalCache().clearCache();
-                    if (context.mounted) {
-                      HitagiToast.show(
-                        context,
-                        message: 'Cache limpo com sucesso!',
-                        type: ToastType.success,
-                      );
-                    }
-                    if (context.mounted) {
-                      GoRouter.of(context).push(SettingsPage.route);
-                    }
-                  } catch (e) {
-                    if (context.mounted) {
-                      HitagiToast.show(
-                        context,
-                        message: 'Erro ao limpar o cache: $e',
-                        type: ToastType.error,
-                      );
-                    }
-                  }
-                },
-              );
+          SettingsTile(
+            icon: Icons.cleaning_services_outlined,
+            title: 'Limpar cache - ${ct.cacheSize.toStringAsFixed(2)} MB',
+            onTap: () async {
+              try {
+                await ct.clearCache();
+                if (context.mounted) {
+                  HitagiToast.show(
+                    context,
+                    message: 'Cache limpo com sucesso!',
+                    type: ToastType.success,
+                  );
+                }
+                ct.cacheSize = await ct.getCacheSize();
+              } catch (e) {
+                if (context.mounted) {
+                  HitagiToast.show(
+                    context,
+                    message: 'Erro ao limpar o cache: $e',
+                    type: ToastType.error,
+                  );
+                }
+              }
             },
           ),
           const SizedBox(height: 24.0),
