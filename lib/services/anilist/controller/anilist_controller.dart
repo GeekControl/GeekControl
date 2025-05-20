@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:geekcontrol/services/anilist/entities/anilist_types_enum.dart';
 import 'package:geekcontrol/services/anilist/entities/details_entity.dart';
 import 'package:geekcontrol/services/anilist/entities/releases_anilist_entity.dart';
@@ -8,12 +9,19 @@ import 'package:geekcontrol/services/cache/local_cache.dart';
 import 'package:logger/logger.dart';
 import 'package:translator/translator.dart';
 
-class AnilistController {
+class AnilistController extends ChangeNotifier {
   final AnilistRepository _repository = AnilistRepository();
   final LocalCache _cache = LocalCache();
-  final _logger = Logger();
+
+  List<ReleasesAnilistEntity> releasesList = [];
 
   String? translatedDescription = '';
+
+  Future<void> init(AnilistTypes type) async {
+    releasesList = await getReleasesAnimes(
+      type: type,
+    );
+  }
 
   Future<List<ReleasesAnilistEntity>> getReleasesAnimes({
     required AnilistTypes type,
@@ -37,22 +45,32 @@ class AnilistController {
                 const Duration(hours: 3);
 
         if (!shouldUpdate) {
-          _logger.i('Usando cache para releases');
-          return cached.map((e) => ReleasesAnilistEntity.fromJson(e)).toList();
+          Logger().i('Usando cache para releases');
+          final releases =
+              cached.map((e) => ReleasesAnilistEntity.fromJson(e)).toList();
+          releasesList.addAll(releases);
+          return releases;
         }
       }
 
-      _logger.i('Buscando releases da web');
-      final releases = await _repository.getReleasesAnimes(type: type);
+      Logger().i('Buscando releases da web');
+      final releases = await _repository.getReleasesAnimes(
+        type: type,
+      );
       await _cache.putList<ReleasesAnilistEntity>(
         key: CacheKeys.releases,
         items: releases,
         toMap: (r) => r.toMap(),
         site: type.value,
       );
+
+      for (var r in releases) {
+        releasesList.add(r);
+      }
+
       return releases;
     } catch (e) {
-      _logger.e('Erro ao carregar releases: $e');
+      Logger().e('Erro ao carregar releases: $e');
       return [ReleasesAnilistEntity.empty()];
     }
   }
@@ -77,14 +95,14 @@ class AnilistController {
                 const Duration(days: 1);
 
         if (!shouldUpdate) {
-          _logger.i('Usando cache para rates');
+          Logger().i('Usando cache para rates');
           final rates = cached.map((e) => MangasRates.fromMap(e)).toList();
           rates.sort((a, b) => b.meanScore.compareTo(a.meanScore));
           return rates;
         }
       }
 
-      _logger.i('Buscando rates da web');
+      Logger().i('Buscando rates da web');
       final rates = await _repository.getRateds(type: type);
       rates.sort((a, b) => b.meanScore.compareTo(a.meanScore));
 
@@ -102,7 +120,7 @@ class AnilistController {
       );
       return rates;
     } catch (e) {
-      _logger.e('Erro ao carregar rates: $e');
+      Logger().e('Erro ao carregar rates: $e');
       return [MangasRates.empty()];
     }
   }
@@ -113,7 +131,7 @@ class AnilistController {
       translatedDescription = await _translateDescription(details.description);
       return details;
     } catch (e) {
-      _logger.e('Erro ao carregar detalhes: $e');
+      Logger().e('Erro ao carregar detalhes: $e');
       return DetailsEntity.empty;
     }
   }
@@ -126,7 +144,7 @@ class AnilistController {
           await translator.translate(plainText, from: 'en', to: 'pt');
       return result.text;
     } catch (e) {
-      _logger.w('Erro na tradução, mantendo texto original');
+      Logger().w('Erro na tradução, mantendo texto original');
       return description;
     }
   }
