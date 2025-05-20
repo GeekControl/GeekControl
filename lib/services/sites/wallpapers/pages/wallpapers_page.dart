@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
+import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/services/sites/wallpapers/atoms/copy_button.dart';
 import 'package:geekcontrol/services/sites/wallpapers/pages/wallpapers_fullscreen_page.dart';
 import 'package:geekcontrol/services/sites/wallpapers/controller/wallpapers_controller.dart';
@@ -15,7 +16,7 @@ class WallpapersPage extends StatefulWidget {
 }
 
 class _WallpapersPageState extends State<WallpapersPage> {
-  final WallpaperController _controller = WallpaperController();
+  final WallpaperController ct = di<WallpaperController>();
   List<String> _images = [];
   String _searchQuery = 'anime';
   bool _isLoading = true;
@@ -28,7 +29,7 @@ class _WallpapersPageState extends State<WallpapersPage> {
 
   Future<void> _fetchWallpapers() async {
     setState(() => _isLoading = true);
-    final images = await _controller.getWallpapers(_searchQuery);
+    final images = await ct.getWallpapers(_searchQuery);
     setState(() {
       _images = images;
       _isLoading = false;
@@ -166,8 +167,8 @@ class _WallpapersPageState extends State<WallpapersPage> {
                               IconButton(
                                 icon: const Icon(Icons.download, size: 20),
                                 color: Colors.white,
-                                onPressed: () => _controller
-                                    .downloadWallpaper(_images[index]),
+                                onPressed: () =>
+                                    ct.downloadWallpaper(_images[index]),
                               ),
                             ],
                           ),

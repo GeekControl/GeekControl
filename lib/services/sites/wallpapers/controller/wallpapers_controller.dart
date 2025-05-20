@@ -11,9 +11,17 @@ import 'package:saver_gallery/saver_gallery.dart';
 import 'package:scraper/scraper.dart';
 
 class WallpaperController extends ChangeNotifier {
+  late final PageController pageController;
   final _scraper = Scraper();
 
-  Future<void> init() async {}
+  Future<void> init({
+    required int initialPage,
+    required bool isFullScreen,
+  }) async {
+    setFullScreen(enabled: isFullScreen);
+    pageController = PageController(initialPage: initialPage);
+    notifyListeners();
+  }
 
   Future<List<String>> getWallpapers(String search) async {
     final doc = await _scraper.getDocument(url: WallpapersUtils.uri);
@@ -85,7 +93,11 @@ class WallpaperController extends ChangeNotifier {
     }
   }
 
-  Future<void> _setFullScreen() async {
-    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  Future<void> setFullScreen({bool enabled = true}) async {
+    enabled
+        ? await SystemChrome.setEnabledSystemUIMode(
+            SystemUiMode.immersiveSticky)
+        : SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    notifyListeners();
   }
 }
