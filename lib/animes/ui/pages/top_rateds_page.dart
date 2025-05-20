@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geekcontrol/animes/ui/pages/details_page.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/utils.dart';
+import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/core/utils/skeletonizer/cards_skeletonizer.dart';
 import 'package:geekcontrol/services/anilist/controller/anilist_controller.dart';
 import 'package:geekcontrol/services/anilist/entities/anilist_types_enum.dart';
@@ -18,7 +19,7 @@ class TopRatedsPage extends StatefulWidget {
 }
 
 class _TopRatedsPageState extends State<TopRatedsPage> {
-  final _ct = AnilistController();
+  final _ct = di<AnilistController>();
   late Future<List<MangasRates>> _future;
 
   @override
