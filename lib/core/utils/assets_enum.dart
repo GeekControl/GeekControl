@@ -7,6 +7,8 @@ enum AssetsEnum {
   luffy('assets/banners_assets/luffy.png'),
   hitagi('assets/banners_assets/hitagi.png'),
   berserker('assets/banners_assets/berserker.png'),
+  frieren('assets/banners_assets/frieren.png'),
+  zenitsu('assets/banners_assets/zenitsu.png'),
   geekcontrolLogo('assets/geekcontrol_logo.png');
 
   final String path;
