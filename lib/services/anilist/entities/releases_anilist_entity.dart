@@ -4,6 +4,7 @@ import 'package:geekcontrol/core/utils/entity_mappers.dart';
 class ReleasesAnilistEntity {
   final int id;
   final int episodeId;
+  final String description;
   final String englishTitle;
   final String bannerImage;
   final String coverImage;
@@ -26,6 +27,7 @@ class ReleasesAnilistEntity {
 
   ReleasesAnilistEntity({
     required this.id,
+    required this.description,
     required this.episodeId,
     required this.englishTitle,
     required this.bannerImage,
@@ -53,6 +55,7 @@ class ReleasesAnilistEntity {
     List<ReleasesAnilistEntity> entities = mediaList.map((media) {
       return ReleasesAnilistEntity(
         id: media['id'],
+        description: media['description'] ?? '',
         meanScore: media['meanScore'] ?? 0,
         averageScore: media['averageScore'] ?? 0,
         episodeId: media['id'],
@@ -87,6 +90,7 @@ class ReleasesAnilistEntity {
 
     return ReleasesAnilistEntity(
       id: media['id'],
+      description: media['description'] ?? '',
       meanScore: media['meanScore'] ?? 0,
       averageScore: media['averageScore'] ?? 0,
       episodeId: media['episodeId'] ?? media['id'],
@@ -113,6 +117,7 @@ class ReleasesAnilistEntity {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'description': description,
       'meanScore': meanScore,
       'averageScore': averageScore,
       'episodeId': episodeId,
@@ -138,6 +143,7 @@ class ReleasesAnilistEntity {
 
   ReleasesAnilistEntity.empty()
       : id = 0,
+        description = '',
         meanScore = 0,
         averageScore = 0,
         nextEpisode = 0,
