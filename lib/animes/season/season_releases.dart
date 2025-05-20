@@ -3,6 +3,7 @@ import 'package:geekcontrol/animes/ui/pages/details_page.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/utils.dart';
+import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/services/anilist/controller/anilist_controller.dart';
 import 'package:geekcontrol/services/anilist/entities/anilist_types_enum.dart';
 import 'package:geekcontrol/services/anilist/entities/releases_anilist_entity.dart';
@@ -28,7 +29,7 @@ class SeasonReleasesPage extends StatelessWidget {
         typography: HitagiTypography.title,
       )),
       body: FutureBuilder<List<ReleasesAnilistEntity>>(
-        future: AnilistController().getReleasesAnimes(type: type),
+        future: di<AnilistController>().getReleasesAnimes(type: type),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
