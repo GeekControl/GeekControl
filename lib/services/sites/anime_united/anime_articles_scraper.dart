@@ -1,28 +1,43 @@
 import 'package:geekcontrol/animes/articles/entities/articles_entity.dart';
 import 'package:geekcontrol/animes/sites_enum.dart';
-import 'package:geekcontrol/services/sites/utils_scrap.dart';
+import 'package:geekcontrol/core/utils/api_utils.dart';
 import 'package:logger/logger.dart';
+import 'package:scraper/scraper.dart';
 
 class AnimeUnited {
+  final _scraper = Scraper();
   Future<List<ArticlesEntity>> fetchArticles() async {
     final List<ArticlesEntity> articlesList = [];
-    const String uri = 'https://www.animeunited.com.br/';
 
-    final doc = await Scraper().document(uri);
+    final doc = await _scraper.getDocument(url: AnimeUnitedUtils.uri);
     final element = doc.querySelectorAll('.col-12.col-4-tablet.post-column');
 
     for (var e in element) {
-      final title = Scraper.elementSelec(e, '.entry-content p');
-      final images = Scraper.elementSelecAttr(
-          e, '.col-12.col-4-tablet.post-column img', 'data-lazy-src');
-      final href = Scraper.elementSelecAttr(
-          e, '.col-12.col-4-tablet.post-column a', 'href');
-      final date = Scraper.elementSelec(e, '.entry-date.published.updated');
+      final title = _scraper.elementSelect(
+        element: e,
+        selector: '.entry-content p',
+      );
+      final images = _scraper.elementSelectAttr(
+        element: e,
+        selector: '.col-12.col-4-tablet.post-column img',
+        attr: 'data-lazy-src',
+      );
+      final href = _scraper.elementSelectAttr(
+        element: e,
+        selector: '.col-12.col-4-tablet.post-column a',
+        attr: 'href',
+      );
+      final date = _scraper.elementSelect(
+        element: e,
+        selector: '.entry-date.published.updated',
+      );
+
+      if (href == null || href.isEmpty) continue;
 
       final articles = ArticlesEntity(
-        title: title,
+        title: title ?? '',
         imageUrl: images,
-        date: date,
+        date: date ?? '',
         author: 'N/A',
         category: '',
         content: '',
@@ -41,8 +56,13 @@ class AnimeUnited {
 
   Future<ArticlesEntity> scrapeArticleDetails(
       String articleUrl, ArticlesEntity articles) async {
-    final doc = await Scraper().document(articleUrl);
-    final content = Scraper.docSelecAll(doc, '.container-full p');
+    final doc = await _scraper.getDocument(url: articles.url);
+    final content = _scraper.querySelectorAll(
+      doc: doc,
+      query: '.container-full p',
+    );
+
+    if (content == null || content.isEmpty) return ArticlesEntity.empty();
 
     Logger().i(content);
     return ArticlesEntity(

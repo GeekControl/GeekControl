@@ -1,33 +1,58 @@
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:geekcontrol/core/utils/api_utils.dart';
 import 'package:http/http.dart' as http;
-import 'package:geekcontrol/services/sites/utils_scrap.dart';
 import 'package:logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:saver_gallery/saver_gallery.dart';
+import 'package:scraper/scraper.dart';
 
-class WallpaperController {
+class WallpaperController extends ChangeNotifier {
+  late final PageController pageController;
+  final _scraper = Scraper();
+
+  Future<void> init({
+    required int initialPage,
+    required bool isFullScreen,
+  }) async {
+    setFullScreen(enabled: isFullScreen);
+    pageController = PageController(initialPage: initialPage);
+    notifyListeners();
+  }
+
   Future<List<String>> getWallpapers(String search) async {
-    final doc = await Scraper()
-        .document('https://www.uhdpaper.com/search?q=Anime&by-date=true');
+    final doc = await _scraper.getDocument(url: WallpapersUtils.uri);
 
-    final img =
-        Scraper.docSelecAllAttr(doc, '.post-outer-container img', 'src');
+    final img = _scraper.querySelectAllAttr(
+      doc: doc,
+      query: '.post-outer-container img',
+      attr: 'src',
+    );
+    if (img == null || img.isEmpty) return [];
     final flare = await _wallpaperFlare(search);
-    return [...flare, ...img];
+    return [...flare, ...img.whereType<String>()];
   }
 
   Future<List<String>> _wallpaperFlare(String search) async {
-    final doc = await Scraper().document(
-        'https://www.wallpaperflare.com/search?wallpaper=$search&mobile=ok');
+    final doc = await _scraper.getDocument(
+      url: '${WallpapersUtils.wallpaperFlare}$search&mobile=ok',
+    );
 
-    final img = Scraper.docSelecAllAttr(doc, '.lazy', 'data-src');
+    final img = _scraper.querySelectAllAttr(
+      doc: doc,
+      query: '.lazy',
+      attr: 'data-src',
+    );
+
+    if (img == null || img.isEmpty) return [];
 
     if (!img.contains('N/A')) {
-      return img;
+      return img.whereType<String>().toList();
     }
-    return img;
+    return img.whereType<String>().toList();
   }
 
   Future<void> downloadWallpaper(String uri) async {
@@ -66,5 +91,13 @@ class WallpaperController {
     } catch (e) {
       Logger().e('Error saving wallpaper: $e');
     }
+  }
+
+  Future<void> setFullScreen({bool enabled = true}) async {
+    enabled
+        ? await SystemChrome.setEnabledSystemUIMode(
+            SystemUiMode.immersiveSticky)
+        : SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    notifyListeners();
   }
 }

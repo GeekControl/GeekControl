@@ -28,11 +28,12 @@ class Query {
     ''';
   }
 
-  static String releasesQuery(String? title, AnilistTypes type) {
+  static String releasesQuery( AnilistTypes type,
+      {String? year, String? title}) {
     return '''
 query {
   Page {
-    media(${title != null && title.isNotEmpty ? 'search: "$title"' : 'sort: TRENDING_DESC'}, type: ${type.value}) {
+    media(${year != null ? 'seasonYear: $year' : 'sort: TRENDING_DESC'}, type: ${type.value}) {
       id
       bannerImage
       coverImage {
@@ -133,6 +134,24 @@ query (\$id: Int) {
     }
   }
 }
+  ''';
+  }
+
+  static String releases2025Query(AnilistTypes type) {
+    return '''
+    query {
+      Page(page: 1) {
+        media(seasonYear: 2025, type: ${type.value}) {
+          id
+          title {
+            romaji
+            english
+          }
+          season
+          seasonYear
+        }
+      }
+    }
   ''';
   }
 }

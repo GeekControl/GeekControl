@@ -5,6 +5,7 @@ import 'package:geekcontrol/animes/ui/components/genres_component.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/utils.dart';
+import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/services/anilist/controller/anilist_controller.dart';
 import 'package:geekcontrol/services/anilist/entities/details_entity.dart';
 
@@ -20,7 +21,7 @@ class DetailsPage extends StatefulWidget {
 
 class _DetailsPageState extends State<DetailsPage>
     with SingleTickerProviderStateMixin {
-  final _controller = AnilistController();
+  final _controller = di<AnilistController>();
   late Future<DetailsEntity> _futureDetails;
   late TabController _tabController;
 
@@ -61,9 +62,13 @@ class _DetailsPageState extends State<DetailsPage>
                             fit: StackFit.expand,
                             children: [
                               if (details.bannerImage.isNotEmpty)
-                                HitagiImages(image: details.bannerImage)
+                                HitagiImages(
+                                  image: details.bannerImage,
+                                )
                               else
-                                HitagiImages(image: details.coverImage),
+                                HitagiImages(
+                                  image: details.coverImage,
+                                ),
                               Container(
                                 decoration: const BoxDecoration(
                                   gradient: LinearGradient(

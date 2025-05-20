@@ -1,10 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/animes/ui/pages/details_page.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/carousel/hitagi_image_carousel.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/utils.dart';
-import 'package:geekcontrol/core/library/hitagi_cup/features/skeletonizer/hitagi_shimmer_efect.dart';
 import 'package:geekcontrol/services/anilist/entities/anilist_types_enum.dart';
 import 'package:go_router/go_router.dart';
 
@@ -73,15 +72,7 @@ class ItemCard extends StatelessWidget {
                               tag: 'release-${item.id}',
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
-                                child: CachedNetworkImage(
-                                  imageUrl: item.image,
-                                  fit: BoxFit.cover,
-                                  placeholder: (context, url) =>
-                                      HitagiShimmerEffect(
-                                          height: 150, width: 103),
-                                  errorWidget: (context, url, error) =>
-                                      const Center(child: Icon(Icons.error)),
-                                ),
+                                child: HitagiImages(image: item.image, height: 150, width: 103),
                               ),
                             ),
                           ),

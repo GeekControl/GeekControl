@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/hitagi_toast.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
+import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/services/sites/wallpapers/atoms/copy_button.dart';
 import 'package:geekcontrol/services/sites/wallpapers/controller/wallpapers_controller.dart';
+import 'package:logger/web.dart';
 
 class WallpaperFullscreen extends StatefulWidget {
   static const route = '/wallpaper-fullscreen';
@@ -19,14 +22,20 @@ class WallpaperFullscreen extends StatefulWidget {
 }
 
 class _WallpaperFullscreenState extends State<WallpaperFullscreen> {
-  bool fullscreen = false;
-  late final PageController _pageController;
-  final ct = WallpaperController();
+  bool fullscreen = true;
+  bool showButtons = false;
+  final WallpaperController ct = di<WallpaperController>(); 
+
+  int currentIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(initialPage: widget.index);
+    ct.init(
+      initialPage: widget.index,
+      isFullScreen: fullscreen,
+    );
+    currentIndex = widget.index;
   }
 
   @override
@@ -35,14 +44,19 @@ class _WallpaperFullscreenState extends State<WallpaperFullscreen> {
       body: Stack(
         children: [
           PageView.builder(
-            controller: _pageController,
+            controller: ct.pageController,
             scrollDirection: Axis.vertical,
             itemCount: widget.images.length,
+            onPageChanged: (index) {
+              setState(() {
+                currentIndex = index;
+              });
+            },
             itemBuilder: (context, index) {
               final imageUrl = widget.images[index];
               return GestureDetector(
-                onLongPress: () => setState(() => fullscreen = false),
-                onTap: () => setState(() => fullscreen = true),
+                onLongPress: () => setState(() => showButtons = false),
+                onTap: () => setState(() => showButtons = true),
                 child: HitagiImages(
                   image: imageUrl,
                   fit: BoxFit.cover,
@@ -50,7 +64,7 @@ class _WallpaperFullscreenState extends State<WallpaperFullscreen> {
               );
             },
           ),
-          if (!fullscreen)
+          if (!showButtons)
             Positioned(
               top: 40,
               left: 16,
@@ -61,11 +75,15 @@ class _WallpaperFullscreenState extends State<WallpaperFullscreen> {
                 ),
                 child: IconButton(
                   icon: const Icon(Icons.arrow_back, color: Colors.white),
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    fullscreen = false;
+                    ct.setFullScreen(enabled: fullscreen);
+                  },
                 ),
               ),
             ),
-          if (!fullscreen)
+          if (!showButtons)
             Positioned(
               left: 0,
               right: 0,
@@ -75,8 +93,8 @@ class _WallpaperFullscreenState extends State<WallpaperFullscreen> {
                 children: [
                   Builder(
                     builder: (context) {
-                      final currentIndex = _pageController.hasClients
-                          ? _pageController.page?.round() ?? 0
+                      final currentIndex = ct.pageController.hasClients
+                          ? ct.pageController.page?.round() ?? 0
                           : widget.index;
                       final imageUrl = widget.images[currentIndex];
                       return Container(
@@ -89,12 +107,28 @@ class _WallpaperFullscreenState extends State<WallpaperFullscreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             const SizedBox(width: 16),
-                            CoppyButton(image: imageUrl),
+                            CopyButton(image: imageUrl),
                             const SizedBox(width: 16),
                             IconButton(
                               icon: const Icon(Icons.download,
                                   color: Colors.white),
-                              onPressed: () => ct.downloadWallpaper(imageUrl),
+                              onPressed: () {
+                                try {
+                                  ct.downloadWallpaper(imageUrl);
+                                  HitagiToast.show(
+                                    context,
+                                    message: 'Wallpaper baixado com sucesso!',
+                                    type: ToastType.success,
+                                  );
+                                } catch (e) {
+                                  Logger().e('Error downloading wallpaper: $e');
+                                  HitagiToast.show(
+                                    context,
+                                    message: 'Erro ao baixar o wallpaper: $e',
+                                    type: ToastType.error,
+                                  );
+                                }
+                              },
                             ),
                           ],
                         ),

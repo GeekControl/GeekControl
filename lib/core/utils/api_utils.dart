@@ -44,19 +44,21 @@ class AnimesNewUtils {
   static final uriStr = dotenv.env['ANIMESNEW_URL'].toString();
 }
 
-class OtakuPt {
+class OtakuPtUtils {
   static final uri = Uri.parse(dotenv.env['OTAKU_PT_URL'].toString());
   static final uriStr = dotenv.env['OTAKU_PT_URL'].toString();
 }
 
-class Scrap {
-  static String xPathToSelect(String url) {
-    if (url.contains('/')) url = url.replaceFirst('/', '');
-    if (url.contains('/')) url = url.replaceAll('/', ' > ');
-    for (var i = 0; i < 30; i++) {
-      if (url.contains('[$i]')) url = url.replaceAll('[$i]', '');
-    }
+class VoceSabiaAnimeUtils {
+  static final String uri = 'https://vocesabianime.com/';
+}
 
-    return url;
-  }
+class AnimeUnitedUtils {
+  static final String uri = 'https://www.animeunited.com.br/';
+}
+
+class WallpapersUtils {
+  static final String uri =
+      'https://www.uhdpaper.com/search?q=Anime&by-date=true';
+  static final String wallpaperFlare = 'https://www.wallpaperflare.com/search?wallpaper=';
 }

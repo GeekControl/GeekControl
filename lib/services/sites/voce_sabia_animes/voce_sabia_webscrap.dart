@@ -1,34 +1,44 @@
 import 'package:geekcontrol/animes/articles/entities/articles_entity.dart';
 import 'package:geekcontrol/animes/sites_enum.dart';
-import 'package:geekcontrol/services/sites/utils_scrap.dart';
-import 'package:logger/logger.dart';
+import 'package:geekcontrol/core/utils/api_utils.dart';
+import 'package:scraper/scraper.dart';
 
 class VoceSabiaAnime {
+  final _scraper = Scraper();
+
   Future<List<ArticlesEntity>> fetchArticles() async {
     final List<ArticlesEntity> articlesList = [];
-    const String uri = 'https://vocesabianime.com/';
 
-    final doc = await Scraper().document(uri);
-    final element = doc.querySelectorAll('.ultp-block-content-wrap.ultp-block-content-overlay');
+    final doc = await _scraper.getDocument(url: VoceSabiaAnimeUtils.uri);
+
+    final element = doc.querySelectorAll('.ultp-block-content-wrap');
 
     for (final e in element) {
-      final title = Scraper.elementSelec(e, '.ultp-block-title a');
-      final images =
-          Scraper.elementSelecAttr(e, '.ultp-block-wrapper img', 'src');
-      final date = Scraper.elementSelec(e,
-          '.ultp-block-meta.ultp-block-meta-doubleslash.ultp-block-meta-noIcon span');
-      final url = Scraper.elementSelecAttr(
-          e,
-          '.ultp-block-image.ultp-block-image-zoomIn.ultp-block-image-overlay.ultp-block-image-custom a',
-          'href');
+      final title =
+          _scraper.elementSelect(element: e, selector: 'h2.ultp-block-title a');
+      final images = _scraper.elementSelectAttr(
+        element: e,
+        selector: '.ultp-block-image.ultp-block-image-zoomIn img',
+        attr: 'src',
+      );
+      final date = _scraper.elementSelect(
+        element: e,
+        selector: 'span.ultp-block-date.ultp-block-meta-element',
+      );
+      final url = _scraper.elementSelect(
+        element: e,
+        selector: 'h2.ultp-block-title href',
+      );
+
+      if (url == null || url.isEmpty) continue;
 
       final articles = ArticlesEntity(
-        title: title,
+        title: title ?? '',
         imageUrl: images,
-        date: date,
+        date: date ?? '',
         author: '',
         category: '',
-        content: title,
+        content: title ?? '',
         url: url,
         sourceUrl: '',
         createdAt: DateTime.now(),
@@ -37,7 +47,6 @@ class VoceSabiaAnime {
         site: SitesEnum.voceSabiaAnime.key,
       );
       articlesList.add(articles);
-      Logger().d(articles.title);
     }
     return articlesList;
   }

@@ -3,6 +3,7 @@
 *.log
 *.pyc
 **/cxx/
+android/app/.cxx/Debug/
 *.swp
 .DS_Store
 .atom/
