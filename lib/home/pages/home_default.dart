@@ -32,7 +32,7 @@ class HomeDefaultWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(16.0),
                         child: const HitagiText(
                           text: 'Últimas notícias',
                           typography: HitagiTypography.button,
@@ -60,10 +60,11 @@ class HomeDefaultWidget extends StatelessWidget {
                   ),
                 ),
                 cardContainters.isNotEmpty
-                    ? Column(
-                        children: cardContainters,
-                      )
+                    ? Column(children: cardContainters)
                     : const SizedBox.shrink(),
+                    SizedBox(
+                      height: 50,
+                    ),
               ],
             ),
           ),
