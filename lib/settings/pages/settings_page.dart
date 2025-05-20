@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/hitagi_toast.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
+import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/settings/controller/settings_controller.dart';
 import 'package:go_router/go_router.dart';
 
@@ -13,7 +14,7 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  final ct = SettingsController();
+  final ct = di<SettingsController>();
 
   @override
   void initState() {
