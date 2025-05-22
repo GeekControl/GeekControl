@@ -108,7 +108,7 @@ class _FeaturedAnime extends StatelessWidget {
             Icon(Icons.star, size: 16, color: Colors.orange),
             SizedBox(width: 4),
             HitagiText(
-              text: anime.averageScore.toString(),
+              text: (anime.averageScore / 10).toString(),
               typography: HitagiTypography.button,
             )
           ],

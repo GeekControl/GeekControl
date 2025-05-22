@@ -102,7 +102,7 @@ class _TopRatedsPageState extends State<TopRatedsPage> {
                                 typography: HitagiTypography.button,
                               ),
                               HitagiText.icon(
-                                'Nota: ${manga.meanScore}',
+                                'Nota: ${(manga.meanScore / 10)}',
                                 Icons.star,
                                 typography: HitagiTypography.button,
                               ),
