@@ -1,5 +1,5 @@
 import '../../../../animes/articles/entities/articles_entity.dart';
-import '../webscraper/all_articles.dart';
+import '../webscraper/mangas_news_articles.dart';
 import '../webscraper/manga_articles.dart';
 
 class MangaNewsController {
