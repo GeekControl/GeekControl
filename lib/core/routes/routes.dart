@@ -1,5 +1,5 @@
 import 'package:geekcontrol/view/animes/articles/pages/articles_page.dart';
-import 'package:geekcontrol/view/animes/articles/pages/complete_article_page.dart';
+import 'package:geekcontrol/view/animes/articles/pages/article_details_page.dart';
 import 'package:geekcontrol/view/animes/season/season_releases.dart';
 import 'package:geekcontrol/view/animes/spoilers/pages/spoilers_page.dart';
 import 'package:geekcontrol/view/animes/ui/pages/details_page.dart';
@@ -30,7 +30,7 @@ class AppRoutes {
         path: '/articles/details',
         builder: (context, state) {
           final data = state.extra as Map;
-          return CompleteArticlePage(
+          return ArticleDetailsPage(
             news: data['news'],
             current: data['current'],
           );
@@ -88,8 +88,9 @@ class AppRoutes {
         builder: (context, state) {
           final data = state.extra as Map<String, dynamic>;
           return SeasonReleasesPage(
-            season: data['season'],
+            title: data['title'],
             type: data['type'],
+            season: data['season'],
           );
         },
       ),
