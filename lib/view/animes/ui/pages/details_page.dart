@@ -180,7 +180,7 @@ class _DetailsPageState extends State<DetailsPage>
                                       'Fãs', details.popularity.toString(),
                                       icon: Icons.trending_up),
                                   _buildInfo('Nota Média',
-                                      details.meanScore.toString(),
+                                      (details.meanScore / 10).toStringAsFixed(1),
                                       icon: Icons.star),
                                   _buildInfo('Fonte',
                                       Utils.formatSource(details.source),

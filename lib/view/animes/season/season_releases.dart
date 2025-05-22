@@ -164,7 +164,8 @@ class _AnimeListItem extends StatelessWidget {
                         'Episódios: ${anime.actuallyEpisode ?? 0}/${anime.episodes}',
                   ),
                   HitagiText(
-                    text: 'Nota Média: ${anime.meanScore}',
+                    text:
+                        'Nota Média: ${(anime.meanScore / 10).toStringAsFixed(1)}',
                     typography: HitagiTypography.button,
                   ),
                   const SizedBox(height: 8),

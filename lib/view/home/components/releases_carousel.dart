@@ -29,7 +29,7 @@ class ReleasesCarousel extends StatelessWidget {
                   badge: '${anime.actuallyEpisode}/${anime.episodes}',
                   badgeIcon: Icons.tv,
                   id: anime.id,
-                  score: anime.meanScore.toString(),
+                  score: (anime.meanScore / 10).toStringAsFixed(1),
                   status: anime.status,
                 ))
             .toList();
