@@ -15,12 +15,14 @@ class SeasonReleasesPage extends StatelessWidget {
   final String title;
   final AnilistTypes type;
   final AnilistSeasons? season;
+  final String? year;
 
   const SeasonReleasesPage({
     super.key,
     required this.title,
     required this.type,
     required this.season,
+    this.year,
   });
 
   @override
@@ -32,7 +34,11 @@ class SeasonReleasesPage extends StatelessWidget {
         typography: HitagiTypography.title,
       )),
       body: FutureBuilder<List<ReleasesAnilistEntity>>(
-        future: di<AnilistController>().getReleasesAnimes(type: type, season: season),
+        future: di<AnilistController>().getReleasesAnimes(
+          type: type,
+          season: season,
+          year: year,
+        ),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());

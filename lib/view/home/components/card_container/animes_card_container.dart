@@ -58,6 +58,7 @@ class _AnimesCardContainerState extends State<AnimesCardContainer> {
               route: SeasonReleasesPage.route,
               gradient: config.gradient,
               season: AnilistSeasons.fromString(entry.season),
+              year: entry.seasonYear.toString(),
             );
           },
           options: CarouselOptions(

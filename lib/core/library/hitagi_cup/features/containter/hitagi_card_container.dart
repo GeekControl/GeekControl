@@ -14,6 +14,7 @@ class HitagiCardContainer extends StatelessWidget {
   final AnilistTypes type;
   final String? backgroundImageAsset;
   final AnilistSeasons? season;
+  final String? year;
 
   const HitagiCardContainer({
     super.key,
@@ -22,6 +23,7 @@ class HitagiCardContainer extends StatelessWidget {
     required this.description,
     required this.route,
     this.season,
+    this.year,
     this.type = AnilistTypes.anime,
     this.gradient,
     this.backgroundImageAsset,
@@ -124,6 +126,7 @@ class HitagiCardContainer extends StatelessWidget {
                             'title': title,
                             'type': type,
                             'season': season,
+                            'year': year,
                           }),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),

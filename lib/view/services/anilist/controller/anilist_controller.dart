@@ -28,6 +28,7 @@ class AnilistController extends ChangeNotifier {
   Future<List<ReleasesAnilistEntity>> getReleasesAnimes({
     required AnilistTypes type,
     AnilistSeasons? season,
+    String? year,
   }) async {
     final String site = season != null ? season.value + type.value : type.value;
     try {
@@ -58,7 +59,7 @@ class AnilistController extends ChangeNotifier {
       }
       Loggers.get(site);
       final releases =
-          await _repository.getReleasesAnimes(type: type, season: season);
+          await _repository.getReleasesAnimes(type: type, season: season, year: year);
       await _cache.putList<ReleasesAnilistEntity>(
         key: CacheKeys.releases,
         items: releases,

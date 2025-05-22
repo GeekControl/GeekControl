@@ -91,6 +91,7 @@ class AppRoutes {
             title: data['title'],
             type: data['type'],
             season: data['season'],
+            year: data['year'],
           );
         },
       ),
