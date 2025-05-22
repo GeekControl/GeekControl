@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/view/animes/articles/controller/articles_controller.dart';
-import 'package:geekcontrol/view/animes/articles/pages/complete_article_page.dart';
+import 'package:geekcontrol/view/animes/articles/pages/article_details_page.dart';
 import 'package:geekcontrol/view/animes/articles/pages/components/article_card.dart';
 import 'package:geekcontrol/view/animes/components/floating_button.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
@@ -75,7 +75,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
                   onLongPress: () => ct.markAsUnread(news.title),
                   onTap: () async {
                     await context.push(
-                      CompleteArticlePage.route,
+                      ArticleDetailsPage.route,
                       extra: {
                         'news': news,
                         'current': ct.currentSite.name,
