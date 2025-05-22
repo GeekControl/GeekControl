@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/containter/hitagi_container.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
+import 'package:geekcontrol/view/services/anilist/entities/anilist_seasons_enum.dart';
 import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
 import 'package:go_router/go_router.dart';
 
@@ -12,6 +13,7 @@ class HitagiCardContainer extends StatelessWidget {
   final String route;
   final AnilistTypes type;
   final String? backgroundImageAsset;
+  final AnilistSeasons? season;
 
   const HitagiCardContainer({
     super.key,
@@ -19,6 +21,7 @@ class HitagiCardContainer extends StatelessWidget {
     required this.subtitle,
     required this.description,
     required this.route,
+    this.season,
     this.type = AnilistTypes.anime,
     this.gradient,
     this.backgroundImageAsset,
@@ -118,8 +121,9 @@ class HitagiCardContainer extends StatelessWidget {
                         child: InkWell(
                           borderRadius: BorderRadius.circular(20),
                           onTap: () => GoRouter.of(context).push(route, extra: {
-                            'season': title,
+                            'title': title,
                             'type': type,
+                            'season': season,
                           }),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
