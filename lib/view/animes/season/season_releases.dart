@@ -5,19 +5,22 @@ import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.da
 import 'package:geekcontrol/core/library/hitagi_cup/utils.dart';
 import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/view/services/anilist/controller/anilist_controller.dart';
+import 'package:geekcontrol/view/services/anilist/entities/anilist_seasons_enum.dart';
 import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
 import 'package:geekcontrol/view/services/anilist/entities/releases_anilist_entity.dart';
 import 'package:go_router/go_router.dart';
 
 class SeasonReleasesPage extends StatelessWidget {
   static const route = '/season-releases';
-  final String season;
+  final String title;
   final AnilistTypes type;
+  final AnilistSeasons? season;
 
   const SeasonReleasesPage({
     super.key,
-    required this.season,
+    required this.title,
     required this.type,
+    required this.season,
   });
 
   @override
@@ -25,11 +28,11 @@ class SeasonReleasesPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
           title: HitagiText(
-        text: season,
+        text: title,
         typography: HitagiTypography.title,
       )),
       body: FutureBuilder<List<ReleasesAnilistEntity>>(
-        future: di<AnilistController>().getReleasesAnimes(type: type),
+        future: di<AnilistController>().getReleasesAnimes(type: type, season: season),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
