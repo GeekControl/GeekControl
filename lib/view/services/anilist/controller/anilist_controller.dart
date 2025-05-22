@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:geekcontrol/core/utils/logger.dart';
+import 'package:geekcontrol/view/services/anilist/entities/anilist_seasons_enum.dart';
 import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
 import 'package:geekcontrol/view/services/anilist/entities/details_entity.dart';
 import 'package:geekcontrol/view/services/anilist/entities/releases_anilist_entity.dart';
@@ -25,11 +27,13 @@ class AnilistController extends ChangeNotifier {
 
   Future<List<ReleasesAnilistEntity>> getReleasesAnimes({
     required AnilistTypes type,
+    AnilistSeasons? season,
   }) async {
+    final String site = season != null ? season.value + type.value : type.value;
     try {
       final cached = await _cache.get(
         CacheKeys.releases,
-        site: type.value,
+        site: site,
       );
 
       if (cached is List) {
@@ -45,23 +49,21 @@ class AnilistController extends ChangeNotifier {
                 const Duration(hours: 3);
 
         if (!shouldUpdate) {
-          Logger().i('Usando cache para releases');
+          Loggers.cache(operation: '$site-${CacheKeys.releases.value}');
           final releases =
               cached.map((e) => ReleasesAnilistEntity.fromJson(e)).toList();
           releasesList.addAll(releases);
           return releases;
         }
       }
-
-      Logger().i('Buscando releases da web');
-      final releases = await _repository.getReleasesAnimes(
-        type: type,
-      );
+      Loggers.get(site);
+      final releases =
+          await _repository.getReleasesAnimes(type: type, season: season);
       await _cache.putList<ReleasesAnilistEntity>(
         key: CacheKeys.releases,
         items: releases,
         toMap: (r) => r.toMap(),
-        site: type.value,
+        site: season != null ? season.value + type.value : type.value,
       );
 
       for (var r in releases) {
@@ -70,7 +72,7 @@ class AnilistController extends ChangeNotifier {
 
       return releases;
     } catch (e) {
-      Logger().e('Erro ao carregar releases: $e');
+      Loggers.error('Failure to load releases: $e');
       return [ReleasesAnilistEntity.empty()];
     }
   }
@@ -95,14 +97,14 @@ class AnilistController extends ChangeNotifier {
                 const Duration(days: 1);
 
         if (!shouldUpdate) {
-          Logger().i('Usando cache para rates');
+          Loggers.cache(operation: '${CacheKeys.rates.value} - ${type.value}');
           final rates = cached.map((e) => MangasRates.fromMap(e)).toList();
           rates.sort((a, b) => b.meanScore.compareTo(a.meanScore));
           return rates;
         }
       }
 
-      Logger().i('Buscando rates da web');
+      Loggers.cache(operation: '${type.value}-${CacheKeys.releases.value}');
       final rates = await _repository.getRateds(type: type);
       rates.sort((a, b) => b.meanScore.compareTo(a.meanScore));
 
@@ -147,5 +149,36 @@ class AnilistController extends ChangeNotifier {
       Logger().w('Erro na tradução, mantendo texto original');
       return description;
     }
+  }
+
+  List<ReleasesAnilistEntity> get uniqueSeasons {
+    final map = <String, ReleasesAnilistEntity>{};
+    for (final entry in releasesList) {
+      final key = '${entry.season.toUpperCase()}-${entry.seasonYear}';
+      if (!map.containsKey(key)) {
+        map[key] = entry;
+      }
+    }
+    final seasonOrder = AnilistSeasons.values.map((e) => e.value).toList();
+    final list = map.values.where((e) => e.seasonYear == 2025).toList()
+      ..sort((a, b) {
+        final aKey =
+            a.seasonYear * 10 + seasonOrder.indexOf(a.season.toUpperCase());
+        final bKey =
+            b.seasonYear * 10 + seasonOrder.indexOf(b.season.toUpperCase());
+        return aKey.compareTo(bKey);
+      });
+    final now = DateTime.now();
+    final currentSeason = () {
+      if (now.month <= 3) return AnilistSeasons.winter.value;
+      if (now.month <= 6) return AnilistSeasons.spring.value;
+      if (now.month <= 9) return AnilistSeasons.summer.value;
+      return AnilistSeasons.fall.value;
+    }();
+    final startIndex =
+        list.indexWhere((e) => e.season.toUpperCase() == currentSeason);
+
+    if (startIndex <= 0) return list;
+    return [...list.sublist(startIndex), ...list.sublist(0, startIndex)];
   }
 }
