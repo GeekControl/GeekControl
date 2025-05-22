@@ -1,6 +1,6 @@
 import 'package:geekcontrol/view/animes/articles/entities/articles_entity.dart';
 import 'package:geekcontrol/view/services/sites/intoxi_animes/webscraper/intoxi_articles_scraper.dart';
-import 'package:geekcontrol/view/services/sites/mangas_news/webscraper/all_articles.dart';
+import 'package:geekcontrol/view/services/sites/mangas_news/webscraper/mangas_news_articles.dart';
 import 'package:geekcontrol/view/services/sites/otakupt/otakupt_scraper.dart';
 
 class ScraperAdapter {
