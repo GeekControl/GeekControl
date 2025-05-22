@@ -2,7 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/view/animes/articles/controller/articles_controller.dart';
 import 'package:geekcontrol/view/animes/articles/entities/articles_entity.dart';
-import 'package:geekcontrol/view/animes/articles/pages/complete_article_page.dart';
+import 'package:geekcontrol/view/animes/articles/pages/article_details_page.dart';
 import 'package:geekcontrol/view/home/components/carousel_skeletonizer.dart';
 import 'package:logger/logger.dart';
 
@@ -34,7 +34,7 @@ class BannerCarousel extends StatelessWidget {
                     pageBuilder: (context, animation, secondaryAnimation) {
                       return FadeTransition(
                         opacity: animation,
-                        child: CompleteArticlePage(
+                        child: ArticleDetailsPage(
                           news: entry,
                           current: entry.site,
                         ),
