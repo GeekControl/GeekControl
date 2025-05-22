@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -32,21 +33,9 @@ class HitagiBanner extends StatelessWidget {
           onTap: () => launchUrl(Uri.parse(images[index])),
           child: Stack(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.network(
-                  images[index],
-                  height: 235,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Placeholder(
-                      fallbackWidth: 200,
-                      fallbackHeight: 200,
-                      color: Colors.grey,
-                    );
-                  },
-                ),
+              HitagiImages(
+                image: images[index],
+                width: double.infinity,
               ),
               Positioned(
                 bottom: 10,
