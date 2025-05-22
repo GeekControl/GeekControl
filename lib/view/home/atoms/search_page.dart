@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/view/animes/articles/controller/articles_controller.dart';
 import 'package:geekcontrol/view/animes/articles/entities/articles_entity.dart';
-import 'package:geekcontrol/view/animes/articles/pages/complete_article_page.dart';
+import 'package:geekcontrol/view/animes/articles/pages/article_details_page.dart';
 import 'package:geekcontrol/view/animes/components/floating_button.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/default_dialogs.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/hitagi_search_dialog.dart';
@@ -105,7 +105,7 @@ class _SearchPageState extends State<SearchPage> {
                                       (context, animation, secondaryAnimation) {
                                     return FadeTransition(
                                       opacity: animation,
-                                      child: CompleteArticlePage(
+                                      child: ArticleDetailsPage(
                                         news: article,
                                         current: article.site,
                                       ),
