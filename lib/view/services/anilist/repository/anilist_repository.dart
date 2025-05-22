@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:geekcontrol/core/utils/api_utils.dart';
+import 'package:geekcontrol/view/services/anilist/entities/anilist_seasons_enum.dart';
 import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
 import 'package:geekcontrol/view/services/anilist/entities/details_entity.dart';
 import 'package:geekcontrol/view/services/anilist/entities/releases_anilist_entity.dart';
@@ -26,11 +27,14 @@ class AnilistRepository {
     }
   }
 
-  Future<List<ReleasesAnilistEntity>> getReleasesAnimes(
-      {required AnilistTypes type, String? year}) async {
+  Future<List<ReleasesAnilistEntity>> getReleasesAnimes({
+    required AnilistTypes type,
+    String? year,
+    AnilistSeasons? season,
+  }) async {
     try {
       final response = await AnilistUtils.basicResponse(
-        query: Query.releasesQuery(type, year: year),
+        query: Query.releasesQuery(type, year: year, season: season),
       );
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
