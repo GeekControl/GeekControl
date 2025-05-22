@@ -1,17 +1,17 @@
-import 'package:geekcontrol/animes/articles/pages/articles_page.dart';
-import 'package:geekcontrol/animes/articles/pages/complete_article_page.dart';
-import 'package:geekcontrol/animes/season/season_releases.dart';
-import 'package:geekcontrol/animes/spoilers/pages/spoilers_page.dart';
-import 'package:geekcontrol/animes/ui/pages/details_page.dart';
-import 'package:geekcontrol/animes/ui/pages/latest_releases_page.dart';
-import 'package:geekcontrol/animes/ui/pages/top_rateds_page.dart';
-import 'package:geekcontrol/home/atoms/search_page.dart';
-import 'package:geekcontrol/services/anilist/entities/anilist_types_enum.dart';
-import 'package:geekcontrol/services/sites/otakupt/profile.dart';
-import 'package:geekcontrol/services/sites/wallpapers/pages/wallpapers_fullscreen_page.dart';
-import 'package:geekcontrol/services/sites/wallpapers/pages/wallpapers_page.dart';
-import 'package:geekcontrol/settings/main_scaffold.dart';
-import 'package:geekcontrol/settings/pages/settings_page.dart';
+import 'package:geekcontrol/view/animes/articles/pages/articles_page.dart';
+import 'package:geekcontrol/view/animes/articles/pages/complete_article_page.dart';
+import 'package:geekcontrol/view/animes/season/season_releases.dart';
+import 'package:geekcontrol/view/animes/spoilers/pages/spoilers_page.dart';
+import 'package:geekcontrol/view/animes/ui/pages/details_page.dart';
+import 'package:geekcontrol/view/animes/ui/pages/latest_releases_page.dart';
+import 'package:geekcontrol/view/animes/ui/pages/top_rateds_page.dart';
+import 'package:geekcontrol/view/home/atoms/search_page.dart';
+import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
+import 'package:geekcontrol/view/services/sites/otakupt/profile.dart';
+import 'package:geekcontrol/view/services/sites/wallpapers/pages/wallpapers_fullscreen_page.dart';
+import 'package:geekcontrol/view/services/sites/wallpapers/pages/wallpapers_page.dart';
+import 'package:geekcontrol/view/settings/main_scaffold.dart';
+import 'package:geekcontrol/view/settings/pages/settings_page.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRoutes {

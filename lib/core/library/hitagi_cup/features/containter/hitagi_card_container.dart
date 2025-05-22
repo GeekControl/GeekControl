@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/containter/hitagi_container.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
-import 'package:geekcontrol/services/anilist/entities/anilist_types_enum.dart';
+import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
 import 'package:go_router/go_router.dart';
 
 class HitagiCardContainer extends StatelessWidget {
