@@ -1,3 +1,4 @@
+import 'package:geekcontrol/view/services/anilist/entities/anilist_seasons_enum.dart';
 import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
 
 class Query {
@@ -28,12 +29,16 @@ class Query {
     ''';
   }
 
-  static String releasesQuery( AnilistTypes type,
-      {String? year, String? title}) {
+  static String releasesQuery(
+    AnilistTypes type, {
+    String? year,
+    String? title,
+    AnilistSeasons? season,
+  }) {
     return '''
 query {
   Page {
-    media(${year != null ? 'seasonYear: $year' : 'sort: TRENDING_DESC'}, type: ${type.value}) {
+    media(${year != null ? 'seasonYear: $year' : 'sort: TRENDING_DESC'}, ${season != null ? 'season: ${season.value}' : ''}, type: ${type.value}) {
       id
       bannerImage
       coverImage {
