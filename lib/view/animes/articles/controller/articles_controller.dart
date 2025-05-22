@@ -8,7 +8,7 @@ import 'package:geekcontrol/view/services/cache/keys_enum.dart';
 import 'package:geekcontrol/view/services/cache/local_cache.dart';
 import 'package:geekcontrol/view/services/sites/otakupt/otakupt_scraper.dart';
 import 'package:geekcontrol/view/services/sites/intoxi_animes/webscraper/intoxi_articles_scraper.dart';
-import 'package:geekcontrol/view/services/sites/mangas_news/webscraper/all_articles.dart';
+import 'package:geekcontrol/view/services/sites/mangas_news/webscraper/mangas_news_articles.dart';
 
 class ArticlesController extends ChangeNotifier {
   final LocalCache _cache = di<LocalCache>();
@@ -123,9 +123,12 @@ class ArticlesController extends ChangeNotifier {
     String url,
     ArticlesEntity article,
     String siteName,
-  ) async {
-    return _adapters[SitesEnum.values.firstWhere((e) => e.name == siteName)]!
-        .scrapeArticleDetails(url, article);
+  ) {
+    final adapt =
+        _adapters[SitesEnum.values.firstWhere((e) => e.name == siteName)]!
+            .scrapeArticleDetails(url, article);
+    notifyListeners();
+    return adapt;
   }
 
   Future<void> _loadReadArticles() async {
