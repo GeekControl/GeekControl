@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/view/animes/articles/controller/articles_controller.dart';
 import 'package:geekcontrol/view/animes/articles/entities/articles_entity.dart';
 import 'package:geekcontrol/view/animes/articles/pages/article_details_page.dart';
@@ -17,7 +18,7 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   final TextEditingController _controller = TextEditingController();
-  final ArticlesController _ct = ArticlesController();
+  final ArticlesController _ct = di<ArticlesController>();
 
   @override
   void initState() {
