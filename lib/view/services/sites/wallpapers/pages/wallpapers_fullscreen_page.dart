@@ -24,7 +24,7 @@ class WallpaperFullscreen extends StatefulWidget {
 class _WallpaperFullscreenState extends State<WallpaperFullscreen> {
   bool fullscreen = true;
   bool showButtons = false;
-  final WallpaperController ct = di<WallpaperController>(); 
+  final WallpaperController ct = di<WallpaperController>();
 
   int currentIndex = 0;
 
@@ -110,8 +110,10 @@ class _WallpaperFullscreenState extends State<WallpaperFullscreen> {
                             CopyButton(image: imageUrl),
                             const SizedBox(width: 16),
                             IconButton(
-                              icon: const Icon(Icons.download,
-                                  color: Colors.white),
+                              icon: const Icon(
+                                Icons.download,
+                                color: Colors.white,
+                              ),
                               onPressed: () {
                                 try {
                                   ct.downloadWallpaper(imageUrl);
