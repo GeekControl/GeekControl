@@ -9,6 +9,8 @@ class ReleasesAnilistEntity {
   final String bannerImage;
   final String coverImage;
   final int episodes;
+  final int? chapters;
+  final int? volumes;
   final int? actuallyEpisode;
   final int animeUpdatedAt;
   final String status;
@@ -27,6 +29,8 @@ class ReleasesAnilistEntity {
 
   ReleasesAnilistEntity({
     required this.id,
+    required this.chapters,
+    required this.volumes,
     required this.description,
     required this.episodeId,
     required this.englishTitle,
@@ -55,6 +59,8 @@ class ReleasesAnilistEntity {
     List<ReleasesAnilistEntity> entities = mediaList.map((media) {
       return ReleasesAnilistEntity(
         id: media['id'],
+        chapters: media['chapters'] ?? 0,
+        volumes: media['volumes'] ?? 0,
         description: media['description'] ?? '',
         meanScore: media['meanScore'] ?? 0,
         averageScore: media['averageScore'] ?? 0,
@@ -90,6 +96,8 @@ class ReleasesAnilistEntity {
 
     return ReleasesAnilistEntity(
       id: media['id'],
+      chapters: media['chapters'] ?? 0,
+      volumes: media['volumes'] ?? 0,
       description: media['description'] ?? '',
       meanScore: media['meanScore'] ?? 0,
       averageScore: media['averageScore'] ?? 0,
@@ -144,6 +152,8 @@ class ReleasesAnilistEntity {
   ReleasesAnilistEntity.empty()
       : id = 0,
         description = '',
+        chapters = 0,
+        volumes = 0,
         meanScore = 0,
         averageScore = 0,
         nextEpisode = 0,
