@@ -17,7 +17,7 @@ class MangasCardContainer extends StatelessWidget {
           description:
               'Confira os mangás que estão bombando e ganhando destaque na comunidade.',
           route: SeasonReleasesPage.route,
-          backgroundImageAsset: AssetsEnum.berserker.path,
+          backgroundImageAsset: BannerAssetsEnum.berserker,
           gradient: [
             Color.fromRGBO(74, 73, 73, 1),
             const Color.fromARGB(255, 0, 0, 0),
