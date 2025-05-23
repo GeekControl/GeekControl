@@ -1,3 +1,6 @@
+import 'package:geekcontrol/core/routes/entities/article_details_route_entity.dart';
+import 'package:geekcontrol/core/routes/entities/seasons_route_entity.dart';
+import 'package:geekcontrol/core/routes/entities/wallpapers_route_entity.dart';
 import 'package:geekcontrol/view/animes/articles/pages/articles_page.dart';
 import 'package:geekcontrol/view/animes/articles/pages/article_details_page.dart';
 import 'package:geekcontrol/view/animes/season/season_releases.dart';
@@ -29,10 +32,10 @@ class AppRoutes {
       GoRoute(
         path: '/articles/details',
         builder: (context, state) {
-          final data = state.extra as Map;
+          final data = ArticleDetailsRouteEntity.fromMap(state.extra as Map);
           return ArticleDetailsPage(
-            news: data['news'],
-            current: data['current'],
+            news: data.news,
+            current: data.current,
           );
         },
       ),
@@ -64,9 +67,11 @@ class AppRoutes {
       GoRoute(
         path: '/wallpaper-fullscreen',
         builder: (context, state) {
-          final data = state.extra as Map;
+          final data = WallpapersRouteEntity.fromMap(state.extra as Map);
           return WallpaperFullscreen(
-              images: data['images'], index: data['index']);
+            images: data.images,
+            index: data.index,
+          );
         },
       ),
       GoRoute(
@@ -86,12 +91,12 @@ class AppRoutes {
       GoRoute(
         path: '/season-releases',
         builder: (context, state) {
-          final data = state.extra as Map<String, dynamic>;
+          final data = SeasonsRouteEntity.fromMap(state.extra as Map);
           return SeasonReleasesPage(
-            title: data['title'],
-            type: data['type'],
-            season: data['season'],
-            year: data['year'],
+            title: data.title,
+            type: data.type,
+            season: data.season,
+            year: data.year,
           );
         },
       ),

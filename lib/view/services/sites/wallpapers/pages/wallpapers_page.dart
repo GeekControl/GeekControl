@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
+import 'package:geekcontrol/core/routes/entities/wallpapers_route_entity.dart';
 import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/view/services/sites/wallpapers/atoms/copy_button.dart';
 import 'package:geekcontrol/view/services/sites/wallpapers/pages/wallpapers_fullscreen_page.dart';
@@ -142,11 +143,11 @@ class _WallpapersPageState extends State<WallpapersPage> {
               itemCount: _images.length,
               itemBuilder: (context, index) {
                 return GestureDetector(
-                  onTap: () => GoRouter.of(context)
-                      .push(WallpaperFullscreen.route, extra: {
-                    'images': _images,
-                    'index': index,
-                  }),
+                  onTap: () => GoRouter.of(context).push(
+                    WallpaperFullscreen.route,
+                    extra: WallpapersRouteEntity(images: _images, index: index)
+                        .toMap(),
+                  ),
                   child: Card(
                     elevation: 4,
                     shape: RoundedRectangleBorder(
