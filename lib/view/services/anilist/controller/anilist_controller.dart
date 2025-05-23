@@ -58,8 +58,12 @@ class AnilistController extends ChangeNotifier {
         }
       }
       Loggers.get(site);
-      final releases =
-          await _repository.getReleasesAnimes(type: type, season: season, year: year);
+      final releases = await _repository.getReleasesAnimes(
+        type: type,
+        season: season,
+        year: year,
+      );
+      
       await _cache.putList<ReleasesAnilistEntity>(
         key: CacheKeys.releases,
         items: releases,
