@@ -49,7 +49,9 @@ class SeasonReleasesPage extends StatelessWidget {
             children: [
               _FeaturedAnime(anime: animes.first),
               const SizedBox(height: 24),
-              ...animes.skip(1).map((anime) => _AnimeListItem(anime: anime)),
+              ...animes
+                  .skip(1)
+                  .map((anime) => _AnimeListItem(release: anime, type: type)),
             ],
           );
         },
@@ -119,9 +121,13 @@ class _FeaturedAnime extends StatelessWidget {
 }
 
 class _AnimeListItem extends StatelessWidget {
-  final ReleasesAnilistEntity anime;
+  final AnilistTypes type;
+  final ReleasesAnilistEntity release;
 
-  const _AnimeListItem({required this.anime});
+  const _AnimeListItem({
+    required this.release,
+    required this.type,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -129,14 +135,14 @@ class _AnimeListItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: GestureDetector(
         onTap: () =>
-            GoRouter.of(context).push(DetailsPage.route, extra: anime.id),
+            GoRouter.of(context).push(DetailsPage.route, extra: release.id),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: HitagiImages(
-                image: anime.coverImage,
+                image: release.coverImage,
                 width: 90,
                 height: 120,
                 fit: BoxFit.cover,
@@ -148,24 +154,32 @@ class _AnimeListItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   HitagiText(
-                    text: anime.englishTitle,
+                    text: release.englishTitle,
                     typography: HitagiTypography.button,
                   ),
                   const SizedBox(height: 4),
                   HitagiText(
                     text:
-                        '${Utils.formatSeason(anime.season)} ${anime.seasonYear}',
+                        '${Utils.formatSeason(release.season)} ${release.seasonYear}',
                     typography: HitagiTypography.button,
                   ),
                   const SizedBox(height: 8),
                   HitagiText(
                     typography: HitagiTypography.button,
-                    text:
-                        'Episódios: ${anime.actuallyEpisode ?? 0}/${anime.episodes}',
+                    text: type == AnilistTypes.manga
+                        ? 'Capítulos: ${release.chapters ?? 0}'
+                        : 'Episódios: ${release.actuallyEpisode ?? 0}/${release.episodes}',
                   ),
+                  const SizedBox(height: 8),
+                  (release.volumes! > 0)
+                      ? HitagiText(
+                          typography: HitagiTypography.button,
+                          text: 'Volumes: ${release.volumes}',
+                        )
+                      : const SizedBox.shrink(),
                   HitagiText(
                     text:
-                        'Nota Média: ${(anime.meanScore / 10).toStringAsFixed(1)}',
+                        'Nota Média: ${(release.meanScore / 10).toStringAsFixed(1)}',
                     typography: HitagiTypography.button,
                   ),
                   const SizedBox(height: 8),
