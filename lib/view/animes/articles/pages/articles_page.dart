@@ -62,7 +62,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
         )),
       ),
       floatingActionButton: HitagiFloattingButton(ct: ct),
-      body: ct.isLoading
+      body: (ct.isLoading || ct.articlesList.isEmpty)
           ? const CardsSkeletonizer()
           : ListView.builder(
               itemCount: ct.articlesList.length,
