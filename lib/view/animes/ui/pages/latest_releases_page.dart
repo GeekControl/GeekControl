@@ -92,7 +92,10 @@ class _LatestReleasesPageState extends State<LatestReleasesPage> {
                                 ),
                               ),
                             ),
-                            FieldsComponent(releases: release),
+                            FieldsComponent(
+                              releases: release,
+                              type: widget.type,
+                            ),
                           ],
                         ),
                       ],
