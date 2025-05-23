@@ -49,6 +49,8 @@ query {
         english
       }
       episodes
+      chapters 
+      volumes
       updatedAt
       status
       season
@@ -139,24 +141,6 @@ query (\$id: Int) {
     }
   }
 }
-  ''';
-  }
-
-  static String releases2025Query(AnilistTypes type) {
-    return '''
-    query {
-      Page(page: 1) {
-        media(seasonYear: 2025, type: ${type.value}) {
-          id
-          title {
-            romaji
-            english
-          }
-          season
-          seasonYear
-        }
-      }
-    }
   ''';
   }
 }
