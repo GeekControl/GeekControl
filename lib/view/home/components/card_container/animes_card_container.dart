@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:geekcontrol/view/animes/season/season_releases.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/containter/hitagi_card_container.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/utils.dart';
-import 'package:geekcontrol/core/utils/assets_enum.dart';
 import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/view/home/components/card_container/visual_config.dart';
 import 'package:geekcontrol/view/services/anilist/controller/anilist_controller.dart';
@@ -19,16 +18,16 @@ class AnimesCardContainer extends StatefulWidget {
 }
 
 class _AnimesCardContainerState extends State<AnimesCardContainer> {
+  late final VisualConfig randomConfig;
   final ct = di<AnilistController>();
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    randomConfig = RandomVisualConfig.random();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await ct.getReleasesAnimes(
-        type: AnilistTypes.anime,
-      );
+      await ct.getReleasesAnimes(type: AnilistTypes.anime);
       setState(() {
         isLoading = false;
       });
@@ -74,14 +73,11 @@ class _AnimesCardContainerState extends State<AnimesCardContainer> {
         HitagiCardContainer(
           title: 'Wallpapers de Animes',
           subtitle: 'Deixe sua tela incrível!',
-          backgroundImageAsset: AssetsEnum.hitagi.path,
+          backgroundImageAsset: randomConfig.image,
           description:
               'Explore e baixe wallpapers em alta qualidade dos seus animes favoritos.',
           route: WallpapersPage.route,
-          gradient: [
-            const Color.fromRGBO(104, 61, 106, 1),
-            const Color.fromARGB(255, 170, 19, 100),
-          ],
+          gradient: randomConfig.gradient,
         ),
       ],
     );
