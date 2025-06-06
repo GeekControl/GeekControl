@@ -102,15 +102,28 @@ class ArticlesController extends ChangeNotifier {
     );
 
     if (cached == null || updateCache) {
-      final articles = await _adapters[currentSite]!.scrapeArticles();
-      await _cache.putList<ArticlesEntity>(
-        key: CacheKeys.articles,
-        items: articles,
-        toMap: (a) => a.toMap(),
-        site: currentSite.name,
-      );
-      return articles.take(3).toList();
+      final sites = _adapters.keys.toList();
+
+      for (final site in sites) {
+        try {
+          final articles = await _adapters[site]!.scrapeArticles();
+
+          await _cache.putList<ArticlesEntity>(
+            key: CacheKeys.articles,
+            items: articles,
+            toMap: (a) => a.toMap(),
+            site: site.name,
+          );
+          currentSite = site;
+          notifyListeners();
+          return articles.take(3).toList();
+        } catch (_) {
+          continue;
+        }
+      }
     }
+
+    notifyListeners();
     return cached
         .map((e) => ArticlesEntity.fromMap(e))
         .whereType<ArticlesEntity>()
