@@ -5,6 +5,7 @@ import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.da
 import 'package:geekcontrol/view/services/anilist/entities/details_entity.dart';
 import 'package:geekcontrol/view/services/anilist/entities/releases_anilist_entity.dart';
 import 'package:geekcontrol/view/services/anilist/entities/rates_entity.dart';
+import 'package:geekcontrol/view/services/anilist/entities/reviews_entity.dart';
 import 'package:geekcontrol/view/services/anilist/repository/anilist_repository.dart';
 import 'package:geekcontrol/view/services/cache/keys_enum.dart';
 import 'package:geekcontrol/view/services/cache/local_cache.dart';
@@ -63,7 +64,7 @@ class AnilistController extends ChangeNotifier {
         season: season,
         year: year,
       );
-      
+
       await _cache.putList<ReleasesAnilistEntity>(
         key: CacheKeys.releases,
         items: releases,
@@ -99,7 +100,7 @@ class AnilistController extends ChangeNotifier {
             DateTime.now().difference(
                   timestamps.reduce((a, b) => a.isAfter(b) ? a : b),
                 ) >
-                const Duration(days: 1);
+                const Duration(days: 7);
 
         if (!shouldUpdate) {
           Loggers.cache(operation: '${CacheKeys.rates.value} - ${type.value}');
@@ -135,15 +136,24 @@ class AnilistController extends ChangeNotifier {
   Future<DetailsEntity> getDetails(int id) async {
     try {
       final details = await _repository.getDetails(id);
-      translatedDescription = await _translateDescription(details.description);
-      return details;
+      translatedDescription = await translateDescription(details.description);
+      final translatedReviews = await Future.wait(
+        details.reviews.map((review) async {
+          final translated = await translateDescription(review.body);
+          return review.copyWith(
+            body: translated,
+            summary: await translateDescription(review.summary),
+          );
+        }),
+      );
+      return details.copyWith(reviews: translatedReviews);
     } catch (e) {
       Logger().e('Erro ao carregar detalhes: $e');
       return DetailsEntity.empty;
     }
   }
 
-  Future<String> _translateDescription(String description) async {
+  Future<String> translateDescription(String description) async {
     try {
       final translator = GoogleTranslator();
       final plainText = description.replaceAll(RegExp(r'<[^>]*>'), '');
