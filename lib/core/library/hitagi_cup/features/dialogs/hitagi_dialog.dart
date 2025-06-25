@@ -65,6 +65,7 @@ class HitagiDialog extends StatelessWidget {
               children: [
                 onPressedButtonAccept != null
                     ? HitagiButton.text(
+                        colorText: Colors.black,
                         label: 'Não',
                         onPressed: onPressedButtonClose ??
                             () => Navigator.pop(context),
