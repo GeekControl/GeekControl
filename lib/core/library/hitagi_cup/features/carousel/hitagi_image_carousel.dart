@@ -1,6 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:geekcontrol/animes/ui/pages/details_page.dart';
+import 'package:geekcontrol/view/animes/ui/pages/details_page.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:go_router/go_router.dart';

@@ -48,3 +48,5 @@ app.*.map.json
 .env
 .vscode/settings.json
 pubspec.lock
+android/app/google-services.json
+deps.txt

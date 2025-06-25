@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/containter/hitagi_container.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
-import 'package:geekcontrol/services/anilist/entities/anilist_types_enum.dart';
+import 'package:geekcontrol/core/routes/entities/seasons_route_entity.dart';
+import 'package:geekcontrol/core/utils/assets_enum.dart';
+import 'package:geekcontrol/view/services/anilist/entities/anilist_seasons_enum.dart';
+import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
 import 'package:go_router/go_router.dart';
 
 class HitagiCardContainer extends StatelessWidget {
@@ -11,7 +14,9 @@ class HitagiCardContainer extends StatelessWidget {
   final List<Color>? gradient;
   final String route;
   final AnilistTypes type;
-  final String? backgroundImageAsset;
+  final BannerAssetsEnum? backgroundImageAsset;
+  final AnilistSeasons? season;
+  final String? year;
 
   const HitagiCardContainer({
     super.key,
@@ -19,6 +24,8 @@ class HitagiCardContainer extends StatelessWidget {
     required this.subtitle,
     required this.description,
     required this.route,
+    this.season,
+    this.year,
     this.type = AnilistTypes.anime,
     this.gradient,
     this.backgroundImageAsset,
@@ -71,7 +78,7 @@ class HitagiCardContainer extends StatelessWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage(backgroundImageAsset!),
+                          image: AssetImage(backgroundImageAsset!.path),
                           fit: BoxFit.cover,
                           alignment: Alignment.center,
                         ),
@@ -117,10 +124,15 @@ class HitagiCardContainer extends StatelessWidget {
                         color: Colors.transparent,
                         child: InkWell(
                           borderRadius: BorderRadius.circular(20),
-                          onTap: () => GoRouter.of(context).push(route, extra: {
-                            'season': title,
-                            'type': type,
-                          }),
+                          onTap: () => GoRouter.of(context).push(
+                            route,
+                            extra: SeasonsRouteEntity(
+                              title: title,
+                              type: type,
+                              season: season,
+                              year: year,
+                            ).toMap(),
+                          ),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: Center(

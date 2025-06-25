@@ -10,26 +10,17 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-  flutter_animated_button: ^2.0.3
   get: ^4.6.6
-  device_preview: any
-  flutter_localizations:
-    sdk: flutter
-  cupertino_icons: ^1.0.2
   get_it: ^8.0.3
   dotenv: ^4.2.0
   flutter_dotenv: ^5.1.0
   intl: any
   carousel_slider: ^5.0.0
   mongo_dart: ^0.10.2
-  shared_preferences: ^2.2.3
   logger: ^2.2.0
-  skeletonizer: ^1.4.3
+  skeletonizer: ^2.0.1
   loading_indicator: ^3.1.1
-  convex_bottom_bar: ^3.2.0
   go_router: ^15.1.1
-  infinite_scroll_pagination: ^5.0.0
   animated_floating_buttons: ^0.0.2
   http: ^1.4.0
   sembast: ^3.7.1
@@ -40,18 +31,20 @@ dependencies:
   permission_handler: ^12.0.0+1
   cached_network_image: ^3.3.1
   saver_gallery: ^4.0.1
-  device_info_plus: ^11.4.0
-  test: ^1.25.15
+  device_info_plus: ^10.1.2
   shimmer: ^3.0.0
   translator: ^1.0.3+1
   toasty_box: ^1.0.4
   provider: ^6.1.5
   scraper: ^1.2.0
+  firebase_core: ^3.14.0
+  firebase_auth: ^5.6.0
+  cloud_firestore: ^5.6.9
+  uuid: ^4.5.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^5.0.0
 
 flutter:
@@ -70,3 +63,8 @@ flutter:
     - assets/banners_assets/berserker.png
     - assets/banners_assets/zenitsu.png
     - assets/banners_assets/frieren.png
+    - assets/banners_assets/shalltear_white.png
+    - assets/banners_assets/albedo_white.png
+    - assets/banners_assets/oshino_shinobu_pink.png
+    - assets/banners_assets/oshino_shinobu_purple.png
+    - assets/banners_assets/solo_leveling_purple.jpeg

@@ -1,17 +1,22 @@
-import 'package:geekcontrol/animes/articles/pages/articles_page.dart';
-import 'package:geekcontrol/animes/articles/pages/complete_article_page.dart';
-import 'package:geekcontrol/animes/season/season_releases.dart';
-import 'package:geekcontrol/animes/spoilers/pages/spoilers_page.dart';
-import 'package:geekcontrol/animes/ui/pages/details_page.dart';
-import 'package:geekcontrol/animes/ui/pages/latest_releases_page.dart';
-import 'package:geekcontrol/animes/ui/pages/top_rateds_page.dart';
-import 'package:geekcontrol/home/atoms/search_page.dart';
-import 'package:geekcontrol/services/anilist/entities/anilist_types_enum.dart';
-import 'package:geekcontrol/services/sites/otakupt/profile.dart';
-import 'package:geekcontrol/services/sites/wallpapers/pages/wallpapers_fullscreen_page.dart';
-import 'package:geekcontrol/services/sites/wallpapers/pages/wallpapers_page.dart';
-import 'package:geekcontrol/settings/main_scaffold.dart';
-import 'package:geekcontrol/settings/pages/settings_page.dart';
+import 'package:geekcontrol/core/routes/entities/article_details_route_entity.dart';
+import 'package:geekcontrol/core/routes/entities/seasons_route_entity.dart';
+import 'package:geekcontrol/core/routes/entities/wallpapers_route_entity.dart';
+import 'package:geekcontrol/view/animes/articles/pages/articles_page.dart';
+import 'package:geekcontrol/view/animes/articles/pages/article_details_page.dart';
+import 'package:geekcontrol/view/animes/season/season_releases.dart';
+import 'package:geekcontrol/view/animes/spoilers/pages/spoilers_page.dart';
+import 'package:geekcontrol/view/animes/ui/pages/details_page.dart';
+import 'package:geekcontrol/view/animes/ui/pages/latest_releases_page.dart';
+import 'package:geekcontrol/view/animes/ui/pages/top_rateds_page.dart';
+import 'package:geekcontrol/view/auth/ui/login_page.dart';
+import 'package:geekcontrol/view/auth/ui/register_page.dart';
+import 'package:geekcontrol/view/home/atoms/search_page.dart';
+import 'package:geekcontrol/view/library/ui/library_page.dart';
+import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
+import 'package:geekcontrol/view/services/sites/wallpapers/pages/wallpapers_fullscreen_page.dart';
+import 'package:geekcontrol/view/services/sites/wallpapers/pages/wallpapers_page.dart';
+import 'package:geekcontrol/view/settings/main_scaffold.dart';
+import 'package:geekcontrol/view/settings/pages/settings_page.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRoutes {
@@ -29,10 +34,10 @@ class AppRoutes {
       GoRoute(
         path: '/articles/details',
         builder: (context, state) {
-          final data = state.extra as Map;
-          return CompleteArticlePage(
-            news: data['news'],
-            current: data['current'],
+          final data = ArticleDetailsRouteEntity.fromMap(state.extra as Map);
+          return ArticleDetailsPage(
+            news: data.news,
+            current: data.current,
           );
         },
       ),
@@ -41,10 +46,6 @@ class AppRoutes {
         builder: (context, state) => LatestReleasesPage(
           type: state.extra as AnilistTypes,
         ),
-      ),
-      GoRoute(
-        path: '/profile',
-        builder: (context, state) => const Profile(),
       ),
       GoRoute(
         path: '/details',
@@ -64,9 +65,11 @@ class AppRoutes {
       GoRoute(
         path: '/wallpaper-fullscreen',
         builder: (context, state) {
-          final data = state.extra as Map;
+          final data = WallpapersRouteEntity.fromMap(state.extra as Map);
           return WallpaperFullscreen(
-              images: data['images'], index: data['index']);
+            images: data.images,
+            index: data.index,
+          );
         },
       ),
       GoRoute(
@@ -86,12 +89,26 @@ class AppRoutes {
       GoRoute(
         path: '/season-releases',
         builder: (context, state) {
-          final data = state.extra as Map<String, dynamic>;
+          final data = SeasonsRouteEntity.fromMap(state.extra as Map);
           return SeasonReleasesPage(
-            season: data['season'],
-            type: data['type'],
+            title: data.title,
+            type: data.type,
+            season: data.season,
+            year: data.year,
           );
         },
+      ),
+      GoRoute(
+        path: '/register',
+        builder: (context, state) => const RegisterPage(),
+      ),
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => const LoginPage(),
+      ),
+      GoRoute(
+        path: '/library',
+        builder: (context, state) => const LibraryPage(),
       ),
     ],
   );
