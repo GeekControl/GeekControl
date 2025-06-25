@@ -49,6 +49,7 @@ query {
         english
       }
       episodes
+      source
       chapters 
       volumes
       updatedAt
@@ -124,6 +125,35 @@ query (\$id: Int) {
     popularity
     genres
     source
+    reviews(limit: 10) {
+      nodes {
+          body
+          summary
+          rating
+          user {
+            name
+            avatar {
+              large
+            }
+          }
+        }
+      }
+    recommendations {
+      nodes {
+          mediaRecommendation {
+            id
+            coverImage {
+              extraLarge
+              color
+            }
+            title {
+              english
+            }
+            description
+            bannerImage
+          }
+        }
+      }
     studios {
       nodes {
         name
