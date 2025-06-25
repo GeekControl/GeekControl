@@ -8,8 +8,8 @@ enum IconPosition {
 
 class HitagiButton extends TextButton {
   final String label;
-  final Color? corButton;
-  final Color? corTexto;
+  final Color? colorButton;
+  final Color? colorText;
   final EdgeInsetsGeometry padding;
   final double? elevation;
   final HitagiTypography typography;
@@ -19,8 +19,8 @@ class HitagiButton extends TextButton {
     super.key,
     required this.label,
     required super.onPressed,
-    this.corButton,
-    this.corTexto,
+    this.colorButton,
+    this.colorText,
     this.padding = const EdgeInsets.symmetric(horizontal: 32),
     this.elevation,
     this.typography = HitagiTypography.button,
@@ -29,12 +29,12 @@ class HitagiButton extends TextButton {
           child: HitagiText(
             text: label,
             typography: typography,
-            color: corTexto ?? Colors.black,
+            color: colorText ?? Colors.black,
           ),
           style: TextButton.styleFrom(
             elevation: elevation,
             backgroundColor:
-                corButton ?? const Color.fromARGB(188, 241, 145, 145),
+                colorButton ?? const Color.fromARGB(132, 128, 9, 86),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),
@@ -46,8 +46,8 @@ class HitagiButton extends TextButton {
     super.key,
     required this.label,
     required super.onPressed,
-    this.corButton,
-    this.corTexto,
+    this.colorButton,
+    this.colorText,
     this.padding = const EdgeInsets.symmetric(horizontal: 32),
     this.elevation,
     this.typography = HitagiTypography.button,
@@ -68,7 +68,7 @@ class HitagiButton extends TextButton {
               HitagiText(
                 text: label,
                 typography: typography,
-                color: corTexto ?? const Color.fromARGB(255, 0, 0, 0),
+                color: colorText ?? const Color.fromARGB(255, 0, 0, 0),
               ),
               if (iconPosition == IconPosition.right) ...[
                 const SizedBox(width: 6),
@@ -82,7 +82,7 @@ class HitagiButton extends TextButton {
           ),
           style: TextButton.styleFrom(
             elevation: elevation,
-            backgroundColor: corButton ?? Colors.white,
+            backgroundColor: colorButton ?? Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),
             ),
@@ -94,8 +94,8 @@ class HitagiButton extends TextButton {
     super.key,
     required this.label,
     required super.onPressed,
-    this.corButton,
-    this.corTexto,
+    this.colorButton,
+    this.colorText,
     this.padding = const EdgeInsets.symmetric(horizontal: 32),
     this.elevation,
     this.iconPosition = IconPosition.left,
@@ -104,7 +104,7 @@ class HitagiButton extends TextButton {
           child: HitagiText(
             text: label,
             typography: typography,
-            color: corTexto ?? Colors.white,
+            color: colorText ?? Colors.white,
           ),
         );
 }
