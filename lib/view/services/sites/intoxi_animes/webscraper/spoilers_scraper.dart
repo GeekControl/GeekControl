@@ -1,5 +1,5 @@
 import 'package:geekcontrol/view/animes/spoilers/entities/spoiler_entity.dart';
-import 'package:geekcontrol/core/utils/api_utils.dart';
+import 'package:geekcontrol/core/utils/anime_sources.dart';
 import 'package:scraper/scraper.dart';
 
 class SpoilersScrap {
@@ -49,7 +49,7 @@ class SpoilersScrap {
   Future<List<SpoilersEntity>> scrapeInitial() async {
     final List<SpoilersEntity> spoilersList = [];
 
-    final doc = await _scraper.getDocument(url: IntoxiUtils.spoilersStr);
+    final doc = await _scraper.getDocument(url: AnimeSources.intoxiUriStr);
     final elements = doc.querySelectorAll('.post-inner');
 
     for (final e in elements) {

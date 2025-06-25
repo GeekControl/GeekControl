@@ -1,6 +1,6 @@
 import 'package:geekcontrol/view/animes/articles/entities/articles_entity.dart';
 import 'package:geekcontrol/view/animes/sites_enum.dart';
-import 'package:geekcontrol/core/utils/api_utils.dart';
+import 'package:geekcontrol/core/utils/anime_sources.dart';
 import 'package:html/dom.dart';
 import 'package:scraper/scraper.dart';
 
@@ -10,7 +10,7 @@ class MangaNews {
   Future<List<ArticlesEntity>> scrapeArticles() async {
     final List<ArticlesEntity> scrapeList = [];
 
-    final Document doc = await _scraper.getDocument(url: AnimesNewUtils.uriStr);
+    final Document doc = await _scraper.getDocument(url: AnimeSources.animesNewUriStr);
     final element = doc.querySelectorAll('.list-holder');
 
     for (final e in element) {
@@ -109,7 +109,7 @@ class MangaNews {
   Future<List<ArticlesEntity>> searchArticle(String article) async {
     final List<ArticlesEntity> articlesList = [];
     final doc =
-        await _scraper.getDocument(url: '${AnimesNewUtils.uriStr}?s=$article');
+        await _scraper.getDocument(url: '${AnimeSources.animesNewUriStr}?s=$article');
 
     final element = doc.querySelectorAll('.p-wrap.p-grid.p-grid-1');
 

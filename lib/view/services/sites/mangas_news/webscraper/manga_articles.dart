@@ -1,6 +1,6 @@
 import 'package:geekcontrol/view/animes/articles/entities/articles_entity.dart';
 import 'package:geekcontrol/view/animes/sites_enum.dart';
-import 'package:geekcontrol/core/utils/api_utils.dart';
+import 'package:geekcontrol/core/utils/anime_sources.dart';
 import 'package:html/dom.dart';
 import 'package:scraper/scraper.dart';
 
@@ -9,7 +9,7 @@ class AnimesnewMangasArticles {
   Future<List<ArticlesEntity>> getMangasScrap() async {
     final List<ArticlesEntity> scrapeList = [];
 
-    final url = AnimesNewUtils.uriStr;
+    final url = AnimeSources.animesNewUriStr;
     final Document doc = await _scraper.getDocument(url: url);
     final element = doc.querySelectorAll('.p-wrap.p-grid.p-grid-2');
 

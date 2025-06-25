@@ -1,6 +1,6 @@
 import 'package:geekcontrol/view/animes/articles/entities/articles_entity.dart';
 import 'package:geekcontrol/view/animes/sites_enum.dart';
-import 'package:geekcontrol/core/utils/api_utils.dart';
+import 'package:geekcontrol/core/utils/anime_sources.dart';
 import 'package:scraper/scraper.dart';
 
 class IntoxiArticles {
@@ -68,7 +68,7 @@ class IntoxiArticles {
   }
 
   Future<List<ArticlesEntity>> searchArticles({required String article}) async {
-    return await scrapeArticles('${IntoxiUtils.uriStr}?s=$article');
+    return await scrapeArticles('${AnimeSources.intoxiUriStr}?s=$article');
   }
 
   Future<ArticlesEntity> scrapeArticleDetails(

@@ -1,6 +1,6 @@
 import 'package:geekcontrol/view/animes/articles/entities/articles_entity.dart';
 import 'package:geekcontrol/view/animes/sites_enum.dart';
-import 'package:geekcontrol/core/utils/api_utils.dart';
+import 'package:geekcontrol/core/utils/anime_sources.dart';
 import 'package:logger/logger.dart';
 import 'package:scraper/scraper.dart';
 
@@ -9,7 +9,7 @@ class AnimeUnited {
   Future<List<ArticlesEntity>> fetchArticles() async {
     final List<ArticlesEntity> articlesList = [];
 
-    final doc = await _scraper.getDocument(url: AnimeUnitedUtils.uri);
+    final doc = await _scraper.getDocument(url: AnimeSources.animeUnitedUri);
     final element = doc.querySelectorAll('.col-12.col-4-tablet.post-column');
 
     for (var e in element) {

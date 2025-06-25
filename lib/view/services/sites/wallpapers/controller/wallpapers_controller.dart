@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geekcontrol/core/utils/api_utils.dart';
+import 'package:geekcontrol/core/utils/anime_sources.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -24,7 +24,7 @@ class WallpaperController extends ChangeNotifier {
   }
 
   Future<List<String>> getWallpapers(String search) async {
-    final doc = await _scraper.getDocument(url: WallpapersUtils.uri);
+    final doc = await _scraper.getDocument(url: AnimeSources.wallpapersUri);
 
     final img = _scraper.querySelectAllAttr(
       doc: doc,
@@ -38,7 +38,7 @@ class WallpaperController extends ChangeNotifier {
 
   Future<List<String>> _wallpaperFlare(String search) async {
     final doc = await _scraper.getDocument(
-      url: '${WallpapersUtils.wallpaperFlare}$search&mobile=ok',
+      url: '${AnimeSources.wallpaperFlare}$search&mobile=ok',
     );
 
     final img = _scraper.querySelectAllAttr(

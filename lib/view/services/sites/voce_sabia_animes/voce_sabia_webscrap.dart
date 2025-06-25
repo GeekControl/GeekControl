@@ -1,6 +1,6 @@
 import 'package:geekcontrol/view/animes/articles/entities/articles_entity.dart';
 import 'package:geekcontrol/view/animes/sites_enum.dart';
-import 'package:geekcontrol/core/utils/api_utils.dart';
+import 'package:geekcontrol/core/utils/anime_sources.dart';
 import 'package:scraper/scraper.dart';
 
 class VoceSabiaAnime {
@@ -9,7 +9,7 @@ class VoceSabiaAnime {
   Future<List<ArticlesEntity>> fetchArticles() async {
     final List<ArticlesEntity> articlesList = [];
 
-    final doc = await _scraper.getDocument(url: VoceSabiaAnimeUtils.uri);
+    final doc = await _scraper.getDocument(url: AnimeSources.voceSabiaAnimeUri);
 
     final element = doc.querySelectorAll('.ultp-block-content-wrap');
 
