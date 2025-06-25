@@ -1,13 +1,21 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/carousel/hitagi_banner_carousel.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/hitagi_dialog.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/hitagi_toast.dart';
+import 'package:geekcontrol/view/animes/ui/components/details_component.dart';
 import 'package:geekcontrol/view/animes/ui/components/genres_component.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/utils.dart';
 import 'package:geekcontrol/core/utils/global_variables.dart';
+import 'package:geekcontrol/view/animes/ui/components/reviews_component.dart';
+import 'package:geekcontrol/view/library/model/category_entity.dart';
 import 'package:geekcontrol/view/services/anilist/controller/anilist_controller.dart';
 import 'package:geekcontrol/view/services/anilist/entities/details_entity.dart';
+import 'package:go_router/go_router.dart';
+import 'package:logger/logger.dart';
 
 class DetailsPage extends StatefulWidget {
   static const route = '/details';
@@ -41,13 +49,11 @@ class _DetailsPageState extends State<DetailsPage>
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-
           if (snapshot.hasError) {
             return Center(child: Text('Erro: ${snapshot.error}'));
           }
 
           final details = snapshot.data!;
-
           return Column(
             children: [
               Expanded(
@@ -62,13 +68,9 @@ class _DetailsPageState extends State<DetailsPage>
                             fit: StackFit.expand,
                             children: [
                               if (details.bannerImage.isNotEmpty)
-                                HitagiImages(
-                                  image: details.bannerImage,
-                                )
+                                HitagiImages(image: details.bannerImage)
                               else
-                                HitagiImages(
-                                  image: details.coverImage,
-                                ),
+                                HitagiImages(image: details.coverImage),
                               Container(
                                 decoration: const BoxDecoration(
                                   gradient: LinearGradient(
@@ -120,7 +122,7 @@ class _DetailsPageState extends State<DetailsPage>
                                     const SizedBox(width: 16),
                                     SizedBox(
                                       width: MediaQuery.of(context).size.width -
-                                          148,
+                                          160,
                                       child: Text(
                                         details.titleEnglish.isNotEmpty
                                             ? details.titleEnglish
@@ -135,6 +137,51 @@ class _DetailsPageState extends State<DetailsPage>
                                       ),
                                     ),
                                   ],
+                                ),
+                              ),
+                              Positioned(
+                                top: MediaQuery.of(context).padding.top + 8,
+                                right: 16,
+                                child: IconButton(
+                                  icon: const Icon(
+                                    Icons.star_border,
+                                    color: Colors.yellowAccent,
+                                    size: 28,
+                                  ),
+                                  onPressed: () {
+                                    HitagiDialog(
+                                        title: 'Favoritar?',
+                                        description:
+                                            'Deseja adicionar à sua lista de favoritos?',
+                                        onPressedButtonAccept: () {
+                                          try {
+                                            _controller.addToLibrary(
+                                                details,
+                                                CategoryEntity(
+                                                    id: 'default',
+                                                    name: 'Geral',
+                                                    colorHex: '#FF6C5CE7'));
+                                            HitagiToast.show(
+                                              context,
+                                              message:
+                                                  'Adicionado à sua biblioteca.',
+                                              type: ToastType.success,
+                                            );
+                                            context.pop();
+                                          } catch (e) {
+                                            Logger().e(
+                                              'Erro ao adicionar na biblioteca: $e',
+                                            );
+                                            HitagiToast.show(
+                                              context,
+                                              message:
+                                                  'Erro ao adicionar na biblioteca.',
+                                              type: ToastType.error,
+                                            );
+                                            context.pop();
+                                          }
+                                        }).show(context);
+                                  },
                                 ),
                               ),
                             ],
@@ -152,8 +199,9 @@ class _DetailsPageState extends State<DetailsPage>
                           tabs: const [
                             Tab(icon: Icon(Icons.info), text: 'Detalhes'),
                             Tab(
-                                icon: Icon(Icons.ondemand_video),
-                                text: 'Assistir'),
+                              icon: Icon(Icons.article_sharp),
+                              text: 'Reviews',
+                            ),
                           ],
                           indicatorColor: Theme.of(context).colorScheme.primary,
                         ),
@@ -167,30 +215,65 @@ class _DetailsPageState extends State<DetailsPage>
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  _buildInfo('Lançado em',
-                                      details.startDate?.year.toString() ?? '-',
-                                      icon: Icons.calendar_today_outlined),
-                                  _buildInfo('Formato',
-                                      Utils.formatMediaType(details.format),
-                                      icon: Icons.videocam),
-                                  _buildInfo('Status',
-                                      Utils.formatStatus(details.status),
-                                      icon: Icons.access_time),
-                                  _buildInfo(
-                                      'Fãs', details.popularity.toString(),
-                                      icon: Icons.trending_up),
-                                  _buildInfo('Nota Média',
-                                      (details.meanScore / 10).toStringAsFixed(1),
-                                      icon: Icons.star),
-                                  _buildInfo('Fonte',
-                                      Utils.formatSource(details.source),
-                                      icon: Icons.menu_book_outlined),
+                                  DetailsComponent(
+                                    label: 'Lançado em',
+                                    value: details.startDate?.year.toString() ??
+                                        '-',
+                                    icon: Icons.calendar_today_outlined,
+                                  ),
+                                  DetailsComponent(
+                                    label: 'Formato',
+                                    value:
+                                        Utils.formatMediaType(details.format),
+                                    icon: Icons.videocam,
+                                  ),
+                                  DetailsComponent(
+                                    label: 'Status',
+                                    value: Utils.formatStatus(details.status),
+                                    icon: Icons.access_time,
+                                  ),
+                                  DetailsComponent(
+                                    label: 'Fãs',
+                                    value: details.popularity.toString(),
+                                    icon: Icons.trending_up,
+                                  ),
+                                  DetailsComponent(
+                                    label: 'Nota Média',
+                                    value: (details.meanScore / 10)
+                                        .toStringAsFixed(1),
+                                    icon: Icons.star,
+                                  ),
+                                  DetailsComponent(
+                                    label: 'Fonte',
+                                    value: Utils.formatSource(details.source),
+                                    icon: Icons.menu_book_outlined,
+                                  ),
                                   const SizedBox(height: 8),
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: GenresComponent(details: details),
                                   ),
                                   const SizedBox(height: 16),
+                                  HitagiText(
+                                      text: 'Recomendações',
+                                      typography: HitagiTypography.title),
+                                  const SizedBox(height: 8),
+                                  HitagiBanner(
+                                    images: details.recommendations
+                                        .map((e) => e.bannerImage)
+                                        .where(
+                                          (image) => image.isNotEmpty,
+                                        )
+                                        .toList(),
+                                    onTap: (index) {
+                                      final selected =
+                                          details.recommendations[index];
+                                      GoRouter.of(context).push(
+                                        DetailsPage.route,
+                                        extra: selected.id,
+                                      );
+                                    },
+                                  ),
                                   HitagiText(
                                     text: 'Descrição',
                                     typography: HitagiTypography.title,
@@ -204,7 +287,9 @@ class _DetailsPageState extends State<DetailsPage>
                                 ],
                               ),
                             ),
-                            _buildWatchTab(),
+                            ReviewsComponent(
+                              reviews: details.reviews,
+                            ),
                           ],
                         ),
                       ),
@@ -215,38 +300,6 @@ class _DetailsPageState extends State<DetailsPage>
             ],
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildWatchTab() {
-    return const Center(
-      child: Text(
-        'Funcionalidade de assistir ainda não implementada.',
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-
-  Widget _buildInfo(String label, dynamic value, {required IconData icon}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon),
-          const SizedBox(width: 8),
-          HitagiText(
-            text: '$label: ',
-            typography: HitagiTypography.button,
-          ),
-          Expanded(
-            child: HitagiText(
-              text: value.toString(),
-              typography: HitagiTypography.button,
-            ),
-          ),
-        ],
       ),
     );
   }
