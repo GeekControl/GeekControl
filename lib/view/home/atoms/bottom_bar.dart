@@ -15,15 +15,16 @@ class CustomNavBar extends StatelessWidget {
   });
 
   final List<IconData> _icons = [
-    Icons.movie_filter,
-    Icons.book_rounded,
+    Icons.slideshow_sharp,
+    Icons.menu_book_sharp,
+    Icons.library_books_rounded,
     Icons.settings_outlined,
   ];
 
   @override
   Widget build(BuildContext context) {
     return HitagiContainer(
-      margin: const EdgeInsets.fromLTRB(120, 0, 130, 0),
+      margin: const EdgeInsets.fromLTRB(120, 0, 100, 0),
       padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surfaceContainerLowest,

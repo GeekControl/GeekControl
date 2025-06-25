@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/view/animes/articles/pages/articles_page.dart';
 import 'package:geekcontrol/view/home/components/releases_carousel.dart';
 import 'package:geekcontrol/view/home/components/top_rateds_carousel.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/view/home/components/banner_carrousel.dart';
+import 'package:geekcontrol/view/home/controller/home_controller.dart';
 import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
 import 'package:go_router/go_router.dart';
 
-class HomeDefaultWidget extends StatelessWidget {
+class HomeDefaultWidget extends StatefulWidget {
   final List<Widget> cardContainters;
   final AnilistTypes type;
 
@@ -16,6 +18,18 @@ class HomeDefaultWidget extends StatelessWidget {
     required this.cardContainters,
     required this.type,
   });
+
+  @override
+  State<HomeDefaultWidget> createState() => _HomeDefaultWidgetState();
+}
+
+class _HomeDefaultWidgetState extends State<HomeDefaultWidget> {
+  final _ct = di<HomeController>();
+  @override
+  void initState() {
+    super.initState();
+    _ct.init(context).then((value) => setState(() {}));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,16 +41,13 @@ class HomeDefaultWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.only(top: 32, left: 8.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: const HitagiText(
-                          text: 'Últimas notícias',
-                          typography: HitagiTypography.button,
-                        ),
+                      const HitagiText(
+                        text: 'Últimas notícias',
+                        typography: HitagiTypography.button,
                       ),
                       IconButton(
                         onPressed: () =>
@@ -54,17 +65,17 @@ class HomeDefaultWidget extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 6.0),
                   child: Column(
                     children: [
-                      ReleasesCarousel(type: type),
-                      TopRatedsCarousel(type: type),
+                      ReleasesCarousel(type: widget.type),
+                      TopRatedsCarousel(type: widget.type),
                     ],
                   ),
                 ),
-                cardContainters.isNotEmpty
-                    ? Column(children: cardContainters)
+                widget.cardContainters.isNotEmpty
+                    ? Column(children: widget.cardContainters)
                     : const SizedBox.shrink(),
-                    SizedBox(
-                      height: 50,
-                    ),
+                SizedBox(
+                  height: 50,
+                ),
               ],
             ),
           ),
