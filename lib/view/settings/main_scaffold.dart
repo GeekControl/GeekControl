@@ -3,6 +3,7 @@ import 'package:geekcontrol/view/home/atoms/bottom_bar.dart';
 import 'package:geekcontrol/view/home/components/card_container/animes_card_container.dart';
 import 'package:geekcontrol/view/home/components/card_container/mangas_card_container.dart';
 import 'package:geekcontrol/view/home/pages/home_default.dart';
+import 'package:geekcontrol/view/library/ui/library_page.dart';
 import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
 import 'package:geekcontrol/view/settings/pages/settings_page.dart';
 import 'package:get/get.dart';
@@ -21,6 +22,7 @@ class MainScaffold extends StatelessWidget {
       cardContainters: [MangasCardContainer()],
       type: AnilistTypes.manga,
     ),
+    LibraryPage(),
     SettingsPage(),
   ];
 
