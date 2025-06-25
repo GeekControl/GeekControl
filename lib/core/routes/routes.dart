@@ -11,6 +11,7 @@ import 'package:geekcontrol/view/animes/ui/pages/top_rateds_page.dart';
 import 'package:geekcontrol/view/auth/ui/login_page.dart';
 import 'package:geekcontrol/view/auth/ui/register_page.dart';
 import 'package:geekcontrol/view/home/atoms/search_page.dart';
+import 'package:geekcontrol/view/library/ui/library_page.dart';
 import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
 import 'package:geekcontrol/view/services/sites/wallpapers/pages/wallpapers_fullscreen_page.dart';
 import 'package:geekcontrol/view/services/sites/wallpapers/pages/wallpapers_page.dart';
@@ -104,6 +105,10 @@ class AppRoutes {
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginPage(),
+      ),
+      GoRoute(
+        path: '/library',
+        builder: (context, state) => const LibraryPage(),
       ),
     ],
   );
