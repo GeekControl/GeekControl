@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/core/utils/logger.dart';
+import 'package:geekcontrol/view/library/controllers/library_controller.dart';
+import 'package:geekcontrol/view/library/model/category_entity.dart';
+import 'package:geekcontrol/view/library/model/library_entity.dart';
 import 'package:geekcontrol/view/services/anilist/entities/anilist_seasons_enum.dart';
 import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
 import 'package:geekcontrol/view/services/anilist/entities/details_entity.dart';
 import 'package:geekcontrol/view/services/anilist/entities/releases_anilist_entity.dart';
 import 'package:geekcontrol/view/services/anilist/entities/rates_entity.dart';
-import 'package:geekcontrol/view/services/anilist/entities/reviews_entity.dart';
 import 'package:geekcontrol/view/services/anilist/repository/anilist_repository.dart';
 import 'package:geekcontrol/view/services/cache/keys_enum.dart';
 import 'package:geekcontrol/view/services/cache/local_cache.dart';
@@ -13,8 +16,9 @@ import 'package:logger/logger.dart';
 import 'package:translator/translator.dart';
 
 class AnilistController extends ChangeNotifier {
-  final AnilistRepository _repository = AnilistRepository();
-  final LocalCache _cache = LocalCache();
+  final AnilistRepository _repository = di<AnilistRepository>();
+  final LocalCache _cache = di<LocalCache>();
+  final LibraryController _libraryController = di<LibraryController>();
 
   List<ReleasesAnilistEntity> releasesList = [];
 
@@ -136,17 +140,17 @@ class AnilistController extends ChangeNotifier {
   Future<DetailsEntity> getDetails(int id) async {
     try {
       final details = await _repository.getDetails(id);
-      translatedDescription = await translateDescription(details.description);
-      final translatedReviews = await Future.wait(
-        details.reviews.map((review) async {
-          final translated = await translateDescription(review.body);
-          return review.copyWith(
-            body: translated,
-            summary: await translateDescription(review.summary),
-          );
-        }),
-      );
-      return details.copyWith(reviews: translatedReviews);
+      // translatedDescription = await translateDescription(details.description);
+      // final translatedReviews = await Future.wait(
+      //   details.reviews.map((review) async {
+      //     final translated = await translateDescription(review.body);
+      //     return review.copyWith(
+      //       body: translated,
+      //       summary: await translateDescription(review.summary),
+      //     );
+      //   }),
+      // );
+      return details.copyWith(reviews: []);
     } catch (e) {
       Logger().e('Erro ao carregar detalhes: $e');
       return DetailsEntity.empty;
@@ -195,5 +199,24 @@ class AnilistController extends ChangeNotifier {
 
     if (startIndex <= 0) return list;
     return [...list.sublist(startIndex), ...list.sublist(0, startIndex)];
+  }
+
+  Future<void> addToLibrary(
+      DetailsEntity details, CategoryEntity category) async {
+    try {
+      await _libraryController.addInLibrary(
+        LibraryEntity(
+          id: details.id.toString(),
+          title: details.titleEnglish,
+          coverImage: details.coverImage,
+          bannerImage: details.coverImage,
+          episodes: details.episodes,
+          chapters: details.chapters,
+          categoryId: category.id
+        ),
+      );
+    } catch (e) {
+      Logger().e('Erro ao adicionar ao library: $e');
+    }
   }
 }
