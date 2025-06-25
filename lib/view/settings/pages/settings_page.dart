@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/hitagi_toast.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/core/utils/global_variables.dart';
+import 'package:geekcontrol/view/auth/ui/login_page.dart';
 import 'package:geekcontrol/view/settings/controller/settings_controller.dart';
 import 'package:go_router/go_router.dart';
 
@@ -65,6 +66,21 @@ class _SettingsPageState extends State<SettingsPage> {
                     type: ToastType.error,
                   );
                 }
+              }
+            },
+          ),
+          SettingsTile(
+            icon: Globals.isLoggedIn ? Icons.logout : Icons.login_sharp,
+            title: Globals.isLoggedIn ? 'Logout' : 'Login',
+            onTap: () async {
+              if (Globals.isLoggedIn) {
+                await ct.logout(context);
+                if (context.mounted) {
+                  GoRouter.of(context).go('/');
+                  setState(() {});
+                }
+              } else {
+                GoRouter.of(context).push(LoginPage.route);
               }
             },
           ),
