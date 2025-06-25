@@ -36,9 +36,11 @@ class _TopRatedsPageState extends State<TopRatedsPage> {
           onPressed: () => GoRouter.of(context).pop(),
           icon: const Icon(Icons.arrow_back),
         ),
-        title: HitagiText(
-          text: 'Mais Avaliados',
-          typography: HitagiTypography.title,
+        title: Center(
+          child: HitagiText(
+            text: 'Mais Avaliados',
+            typography: HitagiTypography.title,
+          ),
         ),
       ),
       body: FutureBuilder<List<MangasRates>>(
