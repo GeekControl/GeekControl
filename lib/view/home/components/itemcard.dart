@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geekcontrol/core/utils/manga_state.dart';
 import 'package:geekcontrol/view/animes/ui/pages/details_page.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/carousel/hitagi_image_carousel.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
@@ -72,7 +73,11 @@ class ItemCard extends StatelessWidget {
                               tag: 'release-${item.id}',
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
-                                child: HitagiImages(image: item.image, height: 150, width: 103),
+                                child: HitagiImages(
+                                  image: item.image,
+                                  height: 150,
+                                  width: 103,
+                                ),
                               ),
                             ),
                           ),
@@ -80,10 +85,11 @@ class ItemCard extends StatelessWidget {
                             bottom: 6,
                             left: 6,
                             child: Container(
-                              height: 10,
-                              width: 10,
+                              height: 15,
+                              width: 15,
                               decoration: BoxDecoration(
-                                color: item.status == 'Em Lançamento'
+                                color: item.status ==
+                                       MangaStates.releasing.ptBr
                                     ? Colors.green
                                     : Colors.red,
                                 border: Border.all(

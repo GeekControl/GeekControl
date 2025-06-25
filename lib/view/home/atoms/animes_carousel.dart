@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/utils.dart';
-import 'package:geekcontrol/core/utils/convert_state.dart';
+import 'package:geekcontrol/core/utils/manga_state.dart';
 import 'package:geekcontrol/core/utils/loader_indicator.dart';
 import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
 import 'package:geekcontrol/view/services/anilist/entities/releases_anilist_entity.dart';

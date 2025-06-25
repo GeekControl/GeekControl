@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geekcontrol/core/utils/manga_state.dart';
 import 'package:geekcontrol/view/animes/ui/pages/top_rateds_page.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/carousel/hitagi_image_carousel.dart';
 import 'package:geekcontrol/core/utils/global_variables.dart';
@@ -34,7 +35,7 @@ class TopRatedsCarousel extends StatelessWidget {
                   badgeIcon: Icons.star,
                   id: anime.id,
                   score: (anime.meanScore / 10).toStringAsFixed(1),
-                  status: anime.status,
+                  status: MangaStates.toPortuguese(anime.status),
                 ))
             .toList();
 
