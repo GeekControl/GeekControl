@@ -1,51 +1,60 @@
 class ReviewsEntity {
   final int id;
-  final int userId;
-  final int mediaId;
   final String body;
   final String summary;
-  final int rating;
-  final int ratingAmount;
   final int userRating;
-  final int score;
-  final String siteUrl;
-  final int createdAt;
-  final int updatedAt;
+  final String avatar;
 
-  ReviewsEntity(
-      {required this.id,
-      required this.userId,
-      required this.mediaId,
-      required this.body,
-      required this.summary,
-      required this.rating,
-      required this.ratingAmount,
-      required this.userRating,
-      required this.score,
-      required this.siteUrl,
-      required this.createdAt,
-      required this.updatedAt});
+  ReviewsEntity({
+    required this.id,
+    required this.body,
+    required this.summary,
+    required this.userRating,
+    required this.avatar,
+  });
 
-  static List<ReviewsEntity> toEntityList(Map<String, dynamic> json) {
-    final List<dynamic> mediaList =
-        json['data']['Page']['media']['edges']['node'];
+  factory ReviewsEntity.fromMap(Map<String, dynamic> map) {
+    return ReviewsEntity(
+      id: map['id'] ?? 0,
+      body: map['body'] ?? '',
+      summary: map['summary'] ?? '',
+      userRating: map['rating'] ?? 0,
+      avatar: map['user']?['avatar']['large'] ?? '',
+    );
+  }
 
-    List<ReviewsEntity> reviewsList = mediaList.map((node) {
-      return ReviewsEntity(
-        id: node['id'],
-        userId: node['userId'],
-        mediaId: node['mediaId'],
-        body: node['body'],
-        summary: node['summary'],
-        rating: node['rating'],
-        ratingAmount: node['ratingAmount'],
-        userRating: node['userRating'],
-        score: node['score'],
-        siteUrl: node['siteUrl'],
-        createdAt: node['createdAt'],
-        updatedAt: node['updatedAt'],
-      );
-    }).toList();
-    return reviewsList;
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'body': body,
+      'summary': summary,
+      'userRating': userRating,
+      'avatar': avatar,
+    };
+  }
+
+  ReviewsEntity.empty()
+      : id = 0,
+        body = '',
+        summary = '',
+        userRating = 0,
+        avatar = '';
+}
+
+extension ReviewsEntityCopy on ReviewsEntity {
+  ReviewsEntity copyWith({
+    int? id,
+    String? body,
+    String? summary,
+    int? userRating,
+    String? avatar,
+  }) {
+    return ReviewsEntity(
+      id: id ?? this.id,
+      body: body ?? this.body,
+      summary: summary ?? this.summary,
+      userRating: userRating ?? this.userRating,
+      avatar: avatar ?? this.avatar,
+    );
   }
 }

@@ -1,8 +1,9 @@
-import 'package:geekcontrol/core/utils/convert_state.dart';
+import 'package:geekcontrol/core/utils/manga_state.dart';
 import 'package:geekcontrol/core/utils/entity_mappers.dart';
 
 class ReleasesAnilistEntity {
   final int id;
+  final String source;
   final int episodeId;
   final String description;
   final String englishTitle;
@@ -29,6 +30,7 @@ class ReleasesAnilistEntity {
 
   ReleasesAnilistEntity({
     required this.id,
+    required this.source,
     required this.chapters,
     required this.volumes,
     required this.description,
@@ -59,6 +61,7 @@ class ReleasesAnilistEntity {
     List<ReleasesAnilistEntity> entities = mediaList.map((media) {
       return ReleasesAnilistEntity(
         id: media['id'],
+        source: media['source'] ?? '',
         chapters: media['chapters'] ?? 0,
         volumes: media['volumes'] ?? 0,
         description: media['description'] ?? '',
@@ -96,6 +99,7 @@ class ReleasesAnilistEntity {
 
     return ReleasesAnilistEntity(
       id: media['id'],
+      source: media['source'] ?? '',
       chapters: media['chapters'] ?? 0,
       volumes: media['volumes'] ?? 0,
       description: media['description'] ?? '',
@@ -146,11 +150,13 @@ class ReleasesAnilistEntity {
       'actuallyEpisode': actuallyEpisode,
       'createdAt': createdAt,
       'updatedAt': updatedAt,
+      'source': source,
     };
   }
 
   ReleasesAnilistEntity.empty()
       : id = 0,
+        source = '',
         description = '',
         chapters = 0,
         volumes = 0,
