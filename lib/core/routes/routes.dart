@@ -8,9 +8,10 @@ import 'package:geekcontrol/view/animes/spoilers/pages/spoilers_page.dart';
 import 'package:geekcontrol/view/animes/ui/pages/details_page.dart';
 import 'package:geekcontrol/view/animes/ui/pages/latest_releases_page.dart';
 import 'package:geekcontrol/view/animes/ui/pages/top_rateds_page.dart';
+import 'package:geekcontrol/view/auth/ui/login_page.dart';
+import 'package:geekcontrol/view/auth/ui/register_page.dart';
 import 'package:geekcontrol/view/home/atoms/search_page.dart';
 import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
-import 'package:geekcontrol/view/services/sites/otakupt/profile.dart';
 import 'package:geekcontrol/view/services/sites/wallpapers/pages/wallpapers_fullscreen_page.dart';
 import 'package:geekcontrol/view/services/sites/wallpapers/pages/wallpapers_page.dart';
 import 'package:geekcontrol/view/settings/main_scaffold.dart';
@@ -44,10 +45,6 @@ class AppRoutes {
         builder: (context, state) => LatestReleasesPage(
           type: state.extra as AnilistTypes,
         ),
-      ),
-      GoRoute(
-        path: '/profile',
-        builder: (context, state) => const Profile(),
       ),
       GoRoute(
         path: '/details',
@@ -99,6 +96,14 @@ class AppRoutes {
             year: data.year,
           );
         },
+      ),
+      GoRoute(
+        path: '/register',
+        builder: (context, state) => const RegisterPage(),
+      ),
+      GoRoute(
+        path: '/login',
+        builder: (context, state) => const LoginPage(),
       ),
     ],
   );
