@@ -1,18 +1,38 @@
 import 'dart:convert';
-import 'package:geekcontrol/core/utils/api_utils.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geekcontrol/view/services/anilist/entities/anilist_seasons_enum.dart';
 import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
 import 'package:geekcontrol/view/services/anilist/entities/details_entity.dart';
 import 'package:geekcontrol/view/services/anilist/entities/releases_anilist_entity.dart';
 import 'package:geekcontrol/view/services/anilist/entities/rates_entity.dart';
 import 'package:geekcontrol/view/services/anilist/queries/anilist_query.dart';
+import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
 class AnilistRepository {
+  static Future<http.Response> _get({
+    required String query,
+    Map<String, dynamic>? variables,
+  }) async {
+    try {
+      final queryBody = {
+        'query': query,
+        if (variables != null) 'variables': variables,
+      };
+      final response = await http.post(
+        Uri.parse(dotenv.env['ANILIST_URL'].toString()),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(queryBody),
+      );
+      return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<List<MangasRates>> getRateds({required AnilistTypes type}) async {
     try {
-      final response =
-          await AnilistUtils.basicResponse(query: Query.ratedsQuery(type));
+      final response = await _get(query: Query.ratedsQuery(type));
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
@@ -33,7 +53,7 @@ class AnilistRepository {
     AnilistSeasons? season,
   }) async {
     try {
-      final response = await AnilistUtils.basicResponse(
+      final response = await _get(
         query: Query.releasesQuery(type, year: year, season: season),
       );
       if (response.statusCode == 200) {
@@ -48,7 +68,7 @@ class AnilistRepository {
 
   Future<DetailsEntity> getDetails(int id) async {
     try {
-      final response = await AnilistUtils.basicResponse(
+      final response = await _get(
         query: Query.detailsQuery(),
         variables: {'id': id},
       );
