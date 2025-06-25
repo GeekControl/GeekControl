@@ -1,3 +1,6 @@
+import 'package:geekcontrol/view/services/anilist/entities/recommendations_entity.dart';
+import 'package:geekcontrol/view/services/anilist/entities/reviews_entity.dart';
+
 class DetailsEntity {
   final int id;
   final String titleRomaji;
@@ -21,6 +24,8 @@ class DetailsEntity {
   final String source;
   final List<String> studios;
   final List<CharacterEntity> characters;
+  final List<RecommendationsEntity> recommendations;
+  final List<ReviewsEntity> reviews;
 
   const DetailsEntity({
     required this.id,
@@ -45,6 +50,8 @@ class DetailsEntity {
     required this.source,
     required this.studios,
     required this.characters,
+    required this.recommendations,
+    required this.reviews,
   });
 
   factory DetailsEntity.fromJson(Map<String, dynamic> json) {
@@ -71,6 +78,14 @@ class DetailsEntity {
       popularity: media['popularity'] ?? 0,
       genres: List<String>.from(media['genres'] ?? []),
       source: media['source'] ?? '',
+      reviews: (media['reviews']['nodes'] as List<dynamic>?)
+              ?.map((e) => ReviewsEntity.fromMap(e))
+              .toList() ??
+          [],
+      recommendations: (media['recommendations']['nodes'] as List<dynamic>?)
+              ?.map((e) => RecommendationsEntity.fromMap(e))
+              .toList() ??
+          [],
       studios: List<String>.from(
         (media['studios']['nodes'] as List<dynamic>?)?.map((e) => e['name']) ??
             [],
@@ -106,33 +121,36 @@ class DetailsEntity {
       'source': source,
       'studios': studios,
       'characters': characters.map((c) => c.toJson()).toList(),
+      'recommendations': recommendations.map((r) => r.toMap()).toList(),
+      'reviews': reviews.map((r) => r.toMap()).toList(),
     };
   }
 
   static const empty = DetailsEntity(
-    id: 0,
-    titleRomaji: '',
-    titleEnglish: '',
-    titleNative: '',
-    description: '',
-    coverImage: '',
-    bannerImage: '',
-    startDate: null,
-    endDate: null,
-    format: '',
-    status: '',
-    episodes: null,
-    chapters: null,
-    volumes: null,
-    duration: null,
-    meanScore: 0,
-    averageScore: 0,
-    popularity: 0,
-    genres: [],
-    source: '',
-    studios: [],
-    characters: [],
-  );
+      id: 0,
+      titleRomaji: '',
+      titleEnglish: '',
+      titleNative: '',
+      description: '',
+      coverImage: '',
+      bannerImage: '',
+      startDate: null,
+      endDate: null,
+      format: '',
+      status: '',
+      episodes: null,
+      chapters: null,
+      volumes: null,
+      duration: null,
+      meanScore: 0,
+      averageScore: 0,
+      popularity: 0,
+      genres: [],
+      source: '',
+      studios: [],
+      characters: [],
+      reviews: [],
+      recommendations: []);
 
   static DateTime? _parseDate(Map<String, dynamic>? date) {
     if (date == null ||
@@ -172,4 +190,38 @@ class CharacterEntity {
     name: '',
     image: '',
   );
+}
+
+extension DetailsEntityCopy on DetailsEntity {
+  DetailsEntity copyWith({
+    List<ReviewsEntity>? reviews,
+    String? description,
+  }) {
+    return DetailsEntity(
+      id: id,
+      titleRomaji: titleRomaji,
+      titleEnglish: titleEnglish,
+      titleNative: titleNative,
+      description: description ?? this.description,
+      coverImage: coverImage,
+      bannerImage: bannerImage,
+      startDate: startDate,
+      endDate: endDate,
+      format: format,
+      status: status,
+      episodes: episodes,
+      chapters: chapters,
+      volumes: volumes,
+      duration: duration,
+      meanScore: meanScore,
+      averageScore: averageScore,
+      popularity: popularity,
+      genres: genres,
+      source: source,
+      studios: studios,
+      characters: characters,
+      recommendations: recommendations,
+      reviews: reviews ?? this.reviews,
+    );
+  }
 }
