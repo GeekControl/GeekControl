@@ -30,17 +30,17 @@ class AnilistRepository {
     }
   }
 
-  Future<List<MangasRates>> getRateds({required AnilistTypes type}) async {
+  Future<List<AnilistRatesEntity>> getRateds({required AnilistTypes type}) async {
     try {
       final response = await _get(query: Query.ratedsQuery(type));
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> jsonResponse = json.decode(response.body);
-        final mangas = MangasRates.toEntityList(jsonResponse);
+        final mangas = AnilistRatesEntity.toEntityList(jsonResponse);
         return mangas;
       } else {
         Logger().e('Error: ${response.statusCode}');
-        return [MangasRates.empty()];
+        return [AnilistRatesEntity.empty()];
       }
     } catch (e) {
       rethrow;
