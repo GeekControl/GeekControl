@@ -35,11 +35,10 @@ class Loader extends LoadingIndicator {
     );
   }
 
-  factory Loader.pacmanSmall() {
+  factory Loader.ballPulse() {
     return const Loader(
-      indicatorType: Indicator.pacman,
-      colors: [Colors.orange, Colors.yellow, Colors.black],
-      strokeWidth: 4,
+      indicatorType: Indicator.ballPulse,
+      colors: [Colors.purple],
     );
   }
 }
