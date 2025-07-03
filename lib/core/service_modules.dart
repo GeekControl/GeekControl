@@ -3,6 +3,7 @@ import 'package:geekcontrol/core/core_module.dart';
 import 'package:geekcontrol/core/utils/module_factory.dart';
 import 'package:geekcontrol/view/auth/auth_module.dart';
 import 'package:geekcontrol/view/home/pages/home_module.dart';
+import 'package:geekcontrol/view/home/splash/splash_module.dart';
 import 'package:geekcontrol/view/library/library_module.dart';
 import 'package:geekcontrol/view/services/anilist/anilist_modules.dart';
 import 'package:geekcontrol/view/services/cache/local_cache_module.dart';
@@ -18,6 +19,7 @@ class ServiceModules {
   static ServiceModules get of => ServiceModules();
 
   final List<Module> _modules = [
+    SplashModule(),
     LocalCacheModule(),
     FirebaseModule(),
     CoreModule(),

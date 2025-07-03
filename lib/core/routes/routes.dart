@@ -11,6 +11,7 @@ import 'package:geekcontrol/view/animes/ui/pages/top_rateds_page.dart';
 import 'package:geekcontrol/view/auth/ui/login_page.dart';
 import 'package:geekcontrol/view/auth/ui/register_page.dart';
 import 'package:geekcontrol/view/home/atoms/search_page.dart';
+import 'package:geekcontrol/view/home/splash/splash_page.dart';
 import 'package:geekcontrol/view/library/ui/library_page.dart';
 import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
 import 'package:geekcontrol/view/services/sites/wallpapers/pages/wallpapers_fullscreen_page.dart';
@@ -21,8 +22,12 @@ import 'package:go_router/go_router.dart';
 
 class AppRoutes {
   static final router = GoRouter(
-    initialLocation: '/',
+    initialLocation: SplashPage.route,
     routes: [
+      GoRoute(
+        path: '/splash',
+        builder: (context, state) => const SplashPage(),
+      ),
       GoRoute(
         path: '/',
         builder: (context, state) => MainScaffold(),
