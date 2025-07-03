@@ -158,11 +158,14 @@ class AnilistController extends ChangeNotifier {
 
   Future<String> translateDescription(String description) async {
     try {
-      final translator = GoogleTranslator();
-      final plainText = description.replaceAll(RegExp(r'<[^>]*>'), '');
-      final result =
-          await translator.translate(plainText, from: 'en', to: 'pt');
-      return result.text;
+      if (Globals.translateReviews) {
+        final translator = GoogleTranslator();
+        final plainText = description.replaceAll(RegExp(r'<[^>]*>'), '');
+        final result =
+            await translator.translate(plainText, from: 'en', to: 'pt');
+        return result.text;
+      }
+      return description;
     } catch (e) {
       Logger().w('Erro na tradução, mantendo texto original');
       return description;
