@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/view/library/model/category_entity.dart';
 import 'package:geekcontrol/view/library/ui/atoms/category_not_found.dart';
 import 'package:geekcontrol/view/library/ui/atoms/select_category_item.dart';
@@ -28,7 +29,8 @@ class _SelectCategoryState extends State<SelectCategory> {
   @override
   void initState() {
     super.initState();
-    filteredCategories = widget.categories;
+    filteredCategories =
+        widget.categories.where((c) => c.id != 'default').toList();
   }
 
   void _filterCategories(String query) {
@@ -173,13 +175,11 @@ class _SelectCategoryState extends State<SelectCategory> {
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 16),
-                                      child: Text(
-                                        'Suas Categorias',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.grey.shade600,
-                                        ),
+                                      child: HitagiText(
+                                        text: 'Suas Categorias',
+                                        color: Colors.grey.shade600,
+                                        typography:
+                                            HitagiTypography.alternative,
                                       ),
                                     ),
                                     Expanded(

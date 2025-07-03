@@ -28,6 +28,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final spacing = const SizedBox(height: 20);
+    final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -121,7 +122,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: 20,
                     width: 1,
                     color: Colors.black26,
-                    margin: const EdgeInsets.symmetric(horizontal: 12),
+                    margin: EdgeInsets.symmetric(horizontal: width * 0.01),
                   ),
                   TextButton(
                     onPressed: () async {

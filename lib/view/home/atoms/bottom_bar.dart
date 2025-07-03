@@ -23,8 +23,9 @@ class CustomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return HitagiContainer(
-      margin: const EdgeInsets.fromLTRB(120, 0, 100, 0),
+      margin:  EdgeInsets.only(bottom: 12, left: width * 0.2, right: width * 0.2),
       padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surfaceContainerLowest,

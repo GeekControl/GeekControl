@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/containter/hitagi_container.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/view/animes/ui/components/align_fields_component.dart';
 import 'package:geekcontrol/view/animes/ui/components/meanscore_field_component.dart';
 import 'package:geekcontrol/view/animes/ui/components/next_episode_field_component.dart';
 import 'package:geekcontrol/view/animes/ui/components/status_field_component.dart';
 import 'package:geekcontrol/view/animes/ui/pages/details_page.dart';
-import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
 import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/core/utils/skeletonizer/cards_skeletonizer.dart';
 import 'package:geekcontrol/view/services/anilist/controller/anilist_controller.dart';
@@ -25,17 +25,24 @@ class LatestReleasesPage extends StatefulWidget {
 
 class _LatestReleasesPageState extends State<LatestReleasesPage> {
   final _ct = di<AnilistController>();
-  late Future<List<ReleasesAnilistEntity>> _future;
+  final List<ReleasesAnilistEntity> _releases = [];
+  bool _loading = true;
 
   @override
   void initState() {
     super.initState();
-    _future = _ct.getReleasesAnimes(type: widget.type);
+    _load();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
+  void _load() async {
+    final fetched = await _ct.getReleasesAnimes(type: widget.type);
+    if (!mounted) return;
+    setState(() {
+      _releases
+        ..clear()
+        ..addAll(fetched);
+      _loading = false;
+    });
   }
 
   @override
@@ -46,156 +53,132 @@ class _LatestReleasesPageState extends State<LatestReleasesPage> {
           onPressed: () => context.pop(),
           icon: const Icon(Icons.arrow_back),
         ),
-        title: const Center(
-            child: HitagiText(
+        title: const HitagiText(
           text: 'Últimos Lançamentos',
           typography: HitagiTypography.title,
-        )),
+        ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: FutureBuilder(
-              future: _future,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return CardsSkeletonizer();
-                } else {
-                  return ListView.builder(
-                    padding: const EdgeInsets.all(20),
-                    itemCount: snapshot.data?.length ?? 0,
-                    itemBuilder: (context, index) {
-                      final release = snapshot.data![index];
+      body: _loading
+          ? const CardsSkeletonizer()
+          : ListView.builder(
+              padding: const EdgeInsets.all(20),
+              itemCount: _releases.length,
+              itemBuilder: (context, index) {
+                final release = _releases[index];
 
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: GestureDetector(
-                          onTap: () => GoRouter.of(context).push(
-                            DetailsPage.route,
-                            extra: release.id,
+                return Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: GestureDetector(
+                    onTap: () => context.push(
+                      DetailsPage.route,
+                      extra: release.id,
+                    ),
+                    child: HitagiContainer(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: const Color.fromARGB(65, 0, 0, 0),
+                          width: 1.5,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withAlpha(20),
+                            blurRadius: 25,
+                            offset: const Offset(0, 8),
                           ),
-                          child: HitagiContainer(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                color: const Color.fromARGB(65, 0, 0, 0),
-                                width: 1.5,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.08),
-                                  blurRadius: 25,
-                                  spreadRadius: 0,
-                                  offset: const Offset(0, 8),
+                          BoxShadow(
+                            color: Colors.black.withAlpha(10),
+                            blurRadius: 10,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Stack(
+                              children: [
+                                Hero(
+                                  tag: 'release-${release.id}',
+                                  child: HitagiContainer(
+                                    height: 200,
+                                    width: double.infinity,
+                                    decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(20),
+                                        topRight: Radius.circular(20),
+                                      ),
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(20),
+                                        topRight: Radius.circular(20),
+                                      ),
+                                      child: HitagiImages(
+                                        image: release.bannerImage,
+                                        height: 200,
+                                        width: double.infinity,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.04),
-                                  blurRadius: 10,
-                                  spreadRadius: 0,
-                                  offset: const Offset(0, 2),
+                                Positioned.fill(
+                                  child: HitagiContainer(
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.only(
+                                        topLeft: Radius.circular(20),
+                                        topRight: Radius.circular(20),
+                                      ),
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Colors.transparent,
+                                          Colors.black.withAlpha(100),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                 ),
+                                StatusFieldComponent(status: release.status),
+                                if (release.meanScore > 0)
+                                  MeanscoreFieldComponent(
+                                      meanScore: release.meanScore),
                               ],
                             ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
+                            Padding(
+                              padding: const EdgeInsets.all(20),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Stack(
-                                    children: [
-                                      Hero(
-                                        tag: 'release-${release.id}',
-                                        child: HitagiContainer(
-                                          height: 200,
-                                          width: double.infinity,
-                                          decoration: const BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(20),
-                                              topRight: Radius.circular(20),
-                                            ),
-                                          ),
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                const BorderRadius.only(
-                                              topLeft: Radius.circular(20),
-                                              topRight: Radius.circular(20),
-                                            ),
-                                            child: HitagiImages(
-                                              image: release.bannerImage,
-                                              height: 200,
-                                              width: double.infinity,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned.fill(
-                                        child: HitagiContainer(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                const BorderRadius.only(
-                                              topLeft: Radius.circular(20),
-                                              topRight: Radius.circular(20),
-                                            ),
-                                            gradient: LinearGradient(
-                                              begin: Alignment.topCenter,
-                                              end: Alignment.bottomCenter,
-                                              colors: [
-                                                Colors.transparent,
-                                                Colors.black
-                                                    .withValues(alpha: 0.4),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      StatusFieldComponent(
-                                        status: release.status,
-                                      ),
-                                      if (release.meanScore > 0)
-                                        MeanscoreFieldComponent(
-                                          meanScore: release.meanScore,
-                                        ),
-                                    ],
+                                  HitagiText(
+                                    text: release.englishTitle,
+                                    typography: HitagiTypography.title,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(20),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        HitagiText(
-                                          text: release.englishTitle,
-                                          typography: HitagiTypography.title,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        const SizedBox(height: 16),
-                                        AlignFieldsComponent(
-                                          release: release,
-                                          type: widget.type,
-                                        ),
-                                        const SizedBox(height: 16),
-                                        if (release.airingAt > 0)
-                                          NextEpisodeFieldComponent(
-                                            airingAt: release.airingAt,
-                                          ),
-                                      ],
-                                    ),
+                                  const SizedBox(height: 16),
+                                  AlignFieldsComponent(
+                                    release: release,
+                                    type: widget.type,
                                   ),
+                                  const SizedBox(height: 16),
+                                  if (release.airingAt > 0)
+                                    NextEpisodeFieldComponent(
+                                        airingAt: release.airingAt),
                                 ],
                               ),
                             ),
-                          ),
+                          ],
                         ),
-                      );
-                    },
-                  );
-                }
+                      ),
+                    ),
+                  ),
+                );
               },
             ),
-          ),
-        ],
-      ),
     );
   }
 }

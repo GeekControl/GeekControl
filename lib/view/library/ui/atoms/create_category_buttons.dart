@@ -67,11 +67,11 @@ class _CreateCategoryButtonsState extends State<CreateCategoryButtons> {
                     );
                     return;
                   }
-
                   final category = CategoryEntity(
                     id: widget.initial?.id ?? const Uuid().v4(),
                     name: widget.nameCtrl.text.trim(),
                     colorHex: widget.colorCtrl.text.trim(),
+                    editable: true,
                   );
                   widget.onSubmit(category);
                   Navigator.pop(context);
@@ -115,6 +115,9 @@ class _CreateCategoryButtonsState extends State<CreateCategoryButtons> {
                     widget.initial!.id,
                     context,
                   );
+                  if (context.mounted) {
+                    Navigator.pop(context, true);
+                  }
                 },
                 icon: const Icon(Icons.delete_outline, color: Colors.red),
                 label: const HitagiText(
