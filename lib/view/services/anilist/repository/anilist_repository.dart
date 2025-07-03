@@ -5,6 +5,7 @@ import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.da
 import 'package:geekcontrol/view/services/anilist/entities/details_entity.dart';
 import 'package:geekcontrol/view/services/anilist/entities/releases_anilist_entity.dart';
 import 'package:geekcontrol/view/services/anilist/entities/rates_entity.dart';
+import 'package:geekcontrol/view/services/anilist/entities/search_result_entity.dart';
 import 'package:geekcontrol/view/services/anilist/queries/anilist_query.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
@@ -30,7 +31,8 @@ class AnilistRepository {
     }
   }
 
-  Future<List<AnilistRatesEntity>> getRateds({required AnilistTypes type}) async {
+  Future<List<AnilistRatesEntity>> getRateds(
+      {required AnilistTypes type}) async {
     try {
       final response = await _get(query: Query.ratedsQuery(type));
 
@@ -80,6 +82,28 @@ class AnilistRepository {
       return DetailsEntity.empty;
     } catch (e) {
       rethrow;
+    }
+  }
+
+  Future<List<SearchResultEntity>> search({
+    required String searchTerm,
+    required AnilistTypes type,
+  }) async {
+    try {
+      final response = await _get(
+        query: Query.searchQuery(searchTerm, type),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> jsonResponse = json.decode(response.body);
+        return SearchResultEntity.toEntityList(jsonResponse);
+      }
+
+      Logger().e('Erro na busca: ${response.statusCode}');
+      return [SearchResultEntity.empty()];
+    } catch (e) {
+      Logger().e('Exceção na busca: $e');
+      return [SearchResultEntity.empty()];
     }
   }
 }

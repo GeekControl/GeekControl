@@ -9,6 +9,7 @@ import 'package:geekcontrol/view/services/anilist/entities/details_entity.dart';
 import 'package:geekcontrol/view/services/anilist/entities/releases_anilist_entity.dart';
 import 'package:geekcontrol/view/services/anilist/entities/rates_entity.dart';
 import 'package:geekcontrol/view/services/anilist/entities/reviews_entity.dart';
+import 'package:geekcontrol/view/services/anilist/entities/search_result_entity.dart';
 import 'package:geekcontrol/view/services/anilist/repository/anilist_repository.dart';
 import 'package:geekcontrol/view/services/cache/keys_enum.dart';
 import 'package:geekcontrol/view/services/cache/local_cache.dart';
@@ -124,6 +125,15 @@ class AnilistController extends ChangeNotifier {
       Logger().e('Erro ao carregar rates: $e');
       return [AnilistRatesEntity.empty()];
     }
+  }
+
+  Future<List<SearchResultEntity>> search(
+    String query,
+    AnilistTypes type,
+  ) async {
+    final results = await _repository.search(searchTerm: query, type: type);
+    notifyListeners();
+    return results;
   }
 
   Future<DetailsEntity> getDetails(int id) async {
