@@ -52,6 +52,7 @@ flutter:
   assets:
     - .env
     - assets/animes_new.png
+    - assets/geekcontrol_logo_without_background.png
     - assets/intoxi.png
     - assets/otakuPT_icon.png
     - assets/geekcontrol_banner.png
