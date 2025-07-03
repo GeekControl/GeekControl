@@ -94,14 +94,16 @@ class FirebaseAuthService {
     }
   }
 
-  Future<void> userIsLoggedIn() async {
+  Future<bool> userIsLoggedIn() async {
     final UserEntity? user = await _getUser();
     if (user != null) {
       Globals.user = user;
       Globals.isLoggedIn = true;
       Globals.uid = user.id;
       Loggers.get('Usuário autenticado. ID: ${Globals.uid}');
+      return true;
     }
+    return false;
   }
 
   Future<void> waitForAuthReady() async {
