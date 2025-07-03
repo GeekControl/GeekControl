@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast_io.dart';
 
 class LocalCache {
+  final StoreRef<String, Object?> _store = StoreRef.main();
   Database? _db;
 
   Future<Database> _getDatabase() async {
@@ -93,5 +94,16 @@ class LocalCache {
     }
     Logger().i('Tamanho do cache: $size bytes');
     return size;
+  }
+
+  Future<void> setUserPreference(String key, dynamic value) async {
+    final db = await _getDatabase();
+    await _store.record(key).put(db, value);
+  }
+
+  Future<T?> getUserPreference<T>(String key) async {
+    final db = await _getDatabase();
+    final result = await _store.record(key).get(db);
+    return result as T?;
   }
 }

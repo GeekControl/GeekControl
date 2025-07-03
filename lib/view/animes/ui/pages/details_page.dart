@@ -11,7 +11,6 @@ import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.da
 import 'package:geekcontrol/core/library/hitagi_cup/utils.dart';
 import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/view/animes/ui/components/reviews_component.dart';
-import 'package:geekcontrol/view/library/model/category_entity.dart';
 import 'package:geekcontrol/view/services/anilist/controller/anilist_controller.dart';
 import 'package:geekcontrol/view/services/anilist/entities/details_entity.dart';
 import 'package:go_router/go_router.dart';
@@ -155,12 +154,7 @@ class _DetailsPageState extends State<DetailsPage>
                                             'Deseja adicionar à sua lista de favoritos?',
                                         onPressedButtonAccept: () {
                                           try {
-                                            _controller.addToLibrary(
-                                                details,
-                                                CategoryEntity(
-                                                    id: 'default',
-                                                    name: 'Geral',
-                                                    colorHex: '#FF6C5CE7'));
+                                            _controller.addToLibrary(details);
                                             HitagiToast.show(
                                               context,
                                               message:
@@ -254,26 +248,28 @@ class _DetailsPageState extends State<DetailsPage>
                                     child: GenresComponent(details: details),
                                   ),
                                   const SizedBox(height: 16),
-                                  HitagiText(
-                                      text: 'Recomendações',
-                                      typography: HitagiTypography.title),
-                                  const SizedBox(height: 8),
-                                  HitagiBanner(
-                                    images: details.recommendations
-                                        .map((e) => e.bannerImage)
-                                        .where(
-                                          (image) => image.isNotEmpty,
-                                        )
-                                        .toList(),
-                                    onTap: (index) {
-                                      final selected =
-                                          details.recommendations[index];
-                                      GoRouter.of(context).push(
-                                        DetailsPage.route,
-                                        extra: selected.id,
-                                      );
-                                    },
-                                  ),
+                                  if (details.recommendations.isNotEmpty) ...[
+                                    HitagiText(
+                                        text: 'Recomendações',
+                                        typography: HitagiTypography.title),
+                                    const SizedBox(height: 8),
+                                    HitagiBanner(
+                                      images: details.recommendations
+                                          .map((e) => e.bannerImage)
+                                          .where(
+                                            (image) => image.isNotEmpty,
+                                          )
+                                          .toList(),
+                                      onTap: (index) {
+                                        final selected =
+                                            details.recommendations[index];
+                                        GoRouter.of(context).push(
+                                          DetailsPage.route,
+                                          extra: selected.id,
+                                        );
+                                      },
+                                    ),
+                                  ],
                                   HitagiText(
                                     text: 'Descrição',
                                     typography: HitagiTypography.title,

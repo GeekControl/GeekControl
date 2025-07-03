@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/hitagi_toast.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
@@ -57,7 +58,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     type: ToastType.success,
                   );
                 }
-                ct.cacheSize = await ct.getCacheSize();
+                await ct.init();
+                setState(() {});
               } catch (e) {
                 if (context.mounted) {
                   HitagiToast.show(
@@ -84,16 +86,27 @@ class _SettingsPageState extends State<SettingsPage> {
               }
             },
           ),
-          const SizedBox(height: 24.0),
-          const Text(
-            'Outros',
-            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+          SettingsTile.switchTile(
+            icon: Icons.translate,
+            title: 'Traduzir reviews',
+            switchValue: Globals.translateReviews,
+            onChanged: (value) {
+              ct.setTranslatePrefs(value);
+              setState(() {});
+            },
           ),
-          SettingsTile(
-            icon: Icons.text_snippet,
-            title: 'Página de teste',
-            onTap: () => GoRouter.of(context).push('/test'),
-          ),
+          if (kDebugMode) ...[
+            const SizedBox(height: 24.0),
+            const Text(
+              'Outros',
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            ),
+            SettingsTile(
+              icon: Icons.text_snippet,
+              title: 'Página de teste',
+              onTap: () => GoRouter.of(context).push('/test'),
+            ),
+          ],
         ],
       ),
     );
@@ -139,10 +152,7 @@ class SettingsTile extends StatelessWidget {
       ),
       subtitle: subtitle != null ? Text(subtitle!) : null,
       trailing: switchValue != null
-          ? Switch(
-              value: switchValue!,
-              onChanged: onChanged,
-            )
+          ? Switch(value: switchValue!, onChanged: onChanged)
           : const Icon(Icons.arrow_forward_ios, size: 16.0),
       onTap: onTap,
     );

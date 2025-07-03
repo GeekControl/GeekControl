@@ -9,6 +9,7 @@ class Globals extends ChangeNotifier {
   static UserEntity? user;
   static String? uid;
   static bool isLoggedIn = false;
+  static bool translateReviews = true; 
   void initializeLogger(Type caller) {
     Logger().t('Inicializando [$caller]...');
   }

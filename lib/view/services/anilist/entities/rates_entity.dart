@@ -1,4 +1,4 @@
-class MangasRates {
+class AnilistRatesEntity {
   int id;
   String title;
   String format;
@@ -12,7 +12,7 @@ class MangasRates {
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  MangasRates({
+  AnilistRatesEntity({
     required this.id,
     required this.title,
     required this.format,
@@ -27,10 +27,10 @@ class MangasRates {
     required this.updatedAt,
   });
 
-  static List<MangasRates> toEntityList(Map<String, dynamic> json) {
+  static List<AnilistRatesEntity> toEntityList(Map<String, dynamic> json) {
     final List<dynamic> mediaList = json['data']['Page']['media'];
-    List<MangasRates> entities = mediaList.map((media) {
-      return MangasRates(
+    List<AnilistRatesEntity> entities = mediaList.map((media) {
+      return AnilistRatesEntity(
         id: media?['id'],
         format: media?['format'] ?? '',
         alternativeTitle: media?['title']['romaji'] ?? '',
@@ -49,7 +49,7 @@ class MangasRates {
     return entities;
   }
 
-  static MangasRates fromMap(Map<String, dynamic> map) {
+  static AnilistRatesEntity fromMap(Map<String, dynamic> map) {
     DateTime parseDate(dynamic value) {
       if (value is String) {
         return DateTime.tryParse(value) ?? DateTime.now();
@@ -60,7 +60,7 @@ class MangasRates {
       return DateTime.now();
     }
 
-    return MangasRates(
+    return AnilistRatesEntity(
       id: map['id'] ?? 0,
       format: map['format'] ?? '',
       alternativeTitle: map['alternativeTitle'] ?? '',
@@ -93,7 +93,7 @@ class MangasRates {
     };
   }
 
-  MangasRates.empty()
+  AnilistRatesEntity.empty()
       : title = '',
         id = 0,
         format = '',

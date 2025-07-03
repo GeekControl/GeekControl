@@ -173,4 +173,36 @@ query (\$id: Int) {
 }
   ''';
   }
+
+  static String searchQuery(String searchTerm, AnilistTypes type) {
+    return '''
+query {
+  Page(perPage: 20) {
+    media(search: "$searchTerm", type: ${type.value}) {
+      id
+      title {
+        romaji
+        english
+      }
+      coverImage {
+        extraLarge
+      }
+      episodes
+      meanScore
+      popularity
+      format
+      status
+      season
+      seasonYear
+      startDate {
+        year
+        month
+        day
+      }
+      description(asHtml: false)
+    }
+  }
+}
+  ''';
+  }
 }

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/view/animes/articles/pages/articles_page.dart';
+import 'package:geekcontrol/view/home/components/home_search_component.dart';
 import 'package:geekcontrol/view/home/components/releases_carousel.dart';
 import 'package:geekcontrol/view/home/components/top_rateds_carousel.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/view/home/components/banner_carrousel.dart';
-import 'package:geekcontrol/view/home/controller/home_controller.dart';
 import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
 import 'package:go_router/go_router.dart';
 
@@ -24,11 +23,12 @@ class HomeDefaultWidget extends StatefulWidget {
 }
 
 class _HomeDefaultWidgetState extends State<HomeDefaultWidget> {
-  final _ct = di<HomeController>();
-  @override
-  void initState() {
-    super.initState();
-    _ct.init(context).then((value) => setState(() {}));
+  bool _isSearchVisible = false;
+
+  void _toggleSearch() {
+    setState(() {
+      _isSearchVisible = !_isSearchVisible;
+    });
   }
 
   @override
@@ -41,7 +41,8 @@ class _HomeDefaultWidgetState extends State<HomeDefaultWidget> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 32, left: 8.0),
+                  padding:
+                      const EdgeInsets.only(top: 32, left: 8.0, right: 8.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -49,18 +50,30 @@ class _HomeDefaultWidgetState extends State<HomeDefaultWidget> {
                         text: 'Últimas notícias',
                         typography: HitagiTypography.button,
                       ),
-                      IconButton(
-                        onPressed: () =>
-                            GoRouter.of(context).push(ArticlesPage.route),
-                        icon: const Icon(Icons.arrow_forward),
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: _toggleSearch,
+                            icon: Icon(
+                              _isSearchVisible ? Icons.close : Icons.search,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () =>
+                                GoRouter.of(context).push(ArticlesPage.route),
+                            icon: const Icon(Icons.arrow_forward),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(
-                  height: 150,
-                  child: BannerCarousel(),
+                HomeSearchComponent(
+                  isSearchVisible: _isSearchVisible,
+                  type: widget.type,
                 ),
+                const SizedBox(height: 12),
+                const SizedBox(height: 150, child: BannerCarousel()),
                 Padding(
                   padding: const EdgeInsets.only(left: 6.0),
                   child: Column(
@@ -70,12 +83,9 @@ class _HomeDefaultWidgetState extends State<HomeDefaultWidget> {
                     ],
                   ),
                 ),
-                widget.cardContainters.isNotEmpty
-                    ? Column(children: widget.cardContainters)
-                    : const SizedBox.shrink(),
-                SizedBox(
-                  height: 50,
-                ),
+                if (widget.cardContainters.isNotEmpty)
+                  Column(children: widget.cardContainters),
+                const SizedBox(height: 50),
               ],
             ),
           ),

@@ -4,6 +4,7 @@ enum AssetsEnum {
   otakuPtLogo('assets/otakuPT_icon.png'),
   intoxiLogo('assets/intoxi.png'),
   defaultImage('assets/default.png'),
+  geekcontrolLogoNoBackground('assets/geekcontrol_logo_without_background.png'),
   geekcontrolLogo('assets/geekcontrol_logo.png');
 
   final String path;

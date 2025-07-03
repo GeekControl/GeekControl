@@ -1,3 +1,4 @@
+import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -120,6 +121,15 @@ class Utils {
         return 'One-shot';
       default:
         return type;
+    }
+  }
+
+  static String formatType(AnilistTypes type) {
+    switch (type) {
+      case AnilistTypes.anime:
+        return 'Anime';
+      case AnilistTypes.manga:
+        return 'Mangá';
     }
   }
 }

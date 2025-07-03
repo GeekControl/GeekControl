@@ -3,7 +3,9 @@ import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/hitagi_dial
 import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/core/utils/global_variables.dart';
+import 'package:geekcontrol/core/utils/loader_indicator.dart';
 import 'package:geekcontrol/view/animes/ui/pages/details_page.dart';
+import 'package:geekcontrol/view/auth/ui/move_to_login.dart';
 import 'package:geekcontrol/view/library/controllers/library_controller.dart';
 import 'package:geekcontrol/view/library/ui/components/select_category.dart';
 import 'package:geekcontrol/view/library/ui/components/library_badges.dart';
@@ -39,198 +41,209 @@ class _LibraryPageState extends State<LibraryPage> {
   Widget build(BuildContext context) {
     final filteredContent = ct.filterByCategory(selectedCategoryId);
 
+    if (ct.isLoading) {
+      return Center(
+        child: Loader.ballPulse(),
+      );
+    }
+
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 32),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: HitagiText(
-              text: 'Minha Biblioteca',
-              typography: HitagiTypography.title,
-            ),
-          ),
-          const SizedBox(height: 16),
-          LibraryCategory(
-            categories: ct.categories,
-            onCreate: (cat) async {
-              await ct.createCategory(cat);
-              setState(() {});
-            },
-            onSelected: (cat) {
-              selectedCategoryId = cat?.id;
-              setState(() {});
-            },
-          ),
-          const SizedBox(height: 20),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Globals.isLoggedIn && filteredContent.isNotEmpty
-                  ? GridView.builder(
-                      itemCount: filteredContent.length,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.65,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 20,
-                      ),
-                      itemBuilder: (context, index) {
-                        final item = filteredContent[index];
-                        return Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.4),
-                                blurRadius: 16,
-                                offset: const Offset(0, 6),
-                              ),
-                            ],
-                          ),
-                          child: GestureDetector(
-                            onTap: () => GoRouter.of(context).push(
-                              DetailsPage.route,
-                              extra: int.parse(item.id),
+      body: Globals.isLoggedIn
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 32),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: HitagiText(
+                    text: 'Minha Biblioteca',
+                    typography: HitagiTypography.title,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                LibraryCategory(
+                  categories: ct.categories,
+                  onCreate: (cat) async {
+                    await ct.createCategory(cat);
+                    setState(() {});
+                  },
+                  onSelected: (cat) {
+                    selectedCategoryId = cat?.id;
+                    setState(() {});
+                  },
+                ),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: filteredContent.isNotEmpty
+                        ? GridView.builder(
+                            itemCount: filteredContent.length,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              childAspectRatio: 0.65,
+                              crossAxisSpacing: 16,
+                              mainAxisSpacing: 20,
                             ),
-                            onLongPress: () async {
-                              await showModalBottomSheet(
-                                context: context,
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(20)),
+                            itemBuilder: (context, index) {
+                              final item = filteredContent[index];
+                              return Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color:
+                                          Colors.black.withValues(alpha: 0.4),
+                                      blurRadius: 16,
+                                      offset: const Offset(0, 6),
+                                    ),
+                                  ],
                                 ),
-                                builder: (_) {
-                                  return SelectCategory(
-                                    categories: ct.categories,
-                                    onSelected: (selectedId) async {
-                                      final updated =
-                                          item.copyWith(categoryId: selectedId);
-                                      await ct.addInLibrary(updated);
-                                      await ct.getLibrary();
-                                      setState(() {});
-                                    },
-                                  );
-                                },
-                              );
-                            },
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
-                              child: Stack(
-                                children: [
-                                  Positioned.fill(
-                                      child:
-                                          HitagiImages(image: item.coverImage)),
-                                  Positioned.fill(
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter,
-                                          colors: [
-                                            Colors.transparent,
-                                            Colors.black.withValues(alpha: 0.8),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
+                                child: GestureDetector(
+                                  onTap: () => GoRouter.of(context).push(
+                                    DetailsPage.route,
+                                    extra: int.parse(item.id),
                                   ),
-                                  Positioned(
-                                    top: 5,
-                                    right: 10,
-                                    child: IconButton(
-                                      onPressed: () {
-                                        HitagiDialog(
-                                            title: 'Excluir?',
-                                            description:
-                                                'Você tem certeza que deseja excluir este item?',
-                                            onPressedButtonAccept: () async {
-                                              await di<LibraryController>()
-                                                  .delete(
-                                                item.id,
-                                                context,
-                                              );
-                                              setState(() {
-                                                load();
-                                              });
-                                            }).show(context);
+                                  onLongPress: () async {
+                                    await showModalBottomSheet(
+                                      context: context,
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(20)),
+                                      ),
+                                      builder: (_) {
+                                        return SelectCategory(
+                                          categories: ct.categories,
+                                          onSelected: (selectedId) async {
+                                            final updated = item.copyWith(
+                                                categoryId: selectedId);
+                                            await ct.addInLibrary(updated);
+                                            await ct.getLibrary();
+                                            setState(() {});
+                                          },
+                                        );
                                       },
-                                      icon: Icon(
-                                        Icons.delete,
-                                        color: Colors.red,
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    bottom: 16,
-                                    left: 12,
-                                    right: 12,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                    );
+                                  },
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: Stack(
                                       children: [
-                                        Text(
-                                          item.title,
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 14,
+                                        Positioned.fill(
+                                            child: HitagiImages(
+                                                image: item.coverImage)),
+                                        Positioned.fill(
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              gradient: LinearGradient(
+                                                begin: Alignment.topCenter,
+                                                end: Alignment.bottomCenter,
+                                                colors: [
+                                                  Colors.transparent,
+                                                  Colors.black
+                                                      .withValues(alpha: 0.8),
+                                                ],
+                                              ),
+                                            ),
                                           ),
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                        const SizedBox(height: 8),
-                                        Row(
-                                          children: [
-                                            if (item.episodes != null)
-                                              LibraryBadges(
-                                                text: '${item.episodes}',
-                                                icon: Icons.play_arrow,
-                                                color: const Color(0xFF00B894),
+                                        Positioned(
+                                          top: 5,
+                                          right: 10,
+                                          child: IconButton(
+                                            onPressed: () {
+                                              HitagiDialog(
+                                                  title: 'Excluir?',
+                                                  description:
+                                                      'Você tem certeza que deseja excluir este item?',
+                                                  onPressedButtonAccept:
+                                                      () async {
+                                                    await di<
+                                                            LibraryController>()
+                                                        .delete(
+                                                      item.id,
+                                                      context,
+                                                    );
+                                                    setState(() {
+                                                      load();
+                                                    });
+                                                  }).show(context);
+                                            },
+                                            icon: Icon(
+                                              Icons.delete,
+                                              color: Colors.red,
+                                            ),
+                                          ),
+                                        ),
+                                        Positioned(
+                                          bottom: 16,
+                                          left: 12,
+                                          right: 12,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              HitagiText(
+                                                text: item.title,
+                                                color: Colors.white,
+                                                typography:
+                                                    HitagiTypography.button,
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
                                               ),
-                                            if (item.chapters != null)
-                                              LibraryBadges(
-                                                text: '${item.chapters}',
-                                                icon: Icons.menu_book,
-                                                color: const Color(0xFF6C5CE7),
+                                              const SizedBox(height: 8),
+                                              Row(
+                                                children: [
+                                                  if (item.episodes != null)
+                                                    LibraryBadges(
+                                                      text: '${item.episodes}',
+                                                      icon: Icons.play_arrow,
+                                                      color: const Color(
+                                                          0xFF00B894),
+                                                    ),
+                                                  if (item.chapters != null)
+                                                    LibraryBadges(
+                                                      text: '${item.chapters}',
+                                                      icon: Icons.menu_book,
+                                                      color: const Color(
+                                                          0xFF6C5CE7),
+                                                    ),
+                                                  if (item.volumes != null)
+                                                    LibraryBadges(
+                                                      text: '${item.volumes}',
+                                                      icon: Icons.library_books,
+                                                      color: const Color(
+                                                          0xFFE17055),
+                                                    ),
+                                                  if (item.avaregeScore != null)
+                                                    LibraryBadges(
+                                                      text: item.avaregeScore!,
+                                                      icon: Icons.star,
+                                                      color: const Color(
+                                                          0xFFFC4B4B),
+                                                    ),
+                                                ],
                                               ),
-                                            if (item.volumes != null)
-                                              LibraryBadges(
-                                                text: '${item.volumes}',
-                                                icon: Icons.library_books,
-                                                color: const Color(0xFFE17055),
-                                              ),
-                                            if (item.avaregeScore != null)
-                                              LibraryBadges(
-                                                text: item.avaregeScore!,
-                                                icon: Icons.star,
-                                                color: const Color(0xFFFC4B4B),
-                                              ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                ],
-                              ),
-                            ),
+                                ),
+                              );
+                            },
+                          )
+                        : Center(
+                            child:
+                                HitagiText(text: 'Nenhum item na biblioteca.'),
                           ),
-                        );
-                      },
-                    )
-                  : Center(
-                      child: HitagiText(
-                        text: Globals.isLoggedIn
-                            ? 'Nenhum item na biblioteca.'
-                            : 'Faça login para visualizar.',
-                      ),
-                    ),
-            ),
-          ),
-        ],
-      ),
+                  ),
+                ),
+              ],
+            )
+          : const MoveToLogin(title: 'Biblioteca'),
     );
   }
 }

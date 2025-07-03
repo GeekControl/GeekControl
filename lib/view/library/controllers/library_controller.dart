@@ -11,14 +11,19 @@ class LibraryController extends ChangeNotifier {
   List<CategoryEntity> categories = [];
   List<LibraryEntity> content = [];
 
+  bool _isLoading = true;
+  bool get isLoading => _isLoading;
+
   void init() async {
     await getCategories();
     await getLibrary();
+    _isLoading = false;
     notifyListeners();
   }
 
   String get _collection => 'library';
   FirebaseService get _service => di<FirebaseService>();
+  String get libraryDefaultId => 'default';
 
   Future<void> addInLibrary(LibraryEntity data) async {
     try {
@@ -35,14 +40,27 @@ class LibraryController extends ChangeNotifier {
   }
 
   Future<void> getCategories() async {
+    final defaultCategory = CategoryEntity(
+      id: libraryDefaultId,
+      name: 'Todos',
+      colorHex: '#2D3436',
+      editable: false,
+    );
     try {
-      final snapshot = await _service.getAll(
+      final s = await _service.getAll(
         collection: _collection,
         doc: Globals.uid!,
         subcollection: 'categories',
       );
 
-      categories = snapshot.map((e) => CategoryEntity.fromJson(e)).toList();
+      if (s.isEmpty) {
+        categories.add(defaultCategory);
+        await createCategory(defaultCategory);
+        notifyListeners();
+        return;
+      }
+
+      categories = s.map((e) => CategoryEntity.fromJson(e)).toList();
       notifyListeners();
     } catch (e) {
       rethrow;
@@ -84,7 +102,7 @@ class LibraryController extends ChangeNotifier {
   List<LibraryEntity> filterByCategory(
     String? categoryId,
   ) {
-    if (categoryId == null || categoryId == 'all') return content;
+    if (categoryId == null || categoryId == 'default') return content;
     return content.where((e) => e.categoryId == categoryId).toList();
   }
 
@@ -103,7 +121,6 @@ class LibraryController extends ChangeNotifier {
           message: 'Categoria excluída com sucesso.',
           type: ToastType.success,
         );
-        context.pop();
       }
       notifyListeners();
     } catch (e) {

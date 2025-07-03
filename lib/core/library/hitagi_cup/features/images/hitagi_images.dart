@@ -8,6 +8,8 @@ class HitagiImages extends StatelessWidget {
   final double? width;
   final double? height;
   final BoxFit fit;
+  final double shimmerWidth;
+  final double shimmerHeight;
 
   const HitagiImages({
     super.key,
@@ -15,6 +17,8 @@ class HitagiImages extends StatelessWidget {
     this.width,
     this.height,
     this.fit = BoxFit.cover,
+    this.shimmerHeight = 150,
+    this.shimmerWidth = 160,
   });
 
   @override
@@ -25,11 +29,12 @@ class HitagiImages extends StatelessWidget {
 
     return CachedNetworkImage(
       imageUrl: image!,
-      placeholder: (context, url) => const HitagiShimmerEffect(
-        height: 150,
-        width: 160,
+      placeholder: (context, url) => HitagiShimmerEffect(
+        height: shimmerHeight,
+        width: shimmerWidth,
       ),
-      errorWidget: (context, url, error) => Image.asset(AssetsEnum.defaultImage.path),
+      errorWidget: (context, url, error) =>
+          Image.asset(AssetsEnum.defaultImage.path),
       width: width,
       height: height,
       fit: fit,

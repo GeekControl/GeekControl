@@ -24,7 +24,6 @@ class _LibraryCategoryState extends State<LibraryCategory> {
   @override
   void initState() {
     super.initState();
-    selected = CategoryEntity(id: 'all', name: 'Todos', colorHex: '#2D3436');
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.onSelected(null);
     });
@@ -32,10 +31,12 @@ class _LibraryCategoryState extends State<LibraryCategory> {
 
   @override
   Widget build(BuildContext context) {
-    final categories = [
-      CategoryEntity(id: 'all', name: 'Todos', colorHex: '#2D3436'),
-      ...widget.categories
-    ];
+    final categories = widget.categories.toList()
+      ..sort((a, b) => (a.id == 'default'
+          ? -1
+          : b.id == 'default'
+              ? 1
+              : 0));
 
     Color hexToColor(String hex) {
       hex = hex.replaceAll('#', '');
@@ -52,16 +53,17 @@ class _LibraryCategoryState extends State<LibraryCategory> {
         runSpacing: 12,
         children: [
           ...categories.map((cat) {
-            final isSelected = selected?.id == cat.id;
+            final isSelected = (selected == null && cat.id == 'default') ||
+                (selected?.id == cat.id);
 
             return GestureDetector(
               onTap: () {
                 setState(() {
                   selected = cat;
-                  widget.onSelected(cat.id == 'all' ? null : cat);
+                  widget.onSelected(cat.id == 'default' ? null : cat);
                 });
               },
-              onLongPress: cat.id != 'all'
+              onLongPress: cat.id != 'default'
                   ? () => _openCategoryEditor(context, category: cat)
                   : null,
               child: Container(
@@ -108,8 +110,9 @@ class _LibraryCategoryState extends State<LibraryCategory> {
     );
   }
 
-  void _openCategoryEditor(BuildContext context, {CategoryEntity? category}) {
-    showModalBottomSheet(
+  void _openCategoryEditor(BuildContext context,
+      {CategoryEntity? category}) async {
+    await showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: const Color(0xFF1E1E1E),

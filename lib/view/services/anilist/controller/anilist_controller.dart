@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/core/utils/logger.dart';
 import 'package:geekcontrol/view/library/controllers/library_controller.dart';
-import 'package:geekcontrol/view/library/model/category_entity.dart';
 import 'package:geekcontrol/view/library/model/library_entity.dart';
 import 'package:geekcontrol/view/services/anilist/entities/anilist_seasons_enum.dart';
 import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
 import 'package:geekcontrol/view/services/anilist/entities/details_entity.dart';
 import 'package:geekcontrol/view/services/anilist/entities/releases_anilist_entity.dart';
 import 'package:geekcontrol/view/services/anilist/entities/rates_entity.dart';
+import 'package:geekcontrol/view/services/anilist/entities/reviews_entity.dart';
+import 'package:geekcontrol/view/services/anilist/entities/search_result_entity.dart';
 import 'package:geekcontrol/view/services/anilist/repository/anilist_repository.dart';
 import 'package:geekcontrol/view/services/cache/keys_enum.dart';
 import 'package:geekcontrol/view/services/cache/local_cache.dart';
@@ -25,9 +26,7 @@ class AnilistController extends ChangeNotifier {
   String? translatedDescription = '';
 
   Future<void> init(AnilistTypes type) async {
-    releasesList = await getReleasesAnimes(
-      type: type,
-    );
+    releasesList = await getReleasesAnimes(type: type);
   }
 
   Future<List<ReleasesAnilistEntity>> getReleasesAnimes({
@@ -35,12 +34,9 @@ class AnilistController extends ChangeNotifier {
     AnilistSeasons? season,
     String? year,
   }) async {
-    final String site = season != null ? season.value + type.value : type.value;
+    final site = season != null ? season.value + type.value : type.value;
     try {
-      final cached = await _cache.get(
-        CacheKeys.releases,
-        site: site,
-      );
+      final cached = await _cache.get(CacheKeys.releases, site: site);
 
       if (cached is List) {
         final timestamps = cached
@@ -62,6 +58,7 @@ class AnilistController extends ChangeNotifier {
           return releases;
         }
       }
+
       Loggers.get(site);
       final releases = await _repository.getReleasesAnimes(
         type: type,
@@ -73,13 +70,10 @@ class AnilistController extends ChangeNotifier {
         key: CacheKeys.releases,
         items: releases,
         toMap: (r) => r.toMap(),
-        site: season != null ? season.value + type.value : type.value,
+        site: site,
       );
 
-      for (var r in releases) {
-        releasesList.add(r);
-      }
-
+      releasesList.addAll(releases);
       return releases;
     } catch (e) {
       Loggers.error('Failure to load releases: $e');
@@ -87,12 +81,10 @@ class AnilistController extends ChangeNotifier {
     }
   }
 
-  Future<List<MangasRates>> getRates({required AnilistTypes type}) async {
+  Future<List<AnilistRatesEntity>> getRates(
+      {required AnilistTypes type}) async {
     try {
-      final cached = await _cache.get(
-        CacheKeys.rates,
-        site: type.value,
-      );
+      final cached = await _cache.get(CacheKeys.rates, site: type.value);
 
       if (cached is List) {
         final timestamps = cached
@@ -108,7 +100,8 @@ class AnilistController extends ChangeNotifier {
 
         if (!shouldUpdate) {
           Loggers.cache(operation: '${CacheKeys.rates.value} - ${type.value}');
-          final rates = cached.map((e) => MangasRates.fromMap(e)).toList();
+          final rates =
+              cached.map((e) => AnilistRatesEntity.fromMap(e)).toList();
           rates.sort((a, b) => b.meanScore.compareTo(a.meanScore));
           return rates;
         }
@@ -125,31 +118,29 @@ class AnilistController extends ChangeNotifier {
         return map;
       }).toList();
 
-      await _cache.put(
-        CacheKeys.rates,
-        ratesWithTimestamps,
-        site: type.value,
-      );
+      await _cache.put(CacheKeys.rates, ratesWithTimestamps, site: type.value);
+      notifyListeners();
       return rates;
     } catch (e) {
       Logger().e('Erro ao carregar rates: $e');
-      return [MangasRates.empty()];
+      return [AnilistRatesEntity.empty()];
     }
+  }
+
+  Future<List<SearchResultEntity>> search(
+    String query,
+    AnilistTypes type,
+  ) async {
+    final results = await _repository.search(searchTerm: query, type: type);
+    notifyListeners();
+    return results;
   }
 
   Future<DetailsEntity> getDetails(int id) async {
     try {
       final details = await _repository.getDetails(id);
-      // translatedDescription = await translateDescription(details.description);
-      // final translatedReviews = await Future.wait(
-      //   details.reviews.map((review) async {
-      //     final translated = await translateDescription(review.body);
-      //     return review.copyWith(
-      //       body: translated,
-      //       summary: await translateDescription(review.summary),
-      //     );
-      //   }),
-      // );
+      final translated = await translateDescription(details.description);
+      translatedDescription = translated;
       return details.copyWith(reviews: []);
     } catch (e) {
       Logger().e('Erro ao carregar detalhes: $e');
@@ -157,13 +148,34 @@ class AnilistController extends ChangeNotifier {
     }
   }
 
+  Future<List<ReviewsEntity>> translateReviews(
+      List<ReviewsEntity> reviews) async {
+    try {
+      final translated = await Future.wait(
+        reviews.map((review) async {
+          final translatedBody = await translateDescription(review.body);
+          final translatedSummary = await translateDescription(review.summary);
+          return review.copyWith(
+              body: translatedBody, summary: translatedSummary);
+        }),
+      );
+      return translated;
+    } catch (e) {
+      Logger().w('Erro ao traduzir reviews');
+      return reviews;
+    }
+  }
+
   Future<String> translateDescription(String description) async {
     try {
-      final translator = GoogleTranslator();
-      final plainText = description.replaceAll(RegExp(r'<[^>]*>'), '');
-      final result =
-          await translator.translate(plainText, from: 'en', to: 'pt');
-      return result.text;
+      if (Globals.translateReviews) {
+        final translator = GoogleTranslator();
+        final plainText = description.replaceAll(RegExp(r'<[^>]*>'), '');
+        final result =
+            await translator.translate(plainText, from: 'en', to: 'pt');
+        return result.text;
+      }
+      return description;
     } catch (e) {
       Logger().w('Erro na tradução, mantendo texto original');
       return description;
@@ -178,6 +190,7 @@ class AnilistController extends ChangeNotifier {
         map[key] = entry;
       }
     }
+
     final seasonOrder = AnilistSeasons.values.map((e) => e.value).toList();
     final list = map.values.where((e) => e.seasonYear == 2025).toList()
       ..sort((a, b) {
@@ -187,6 +200,7 @@ class AnilistController extends ChangeNotifier {
             b.seasonYear * 10 + seasonOrder.indexOf(b.season.toUpperCase());
         return aKey.compareTo(bKey);
       });
+
     final now = DateTime.now();
     final currentSeason = () {
       if (now.month <= 3) return AnilistSeasons.winter.value;
@@ -194,15 +208,14 @@ class AnilistController extends ChangeNotifier {
       if (now.month <= 9) return AnilistSeasons.summer.value;
       return AnilistSeasons.fall.value;
     }();
+
     final startIndex =
         list.indexWhere((e) => e.season.toUpperCase() == currentSeason);
-
     if (startIndex <= 0) return list;
     return [...list.sublist(startIndex), ...list.sublist(0, startIndex)];
   }
 
-  Future<void> addToLibrary(
-      DetailsEntity details, CategoryEntity category) async {
+  Future<void> addToLibrary(DetailsEntity details) async {
     try {
       await _libraryController.addInLibrary(
         LibraryEntity(
@@ -212,7 +225,7 @@ class AnilistController extends ChangeNotifier {
           bannerImage: details.coverImage,
           episodes: details.episodes,
           chapters: details.chapters,
-          categoryId: category.id
+          categoryId: _libraryController.libraryDefaultId,
         ),
       );
     } catch (e) {

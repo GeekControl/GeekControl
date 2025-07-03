@@ -9,6 +9,11 @@ class SettingsController extends ChangeNotifier {
 
   Future<void> init() async {
     cacheSize = await getCacheSize();
+    final value = await _localCache.getUserPreference<bool>('translateReviews');
+    if (value == null) {
+      Globals.translateReviews = true;
+      await _localCache.setUserPreference('translateReviews', true);
+    }
     notifyListeners();
   }
 
@@ -26,6 +31,12 @@ class SettingsController extends ChangeNotifier {
 
   Future<void> logout(BuildContext context) async {
     await di<FirebaseAuthService>().signOut(context);
+    notifyListeners();
+  }
+
+  Future<void> setTranslatePrefs(bool value) async {
+    await _localCache.setUserPreference('translateReviews', value);
+    Globals.translateReviews = value;
     notifyListeners();
   }
 }
