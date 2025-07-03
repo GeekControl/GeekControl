@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/containter/hitagi_container.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/utils.dart';
 import 'package:geekcontrol/view/animes/ui/components/align_fields_component.dart';
 import 'package:geekcontrol/view/animes/ui/components/meanscore_field_component.dart';
 import 'package:geekcontrol/view/animes/ui/components/status_field_component.dart';
@@ -10,6 +11,7 @@ import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/view/services/anilist/controller/anilist_controller.dart';
 import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
 import 'package:geekcontrol/view/services/anilist/entities/rates_entity.dart';
+import 'package:geekcontrol/view/services/anilist/entities/releases_anilist_entity.dart';
 import 'package:go_router/go_router.dart';
 
 class TopRatedsPage extends StatefulWidget {
@@ -62,8 +64,10 @@ class _TopRatedsPageState extends State<TopRatedsPage> {
         itemCount: _rates.length,
         itemBuilder: (context, index) {
           final rate = _rates[index];
-          final release =
-              index < _ct.releasesList.length ? _ct.releasesList[index] : null;
+          final release = _ct.releasesList.firstWhere(
+            (item) => item.id == rate.id,
+            orElse: () => ReleasesAnilistEntity.empty(),
+          );
 
           return Padding(
             padding: const EdgeInsets.only(top: 8),
@@ -134,7 +138,8 @@ class _TopRatedsPageState extends State<TopRatedsPage> {
                               ),
                             ),
                           ),
-                          StatusFieldComponent(status: rate.status),
+                          StatusFieldComponent(
+                              status: Utils.formatStatus(rate.status)),
                           if (rate.meanScore > 0)
                             MeanscoreFieldComponent(meanScore: rate.meanScore),
                         ],
@@ -151,11 +156,14 @@ class _TopRatedsPageState extends State<TopRatedsPage> {
                               overflow: TextOverflow.ellipsis,
                             ),
                             const SizedBox(height: 16),
-                            if (release != null)
-                              AlignFieldsComponent(
-                                release: release,
-                                type: widget.type,
-                              ),
+                            AlignFieldsComponent(
+                              type: widget.type,
+                              author: release.author,
+                              episodes: rate.episodes,
+                              actuallyEpisode: release.actuallyEpisode,
+                              source: rate.source,
+                              status: rate.status,
+                            ),
                           ],
                         ),
                       ),

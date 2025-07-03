@@ -161,8 +161,12 @@ class _LatestReleasesPageState extends State<LatestReleasesPage> {
                                   ),
                                   const SizedBox(height: 16),
                                   AlignFieldsComponent(
-                                    release: release,
                                     type: widget.type,
+                                    author: release.author,
+                                    episodes: release.episodes,
+                                    actuallyEpisode: release.actuallyEpisode,
+                                    source: release.source,
+                                    status: release.status,
                                   ),
                                   const SizedBox(height: 16),
                                   if (release.airingAt > 0)
