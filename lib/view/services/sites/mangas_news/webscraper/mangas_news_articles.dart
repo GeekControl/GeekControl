@@ -10,7 +10,8 @@ class MangaNews {
   Future<List<ArticlesEntity>> scrapeArticles() async {
     final List<ArticlesEntity> scrapeList = [];
 
-    final Document doc = await _scraper.getDocument(url: AnimeSources.animesNewUriStr);
+    final Document doc =
+        await _scraper.getDocument(url: AnimeSources.animesNewUriStr);
     final element = doc.querySelectorAll('.list-holder');
 
     for (final e in element) {
@@ -69,31 +70,35 @@ class MangaNews {
 
     final images = _scraper.extractImages(
       doc: doc,
-      query: 'img',
-      tagSelector: ['data-lazy-src'],
+      query: '.s-feat img',
+      tagSelector: ['data-lazy-src', 'src'],
       attr: 'src',
     );
 
     final List<String>? content = _scraper.extractText(
       doc: doc,
-      query: ['.e-con-inner '],
+      query: ['.s-ct'],
       tagToSelector: ['p', 'em', 'h1', 'li'],
     );
 
-    final String date = _scraper.querySelector(
-            doc: doc, query: '.elementor-widget-container time') ??
-        '';
+    final String date =
+        _scraper.querySelector(doc: doc, query: 'time.date.published') ?? '';
 
     _scraper.removeHtmlElement(
       content: content ?? [],
       elements: ['<img', '<iframe'],
     );
 
+    final author = _scraper.querySelector(
+      doc: doc,
+      query: '.meta-el a',
+    );
+
     return ArticlesEntity(
       title: entity.title,
       imageUrl: entity.imageUrl,
       date: date,
-      author: 'N/A',
+      author: author ?? 'N/A',
       category: entity.category,
       content: content?.join('\n') ?? '',
       url: url,
@@ -108,8 +113,8 @@ class MangaNews {
 
   Future<List<ArticlesEntity>> searchArticle(String article) async {
     final List<ArticlesEntity> articlesList = [];
-    final doc =
-        await _scraper.getDocument(url: '${AnimeSources.animesNewUriStr}?s=$article');
+    final doc = await _scraper.getDocument(
+        url: '${AnimeSources.animesNewUriStr}?s=$article');
 
     final element = doc.querySelectorAll('.p-wrap.p-grid.p-grid-1');
 

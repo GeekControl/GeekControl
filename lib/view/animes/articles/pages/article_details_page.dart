@@ -65,7 +65,7 @@ class _ArticleDetailsPageState extends State<ArticleDetailsPage> {
                 ? HitagiBanner(
                     images: article.imagesPage!, title: article.title)
                 : HitagiBanner(
-                    images: [article.imageUrl!], title: article.title),
+                    images: [article.imageUrl ?? ''], title: article.title),
             const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
