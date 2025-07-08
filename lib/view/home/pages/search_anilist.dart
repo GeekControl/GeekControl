@@ -24,7 +24,7 @@ class SearchAnilist extends HitagiPage<HomeController> {
       body: HitagiSearchComponent<_SearchAdapter>(
         controller: _SearchAdapter(controller, context: context),
         onSearch: (query) => controller.search(query, type),
-        hintText: 'Pesquise por um anime ou mangá...',
+        hintText: 'Pesquise por ${Utils.formatType(type).toLowerCase()}s...',
         contentText: 'Encontre ${Utils.formatType(type)}s incríveis! ',
       ),
     );
