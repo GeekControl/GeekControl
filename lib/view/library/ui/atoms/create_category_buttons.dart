@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/hitagi_toast.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
-import 'package:geekcontrol/core/utils/global_variables.dart';
-import 'package:geekcontrol/view/library/controllers/library_controller.dart';
 import 'package:geekcontrol/view/library/model/category_entity.dart';
 import 'package:uuid/uuid.dart';
 
@@ -10,6 +9,7 @@ class CreateCategoryButtons extends StatefulWidget {
   final TextEditingController colorCtrl;
   final CategoryEntity? initial;
   final void Function(CategoryEntity category) onSubmit;
+  final void Function()? onDelete;
 
   const CreateCategoryButtons({
     super.key,
@@ -17,6 +17,7 @@ class CreateCategoryButtons extends StatefulWidget {
     required this.colorCtrl,
     required this.initial,
     required this.onSubmit,
+    required this.onDelete,
   });
 
   @override
@@ -53,17 +54,19 @@ class _CreateCategoryButtonsState extends State<CreateCategoryButtons> {
               child: ElevatedButton(
                 onPressed: () {
                   if (widget.nameCtrl.text.trim().isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: const HitagiText(
-                          text: 'Por favor, insira um nome para a categoria',
-                        ),
-                        backgroundColor: Colors.red.shade400,
-                        behavior: SnackBarBehavior.floating,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
+                    HitagiToast.show(
+                      context,
+                      message: 'O nome da categoria não pode estar vazio.',
+                      type: ToastType.error,
+                    );
+                    return;
+                  }
+                  if (widget.nameCtrl.text.length > 30) {
+                    HitagiToast.show(
+                      context,
+                      message:
+                          'O nome da categoria não pode ter mais de 30 caracteres.',
+                      type: ToastType.error,
                     );
                     return;
                   }
@@ -110,15 +113,7 @@ class _CreateCategoryButtonsState extends State<CreateCategoryButtons> {
             padding: const EdgeInsets.only(top: 16),
             child: Center(
               child: TextButton.icon(
-                onPressed: () async {
-                  await di<LibraryController>().deleteCategory(
-                    widget.initial!.id,
-                    context,
-                  );
-                  if (context.mounted) {
-                    Navigator.pop(context, true);
-                  }
-                },
+                onPressed: widget.onDelete,
                 icon: const Icon(Icons.delete_outline, color: Colors.red),
                 label: const HitagiText(
                   text: 'Excluir Categoria',

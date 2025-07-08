@@ -8,11 +8,13 @@ import 'package:geekcontrol/view/library/ui/atoms/create_category_text_field.dar
 class LibraryCreateCategory extends StatefulWidget {
   final CategoryEntity? initial;
   final void Function(CategoryEntity category) onSubmit;
+  final void Function()? onDelete;
 
   const LibraryCreateCategory({
     super.key,
     this.initial,
     required this.onSubmit,
+    required this.onDelete,
   });
 
   @override
@@ -78,6 +80,7 @@ class _LibraryCreateCategoryState extends State<LibraryCreateCategory> {
             colorCtrl: colorCtrl,
             initial: widget.initial,
             onSubmit: widget.onSubmit,
+            onDelete: widget.onDelete,
           ),
         ],
       ),

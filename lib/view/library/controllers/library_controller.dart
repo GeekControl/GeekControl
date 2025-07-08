@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/hitagi_toast.dart';
+import 'package:geekcontrol/core/library/page_builder/hitagi_page.dart';
 import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/view/library/model/category_entity.dart';
 import 'package:geekcontrol/view/services/firebase/firebase.dart';
 import 'package:geekcontrol/view/library/model/library_entity.dart';
-import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
 
-class LibraryController extends ChangeNotifier {
+class LibraryController extends HitagiController {
+  String? _selectedCategoryId;
+  String? get selectedCategoryId => _selectedCategoryId;
+
   List<CategoryEntity> categories = [];
   List<LibraryEntity> content = [];
 
-  bool _isLoading = true;
-  bool get isLoading => _isLoading;
-
-  void init() async {
+  @override
+  Future<void> init() async {
     await getCategories();
     await getLibrary();
-    _isLoading = false;
     notifyListeners();
   }
 
@@ -26,7 +26,7 @@ class LibraryController extends ChangeNotifier {
   String get libraryDefaultId => 'default';
 
   Future<void> addInLibrary(LibraryEntity data) async {
-    try {
+    handleTry(() async {
       await _service.add(
         collection: _collection,
         doc: Globals.uid!,
@@ -34,41 +34,48 @@ class LibraryController extends ChangeNotifier {
         subdoc: data.id,
         data: data.toJson(),
       );
-    } catch (e) {
-      rethrow;
+    });
+  }
+
+  void setSelectedCategory(String? id) {
+    _selectedCategoryId = id;
+    notifyListeners();
+  }
+
+  List<LibraryEntity> get filteredContent {
+    if (_selectedCategoryId == null || _selectedCategoryId == 'default') {
+      return content;
     }
+    return content.where((e) => e.categoryId == _selectedCategoryId).toList();
   }
 
   Future<void> getCategories() async {
-    final defaultCategory = CategoryEntity(
-      id: libraryDefaultId,
-      name: 'Todos',
-      colorHex: '#2D3436',
-      editable: false,
-    );
-    try {
+    handleTry(() async {
+      final defaultCategory = CategoryEntity(
+        id: libraryDefaultId,
+        name: 'Todos',
+        colorHex: '#2D3436',
+        editable: false,
+      );
       final s = await _service.getAll(
         collection: _collection,
         doc: Globals.uid!,
         subcollection: 'categories',
       );
-
       if (s.isEmpty) {
         categories.add(defaultCategory);
         await createCategory(defaultCategory);
         notifyListeners();
         return;
       }
-
       categories = s.map((e) => CategoryEntity.fromJson(e)).toList();
       notifyListeners();
-    } catch (e) {
-      rethrow;
-    }
+      Logger().i('Categories loaded with ${categories.length} items.');
+    });
   }
 
   Future<void> createCategory(CategoryEntity category) async {
-    try {
+    handleTry(() async {
       await _service.add(
         collection: _collection,
         doc: Globals.uid!,
@@ -77,15 +84,18 @@ class LibraryController extends ChangeNotifier {
         data: category.toJson(),
       );
 
-      categories.add(category);
+      final index = categories.indexWhere((c) => c.id == category.id);
+      if (index != -1) {
+        categories[index] = category;
+      } else {
+        categories.add(category);
+      }
       notifyListeners();
-    } catch (e) {
-      rethrow;
-    }
+    });
   }
 
   Future<void> getLibrary() async {
-    try {
+    handleTry(() async {
       final data = await _service.getAll(
         collection: _collection,
         doc: Globals.uid!,
@@ -94,9 +104,8 @@ class LibraryController extends ChangeNotifier {
 
       content = data.map((e) => LibraryEntity.fromJson(e)).toList();
       notifyListeners();
-    } catch (e) {
-      rethrow;
-    }
+      Logger().i('Library loaded with ${content.length} items.');
+    });
   }
 
   List<LibraryEntity> filterByCategory(
@@ -107,7 +116,7 @@ class LibraryController extends ChangeNotifier {
   }
 
   Future<void> deleteCategory(String categoryId, BuildContext context) async {
-    try {
+    handleTry(() async {
       await _service.delete(
         collection: _collection,
         doc: Globals.uid!,
@@ -115,15 +124,8 @@ class LibraryController extends ChangeNotifier {
         subdoc: categoryId,
       );
       categories.removeWhere((e) => e.id == categoryId);
-      if (context.mounted) {
-        HitagiToast.show(
-          context,
-          message: 'Categoria excluída com sucesso.',
-          type: ToastType.success,
-        );
-      }
       notifyListeners();
-    } catch (e) {
+    }, onError: (e, s) {
       Logger().e('Erro ao excluir categoria: $e');
       if (context.mounted) {
         HitagiToast.show(
@@ -132,29 +134,27 @@ class LibraryController extends ChangeNotifier {
           type: ToastType.error,
         );
       }
-      rethrow;
-    }
+    });
   }
 
   Future<void> delete(String id, BuildContext context) async {
-    try {
+    handleTry(() async {
       await _service.delete(
         collection: _collection,
         doc: Globals.uid!,
         subcollection: 'items',
         subdoc: id,
       );
+      content.removeWhere((e) => e.id == id);
       if (context.mounted) {
         HitagiToast.show(
           context,
           message: 'Item excluído com sucesso.',
           type: ToastType.success,
         );
-        context.pop();
       }
-      content.removeWhere((e) => e.id == id);
       notifyListeners();
-    } catch (e) {
+    }, onError: (e, s) {
       Logger().e('Erro ao excluir item: $e');
       if (context.mounted) {
         HitagiToast.show(
@@ -163,7 +163,6 @@ class LibraryController extends ChangeNotifier {
           type: ToastType.error,
         );
       }
-      rethrow;
-    }
+    });
   }
 }

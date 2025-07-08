@@ -6,12 +6,14 @@ class LibraryCategory extends StatefulWidget {
   final List<CategoryEntity> categories;
   final ValueChanged<CategoryEntity?> onSelected;
   final Future<void> Function(CategoryEntity) onCreate;
+  final Future<void> Function(CategoryEntity) onDelete;
 
   const LibraryCategory({
     super.key,
     required this.categories,
     required this.onSelected,
     required this.onCreate,
+    required this.onDelete,
   });
 
   @override
@@ -128,6 +130,15 @@ class _LibraryCategoryState extends State<LibraryCategory> {
               selected = newCategory;
             });
             widget.onSelected(newCategory);
+          },
+          onDelete: () async {
+            if (category != null) {
+              await widget.onDelete(category);
+              setState(() {
+                selected = null;
+              });
+              widget.onSelected(null);
+            }
           },
         );
       },
