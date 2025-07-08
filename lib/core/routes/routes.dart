@@ -10,7 +10,8 @@ import 'package:geekcontrol/view/animes/ui/pages/latest_releases_page.dart';
 import 'package:geekcontrol/view/animes/ui/pages/top_rateds_page.dart';
 import 'package:geekcontrol/view/auth/ui/login_page.dart';
 import 'package:geekcontrol/view/auth/ui/register_page.dart';
-import 'package:geekcontrol/view/home/atoms/search_page.dart';
+import 'package:geekcontrol/view/animes/articles/pages/search_article_page.dart';
+import 'package:geekcontrol/view/home/pages/search_anilist.dart';
 import 'package:geekcontrol/view/home/splash/splash_page.dart';
 import 'package:geekcontrol/view/library/ui/library_page.dart';
 import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
@@ -82,8 +83,17 @@ class AppRoutes {
         builder: (context, state) => const SettingsPage(),
       ),
       GoRoute(
-        path: '/search',
-        builder: (context, state) => const SearchPage(),
+        path: '/search/articles',
+        builder: (context, state) => const SearchArticlePage(),
+      ),
+      GoRoute(
+        path: '/search/anilist',
+        builder: (context, state) {
+          final type = state.extra as AnilistTypes;
+          return SearchAnilist(
+            type: type,
+          );
+        },
       ),
       GoRoute(
           path: '/top-rateds',

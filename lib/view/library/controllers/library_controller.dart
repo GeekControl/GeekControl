@@ -15,7 +15,7 @@ class LibraryController extends HitagiController {
   List<LibraryEntity> content = [];
 
   @override
-  Future<void> init() async {
+  Future<void> init({dynamic param}) async {
     await getCategories();
     await getLibrary();
     notifyListeners();

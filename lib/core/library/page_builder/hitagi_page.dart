@@ -24,7 +24,7 @@ abstract class HitagiController extends ChangeNotifier {
   ControllerState get state => _state;
   String? get errorMessage => _errorMessage;
 
-  Future<void> init();
+  Future<void> init({dynamic param});
 
   void refresh() {
     setState(ControllerState.refresh);

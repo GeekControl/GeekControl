@@ -6,7 +6,7 @@ import 'package:geekcontrol/view/animes/components/floating_button.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/core/utils/skeletonizer/cards_skeletonizer.dart';
-import 'package:geekcontrol/view/home/atoms/search_page.dart';
+import 'package:geekcontrol/view/animes/articles/pages/search_article_page.dart';
 import 'package:go_router/go_router.dart';
 
 class ArticlesPage extends StatefulWidget {
@@ -25,7 +25,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await ct.init();
+      ct.init(param: context);
       setState(() {});
     });
 
@@ -47,7 +47,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
         actions: [
           Padding(padding: const EdgeInsets.only(right: 8.0)),
           IconButton(
-            onPressed: () => GoRouter.of(context).push(SearchPage.route),
+            onPressed: () => GoRouter.of(context).push(SearchArticlePage.route),
             icon: const Icon(Icons.search_off_outlined),
           ),
         ],
@@ -62,7 +62,7 @@ class _ArticlesPageState extends State<ArticlesPage> {
         )),
       ),
       floatingActionButton: HitagiFloattingButton(ct: ct),
-      body: (ct.isLoading || ct.articlesList.isEmpty)
+      body: (ct.articlesList.isEmpty)
           ? const CardsSkeletonizer()
           : ListView.builder(
               itemCount: ct.articlesList.length,

@@ -118,4 +118,11 @@ class Utils {
         return 'Mangá';
     }
   }
+
+  static String formatDescription(String description) {
+    description = description.replaceAll(RegExp(r'<[^>]*>'), '');
+    maxCharacters(200, text: description);
+    description = description.replaceAll('\n', ' ');
+    return description;
+  }
 }

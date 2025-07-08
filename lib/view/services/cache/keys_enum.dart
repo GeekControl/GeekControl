@@ -5,6 +5,7 @@ enum CacheKeys {
   anilist(value: 'anilist'),
   articles(value: 'articles'),
   anonymousMode(value: 'anonymousMode'),
+  translateReviews(value: 'translateReviews'),
   rates(value: 'rates');
 
   final String value;

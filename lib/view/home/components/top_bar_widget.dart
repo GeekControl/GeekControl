@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:geekcontrol/view/home/atoms/search_page.dart';
+import 'package:geekcontrol/view/animes/articles/pages/search_article_page.dart';
 import 'package:go_router/go_router.dart';
 
 class TopBarWidget extends StatelessWidget {
@@ -12,7 +12,7 @@ class TopBarWidget extends StatelessWidget {
       actions: [
         IconButton(
           icon: const Icon(Icons.search_outlined),
-          onPressed: () => GoRouter.of(context).push(SearchPage.route),
+          onPressed: () => GoRouter.of(context).push(SearchArticlePage.route),
         ),
       ],
     );

@@ -5,6 +5,14 @@ class HitagiSearchDialog extends StatelessWidget {
   final String hintText;
   final void Function(String)? onChanged;
   final void Function(String)? onSubmitted;
+  final IconData prefixIcon;
+  final IconData suffixIcon;
+  final Color? backgroundColor;
+  final Color? fillColor;
+  final Color? iconColor;
+  final Color? suffixBackgroundColor;
+  final double borderRadius;
+  final EdgeInsetsGeometry contentPadding;
 
   const HitagiSearchDialog({
     super.key,
@@ -12,14 +20,29 @@ class HitagiSearchDialog extends StatelessWidget {
     required this.hintText,
     this.onChanged,
     this.onSubmitted,
+    this.prefixIcon = Icons.search,
+    this.suffixIcon = Icons.arrow_forward_rounded,
+    this.backgroundColor,
+    this.fillColor,
+    this.iconColor,
+    this.suffixBackgroundColor,
+    this.borderRadius = 16,
+    this.contentPadding =
+        const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
   });
 
   @override
   Widget build(BuildContext context) {
+    final effectiveFillColor = fillColor ?? Colors.grey.shade50;
+    final effectiveIconColor = iconColor ?? Colors.grey.shade600;
+    final effectiveSuffixBackground =
+        suffixBackgroundColor ?? Colors.blue.shade600;
+    final effectiveBackground = backgroundColor ?? Colors.white;
+
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        color: effectiveBackground,
+        borderRadius: BorderRadius.circular(borderRadius),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
@@ -49,8 +72,8 @@ class HitagiSearchDialog extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
-              Icons.search,
-              color: Colors.grey.shade600,
+              prefixIcon,
+              color: effectiveIconColor,
               size: 20,
             ),
           ),
@@ -58,7 +81,7 @@ class HitagiSearchDialog extends StatelessWidget {
             duration: const Duration(milliseconds: 200),
             margin: const EdgeInsets.all(8),
             child: Material(
-              color: Colors.blue.shade600,
+              color: effectiveSuffixBackground,
               borderRadius: BorderRadius.circular(12),
               child: InkWell(
                 borderRadius: BorderRadius.circular(12),
@@ -67,10 +90,10 @@ class HitagiSearchDialog extends StatelessWidget {
                     onSubmitted!(controller.text);
                   }
                 },
-                child: Container(
+                child: Padding(
                   padding: const EdgeInsets.all(12),
                   child: Icon(
-                    Icons.arrow_forward_rounded,
+                    suffixIcon,
                     color: Colors.white,
                     size: 20,
                   ),
@@ -79,26 +102,23 @@ class HitagiSearchDialog extends StatelessWidget {
             ),
           ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(borderRadius),
             borderSide: BorderSide.none,
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(borderRadius),
             borderSide: BorderSide(
               color: Colors.blue.shade400,
               width: 2,
             ),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(borderRadius),
             borderSide: BorderSide.none,
           ),
           filled: true,
-          fillColor: Colors.grey.shade50,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 16,
-          ),
+          fillColor: effectiveFillColor,
+          contentPadding: contentPadding,
         ),
       ),
     );
