@@ -1,3 +1,4 @@
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
 class DateTimeUtil extends DateFormat {
@@ -24,5 +25,12 @@ class DateTimeUtil extends DateFormat {
         DateFormat('HH:mm').format(DateTime.parse(specialDateTime.toString()));
 
     return formattedDate = '$formattedDate ás ${formattedHours}hs';
+  }
+
+  static String timeFromMSeconds(int dateTimestamp) {
+    initializeDateFormatting('pt_BR', null);
+    DateTime dateTime =
+        DateTime.fromMillisecondsSinceEpoch(dateTimestamp * 1000);
+    return DateFormat.yMMMMd('pt_BR').format(dateTime);
   }
 }
