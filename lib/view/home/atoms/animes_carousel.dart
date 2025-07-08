@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
-import 'package:geekcontrol/core/library/hitagi_cup/utils.dart';
+import 'package:geekcontrol/core/utils/date_time.dart';
 import 'package:geekcontrol/core/utils/manga_state.dart';
 import 'package:geekcontrol/core/utils/loader_indicator.dart';
 import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
@@ -88,7 +88,7 @@ class AnimesCarouselWidget extends StatelessWidget {
                             isBold: true,
                           ),
                           HitagiText(
-                            text: Utils.timeFromMSeconds(releases.seasonYear),
+                            text: DateTimeUtil.timeFromMSeconds(releases.seasonYear),
                             size: 16,
                             icon: Icons.book,
                             isBold: true,
