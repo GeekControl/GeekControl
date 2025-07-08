@@ -3,10 +3,19 @@ import 'package:google_fonts/google_fonts.dart';
 
 enum HitagiTypography {
   giga(true, 25),
+  gigaNormal(false, 25),
+
   title(true, 19),
+  titleNormal(false, 19),
+
   button(true, 14),
+  buttonNormal(false, 14),
+
   alternative(false, 12),
+
   small(true, 11),
+  smallNormal(false, 11),
+
   body(false, 15);
 
   final bool isBold;
