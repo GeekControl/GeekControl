@@ -49,8 +49,8 @@ class HomeDefaultWidget extends HitagiPage<HomeController> {
                       Row(
                         children: [
                           IconButton(
-                            onPressed: () =>
-                                GoRouter.of(context).push(SearchAnilist.route, extra: type),
+                            onPressed: () => GoRouter.of(context)
+                                .push(SearchAnilist.route, extra: type),
                             icon: const Icon(Icons.search),
                           ),
                           IconButton(
@@ -64,7 +64,7 @@ class HomeDefaultWidget extends HitagiPage<HomeController> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                const SizedBox(height: 150, child: BannerCarousel()),
+                const SizedBox(height: 210, child: BannerCarousel()),
                 Padding(
                   padding: const EdgeInsets.only(left: 6.0),
                   child: Column(
