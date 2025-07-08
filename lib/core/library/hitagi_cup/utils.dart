@@ -1,7 +1,4 @@
 import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
-import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_local.dart';
-
 class Utils {
   static String maxCharacters(int maxCharacters, {required String text}) {
     if (text.length > maxCharacters) {
@@ -10,22 +7,11 @@ class Utils {
     return text;
   }
 
-  DateTime fromUnixTimestamp(int timestamp) {
-    return DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
-  }
-
   static String breakLines(String text, int maxLines, int length) {
     if (text.length <= length) {
       return text;
     }
     return text.split('\n').sublist(0, maxLines).join('\n');
-  }
-
-  static String timeFromMSeconds(int dateTimestamp) {
-    initializeDateFormatting('pt_BR', null);
-    DateTime dateTime =
-        DateTime.fromMillisecondsSinceEpoch(dateTimestamp * 1000);
-    return DateFormat.yMMMMd('pt_BR').format(dateTime);
   }
 
   static String formatSource(String source) {
