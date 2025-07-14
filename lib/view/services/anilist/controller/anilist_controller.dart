@@ -222,9 +222,7 @@ class AnilistController extends ChangeNotifier {
           id: details.id.toString(),
           title: details.titleEnglish,
           coverImage: details.coverImage,
-          bannerImage: details.coverImage,
           episodes: details.episodes,
-          chapters: details.chapters,
           categoryId: _libraryController.libraryDefaultId,
         ),
       );
