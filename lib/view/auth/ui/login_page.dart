@@ -113,9 +113,13 @@ class _LoginPageState extends State<LoginPage> {
                   TextButton(
                     onPressed: () =>
                         GoRouter.of(context).go(RegisterPage.route),
-                    child: const HitagiText(
-                      text: 'Não tenho uma conta',
-                      typography: HitagiTypography.button,
+                    child: HitagiText(
+                      text: width < 600
+                          ? 'Criar conta'
+                          : 'Não tenho uma conta',
+                      typography: width < 600
+                          ? HitagiTypography.alternative
+                          : HitagiTypography.button,
                     ),
                   ),
                   Container(
@@ -131,9 +135,13 @@ class _LoginPageState extends State<LoginPage> {
                         GoRouter.of(context).go('/');
                       }
                     },
-                    child: const HitagiText(
-                      text: 'Continuar sem login',
-                      typography: HitagiTypography.button,
+                    child: HitagiText(
+                      text: width < 600
+                          ? 'Modo visitante'
+                          : 'Entrar como visitante',
+                      typography: width < 600
+                          ? HitagiTypography.alternative
+                          : HitagiTypography.button,
                     ),
                   ),
                 ],
