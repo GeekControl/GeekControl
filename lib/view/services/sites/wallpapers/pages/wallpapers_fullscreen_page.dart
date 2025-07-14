@@ -31,10 +31,10 @@ class _WallpaperFullscreenState extends State<WallpaperFullscreen> {
   @override
   void initState() {
     super.initState();
-    ct.init(
-      initialPage: widget.index,
-      isFullScreen: fullscreen,
-    );
+    ct.init(param: {
+      'isFullScreen': fullscreen,
+      'initialPage': widget.index,
+    });
     currentIndex = widget.index;
   }
 

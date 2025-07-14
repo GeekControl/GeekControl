@@ -3,56 +3,51 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geekcontrol/core/utils/anime_sources.dart';
+import 'package:geekcontrol/core/library/page_builder/hitagi_page.dart';
+import 'package:geekcontrol/view/services/sites/wallpapers/webscrap/alphacoders_webscrap.dart';
+import 'package:geekcontrol/view/services/sites/wallpapers/webscrap/wallpapersflare_webscrap.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:saver_gallery/saver_gallery.dart';
-import 'package:scraper/scraper.dart';
 
-class WallpaperController extends ChangeNotifier {
+class WallpaperController extends HitagiController {
+  final List<String> images = [];
+
   late final PageController pageController;
-  final _scraper = Scraper();
 
-  Future<void> init({
-    required int initialPage,
-    required bool isFullScreen,
-  }) async {
-    setFullScreen(enabled: isFullScreen);
-    pageController = PageController(initialPage: initialPage);
+  final alphacoders = AlphacodersWebscrap();
+  final wallpaperFlare = WallpapersflareWebscrap();
+
+  String? searchQuery;
+
+  @override
+  Future<void> init({param}) async {
+    final Map<String, dynamic> params = {
+      'isFullScreen': true,
+      'initialPage': 0,
+    };
+    setFullScreen(enabled: params['isFullScreen']);
+    pageController = PageController(initialPage: params['initialPage']);
+    images.clear();
+    images.addAll(await getWallpapers(searchQuery));
     notifyListeners();
   }
 
-  Future<List<String>> getWallpapers(String search) async {
-    final doc = await _scraper.getDocument(url: AnimeSources.wallpapersUri);
+  Future<List<String>> getWallpapers(String? query) async {
+    final fetchedImages = await handleTry<List<String>>(() async {
+      final result = await alphacoders.get(query: query);
+      return result;
+    });
 
-    final img = _scraper.querySelectAllAttr(
-      doc: doc,
-      query: '.post-outer-container img',
-      attr: 'src',
-    );
-    if (img == null || img.isEmpty) return [];
-    final flare = await _wallpaperFlare(search);
-    return [...flare, ...img.whereType<String>()];
-  }
-
-  Future<List<String>> _wallpaperFlare(String search) async {
-    final doc = await _scraper.getDocument(
-      url: '${AnimeSources.wallpaperFlare}$search&mobile=ok',
-    );
-
-    final img = _scraper.querySelectAllAttr(
-      doc: doc,
-      query: '.lazy',
-      attr: 'data-src',
-    );
-
-    if (img == null || img.isEmpty) return [];
-
-    if (!img.contains('N/A')) {
-      return img.whereType<String>().toList();
+    if (fetchedImages != null) {
+      images
+        ..clear()
+        ..addAll(fetchedImages);
+      notifyListeners();
     }
-    return img.whereType<String>().toList();
+
+    return images;
   }
 
   Future<void> downloadWallpaper(String uri) async {
