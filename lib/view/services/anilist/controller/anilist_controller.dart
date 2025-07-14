@@ -25,6 +25,8 @@ class AnilistController extends ChangeNotifier {
 
   String? translatedDescription = '';
 
+  String get libraryDefaultId => _libraryController.libraryDefaultId;
+
   Future<void> init(AnilistTypes type) async {
     releasesList = await getReleasesAnimes(type: type);
   }
@@ -215,14 +217,20 @@ class AnilistController extends ChangeNotifier {
     return [...list.sublist(startIndex), ...list.sublist(0, startIndex)];
   }
 
-  Future<void> addToLibrary(DetailsEntity details) async {
+  Future<void> addToLibrary({
+    required String id,
+    required String title,
+    required String coverImage,
+    int? episodes,
+    required String categoryId,
+  }) async {
     try {
       await _libraryController.addInLibrary(
         LibraryEntity(
-          id: details.id.toString(),
-          title: details.titleEnglish,
-          coverImage: details.coverImage,
-          episodes: details.episodes,
+          id: id,
+          title: title,
+          coverImage: coverImage,
+          episodes: episodes,
           categoryId: _libraryController.libraryDefaultId,
         ),
       );

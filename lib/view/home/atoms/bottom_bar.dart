@@ -25,67 +25,71 @@ class CustomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     return HitagiContainer(
-      margin:  EdgeInsets.only(bottom: 12, left: width * 0.2, right: width * 0.2),
+      margin:
+          EdgeInsets.only(bottom: 12, left: width * 0.1, right: width * 0.1),
       padding: const EdgeInsets.all(2),
       decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainerLowest,
-          borderRadius: BorderRadius.circular(30),
-          boxShadow: [
-            BoxShadow(
-              color: Theme.of(context)
-                  .colorScheme
-                  .surfaceContainer
-                  .withValues(alpha: 0.7),
-              blurRadius: 10,
-              spreadRadius: 2,
-            )
-          ]),
+        color: Theme.of(context).colorScheme.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context)
+                .colorScheme
+                .surfaceContainer
+                .withValues(alpha: 0.7),
+            blurRadius: 10,
+            spreadRadius: 2,
+          )
+        ],
+      ),
       clipBehavior: Clip.antiAlias,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: screens.asMap().entries.map((item) {
           final isActive = index == item.key;
-          return GestureDetector(
-            onTap: () => onChanged(item.key),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.fastOutSlowIn,
-              decoration: BoxDecoration(
-                color: isActive
-                    ? Theme.of(context)
-                        .colorScheme
-                        .primary
-                        .withValues(alpha: 0.6)
-                    : Colors.transparent,
-                borderRadius: BorderRadius.circular(50),
-                boxShadow: [
-                  BoxShadow(
-                    color: isActive
-                        ? Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withValues(alpha: 0.6)
-                        : Colors.transparent,
-                    blurRadius: 10,
-                    spreadRadius: 2,
-                  )
-                ],
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-              child: TweenAnimationBuilder<double>(
-                tween: Tween<double>(begin: 0.0, end: isActive ? 1.1 : 0.9),
+          return Expanded(
+            child: GestureDetector(
+              onTap: () => onChanged(item.key),
+              child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-                builder: (context, scale, child) {
-                  return Transform.scale(
-                    scale: scale,
-                    child: Icon(
-                      _icons[item.key],
-                      size: 25,
-                      color: Theme.of(context).colorScheme.inverseSurface,
-                    ),
-                  );
-                },
+                curve: Curves.fastOutSlowIn,
+                decoration: BoxDecoration(
+                  color: isActive
+                      ? Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withValues(alpha: 0.6)
+                      : Colors.transparent,
+                  borderRadius: BorderRadius.circular(50),
+                  boxShadow: [
+                    BoxShadow(
+                      color: isActive
+                          ? Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withValues(alpha: 0.6)
+                          : Colors.transparent,
+                      blurRadius: 10,
+                      spreadRadius: 2,
+                    )
+                  ],
+                ),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween<double>(begin: 0.0, end: isActive ? 1.1 : 0.9),
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  builder: (context, scale, child) {
+                    return Transform.scale(
+                      scale: scale,
+                      child: Icon(
+                        _icons[item.key],
+                        size: 25,
+                        color: Theme.of(context).colorScheme.inverseSurface,
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           );

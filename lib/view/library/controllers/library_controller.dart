@@ -111,7 +111,7 @@ class LibraryController extends HitagiController {
   List<LibraryEntity> filterByCategory(
     String? categoryId,
   ) {
-    if (categoryId == null || categoryId == 'default') return content;
+    if (categoryId == null || categoryId == libraryDefaultId) return content;
     return content.where((e) => e.categoryId == categoryId).toList();
   }
 

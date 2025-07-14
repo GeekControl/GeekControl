@@ -78,7 +78,7 @@ class _SettingsPageState extends State<SettingsPage> {
               if (Globals.isLoggedIn) {
                 await ct.logout(context);
                 if (context.mounted) {
-                  GoRouter.of(context).go('/');
+                  GoRouter.of(context).go(LoginPage.route);
                   setState(() {});
                 }
               } else {

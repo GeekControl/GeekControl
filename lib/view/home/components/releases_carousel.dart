@@ -31,6 +31,7 @@ class ReleasesCarousel extends StatelessWidget {
                   id: anime.id,
                   score: (anime.meanScore / 10).toStringAsFixed(1),
                   status: anime.status,
+                  episodes: anime.episodes,
                 ))
             .toList();
 

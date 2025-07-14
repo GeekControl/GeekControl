@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/hitagi_dialog.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/hitagi_toast.dart';
+import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/core/utils/manga_state.dart';
 import 'package:geekcontrol/view/animes/ui/pages/details_page.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/carousel/hitagi_image_carousel.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/images/hitagi_images.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/utils.dart';
+import 'package:geekcontrol/view/services/anilist/controller/anilist_controller.dart';
 import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
 import 'package:go_router/go_router.dart';
 
@@ -60,6 +64,26 @@ class ItemCard extends StatelessWidget {
                     GestureDetector(
                       onTap: () => GoRouter.of(context)
                           .push(DetailsPage.route, extra: item.id),
+                      onLongPress: () => HitagiDialog(
+                          title: 'Favoritar',
+                          description:
+                              'Deseja adicionar este item na sua biblioteca?',
+                          onPressedButtonAccept: () {
+                            di<AnilistController>().addToLibrary(
+                              id: item.id.toString(),
+                              title: item.title,
+                              coverImage: item.image,
+                              episodes: item.episodes,
+                              categoryId:
+                                  di<AnilistController>().libraryDefaultId,
+                            );
+                            HitagiToast.show(
+                              context,
+                              message: 'Adicionado à sua biblioteca.',
+                              type: ToastType.success,
+                            );
+                            context.pop();
+                          }).show(context),
                       child: Stack(
                         children: [
                           Container(
@@ -88,8 +112,7 @@ class ItemCard extends StatelessWidget {
                               height: 15,
                               width: 15,
                               decoration: BoxDecoration(
-                                color: item.status ==
-                                       MangaStates.releasing.ptBr
+                                color: item.status == MangaStates.releasing.ptBr
                                     ? Colors.green
                                     : Colors.red,
                                 border: Border.all(

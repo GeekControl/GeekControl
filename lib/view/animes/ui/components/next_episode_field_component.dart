@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/containter/hitagi_container.dart';
+import 'package:geekcontrol/core/library/hitagi_cup/features/text/hitagi_text.dart';
 import 'package:geekcontrol/core/utils/date_time.dart';
 
 class NextEpisodeFieldComponent extends StatelessWidget {
@@ -8,6 +9,8 @@ class NextEpisodeFieldComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
     return HitagiContainer(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -52,20 +55,16 @@ class NextEpisodeFieldComponent extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Próximo Episódio',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
+              HitagiText(
+                text: 'Próximo Episódio',
+                typography: HitagiTypography.alternative,
               ),
               const SizedBox(height: 2),
               Text(
                 DateTimeUtil().formatUnixDateTime(airingAt, 'dd/MM/yyyy'),
-                style: const TextStyle(
+                style: TextStyle(
                   color: Color(0xFF1F2937),
-                  fontSize: 15,
+                  fontSize: width < 600 ? 10 : 14,
                   fontWeight: FontWeight.bold,
                 ),
               ),

@@ -154,7 +154,14 @@ class _DetailsPageState extends State<DetailsPage>
                                             'Deseja adicionar à sua lista de favoritos?',
                                         onPressedButtonAccept: () {
                                           try {
-                                            _controller.addToLibrary(details);
+                                            _controller.addToLibrary(
+                                              id: details.id.toString(),
+                                              title: details.titleEnglish,
+                                              coverImage: details.coverImage,
+                                              episodes: details.episodes,
+                                              categoryId:
+                                                  _controller.libraryDefaultId,
+                                            );
                                             HitagiToast.show(
                                               context,
                                               message:
