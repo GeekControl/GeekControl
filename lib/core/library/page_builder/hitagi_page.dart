@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/library/page_builder/exceptions_pages/hitagi_error_page.dart';
+import 'package:geekcontrol/core/library/page_builder/exceptions_pages/hitagi_no_content_page.dart';
 import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/core/utils/loader_indicator.dart';
 import 'package:geekcontrol/view/services/cache/local_cache.dart';
+import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 
@@ -12,6 +14,7 @@ enum ControllerState {
   success,
   error,
   refresh,
+  empty,
 }
 
 abstract class HitagiController extends ChangeNotifier {
@@ -104,11 +107,15 @@ class _HitagiPageState<T extends HitagiController>
             case ControllerState.error:
               return HitagiErrorPage(
                 onRetry: () => ctrl.refresh(),
-                onBack: () => Navigator.of(context).pop(),
+                onBack: () => context.canPop()
+                    ? context.pop()
+                    : GoRouter.of(context).push('/'),
               );
             case ControllerState.success:
             case ControllerState.idle:
               return widget.build(context, ctrl);
+            case ControllerState.empty:
+              return HitagiNoContentPage();
           }
         },
       ),
