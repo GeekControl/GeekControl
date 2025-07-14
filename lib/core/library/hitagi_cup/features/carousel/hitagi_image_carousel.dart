@@ -13,6 +13,7 @@ class HitagiCarouselItem {
   final String? score;
   final int? id;
   final String status;
+  final int? episodes;
 
   HitagiCarouselItem({
     required this.image,
@@ -22,6 +23,7 @@ class HitagiCarouselItem {
     this.id,
     this.score,
     this.status = '',
+    this.episodes,
   });
 }
 

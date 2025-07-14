@@ -33,11 +33,13 @@ class HitagiCardContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
-        child: Container(
+        child: HitagiContainer(
+          width: width < 600 ? double.infinity : 400,
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
@@ -110,7 +112,10 @@ class HitagiCardContainer extends StatelessWidget {
                           SizedBox(height: 12),
                           HitagiText(text: subtitle, color: Colors.white),
                           SizedBox(height: 8),
-                          HitagiText(text: description, color: Colors.white),
+                          HitagiText(
+                            text: description,
+                            color: Colors.white,
+                          ),
                         ],
                       ),
                     ),
