@@ -26,6 +26,15 @@ class WallpapersPage extends HitagiPage<WallpaperController> {
 
   @override
   Widget build(BuildContext context, WallpaperController ct) {
+    ct.scrollController.addListener(() {
+      if (ct.scrollController.position.pixels >=
+              ct.scrollController.position.maxScrollExtent - 300 &&
+          ct.hasMore &&
+          !ct.isLoadingMore) {
+        ct.getWallpapers(ct.searchQuery, reset: false);
+      }
+    });
+
     return Scaffold(
       appBar: AppBar(
         title: const Center(
@@ -39,12 +48,13 @@ class WallpapersPage extends HitagiPage<WallpaperController> {
             icon: const Icon(Icons.search),
             onPressed: () => SearchWallpapers().showSearchBottomSheet(
               context,
-              (query) => ct.getWallpapers(ct.searchQuery = query),
+              (query) => ct.getWallpapers(ct.searchQuery = query, reset: true),
             ),
           ),
         ],
       ),
       body: GridView.builder(
+        controller: ct.scrollController,
         padding: const EdgeInsets.all(8),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3,

@@ -5,9 +5,9 @@ class AlphacodersWebscrap {
   final String _url = 'https://alphacoders.com';
   final _scraper = Scraper();
 
-  Future<List<String>> get({String? query}) async {
-
-    final url = '$_url/${_toSlug(query) ?? 'anime'}-phone-wallpapers';
+  Future<List<String>> get({String? query, int page = 1}) async {
+    final slug = _toSlug(query) ?? 'anime';
+    final url = '$_url/$slug-phone-wallpapers?page=$page';
     Logger().i('Fetching images from $url');
 
     final List<String> images = [];
@@ -21,6 +21,7 @@ class AlphacodersWebscrap {
         images.add(img);
       }
     }
+
     return images;
   }
 
