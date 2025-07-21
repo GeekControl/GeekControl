@@ -1,11 +1,13 @@
+import 'package:geekcontrol/view/animes/articles/articles_impl.dart';
 import 'package:geekcontrol/view/animes/articles/entities/articles_entity.dart';
 import 'package:geekcontrol/view/animes/sites_enum.dart';
 import 'package:scraper/scraper.dart';
 
-class OtakuPT {
+class OtakuPT implements ArticlesImpl {
   final _scraper = Scraper();
 
-  Future<List<ArticlesEntity>> scrapeArticles() async {
+  @override
+  Future<List<ArticlesEntity>> get(String url) async {
     const String uri = 'https://www.otakupt.com/category/anime';
 
     final doc = await _scraper.getDocument(url: uri);
@@ -66,10 +68,53 @@ class OtakuPT {
     return [...articlesList, ...manga];
   }
 
-  Future<List<ArticlesEntity>> searchArticles(String article) async {
+  @override
+  Future<ArticlesEntity> getDetails(String url, ArticlesEntity entity) async {
+    final doc = await _scraper.getDocument(url: url);
+
+    final List<String> contentElements = _scraper.extractText(
+          doc: doc,
+          query: ['.tdb-block-inner.td-fix-index'],
+          tagToSelector: ['p'],
+        ) ??
+        [];
+
+    var content = contentElements
+        .where((element) => element.trim().isNotEmpty)
+        .join('\n');
+
+    _scraper.removeHtmlElement(content: contentElements, elements: [
+      '<span style',
+      'Δdocument',
+      'Tags',
+      'Diário Otaku',
+      'IberAnime'
+    ]);
+
+    content = contentElements.join('\n');
+
+    return ArticlesEntity(
+      title: entity.title,
+      imageUrl: entity.imageUrl,
+      date: entity.date,
+      author: entity.author,
+      category: entity.category,
+      content: content,
+      url: url,
+      resume: '',
+      sourceUrl: entity.sourceUrl ?? url,
+      createdAt: entity.createdAt,
+      updatedAt: DateTime.now(),
+      imagesPage: null,
+      site: SitesEnum.animesNew.name,
+    );
+  }
+
+  @override
+  Future<List<ArticlesEntity>> search(String q) async {
     final List<ArticlesEntity> articlesList = [];
     final doc =
-        await _scraper.getDocument(url: 'https://www.otakupt.com/?s=$article');
+        await _scraper.getDocument(url: 'https://www.otakupt.com/?s=$q');
 
     final elements = doc.querySelectorAll(
         '.tdb_module_loop.td_module_wrap.td-animation-stack.td-cpt-post');
@@ -123,46 +168,8 @@ class OtakuPT {
     return articlesList;
   }
 
-  Future<ArticlesEntity> scrapeArticleDetails(
-      String url, ArticlesEntity entity) async {
-    final doc = await _scraper.getDocument(url: url);
-
-    final List<String> contentElements = _scraper.extractText(
-          doc: doc,
-          query: ['.tdb-block-inner.td-fix-index'],
-          tagToSelector: ['p'],
-        ) ??
-        [];
-
-    var content = contentElements
-        .where((element) => element.trim().isNotEmpty)
-        .join('\n');
-
-    _scraper.removeHtmlElement(content: contentElements, elements: [
-      '<span style',
-      'Δdocument',
-      'Tags',
-      'Diário Otaku',
-      'IberAnime'
-    ]);
-
-    content = contentElements.join('\n');
-
-    return ArticlesEntity(
-      title: entity.title,
-      imageUrl: entity.imageUrl,
-      date: entity.date,
-      author: entity.author,
-      category: entity.category,
-      content: content,
-      url: url,
-      resume: '',
-      sourceUrl: entity.sourceUrl ?? url,
-      createdAt: entity.createdAt,
-      updatedAt: DateTime.now(),
-      imagesPage: null,
-      site: SitesEnum.animesNew.name,
-    );
+  String _formatImage(String image) {
+    return '${image.replaceAll("'", '').replaceAll('background-image: url(', '').replaceAll(');', '').split('.jpg')[0]}.jpg';
   }
 
   Future<List<ArticlesEntity>> _mangasArticles() async {
@@ -222,9 +229,5 @@ class OtakuPT {
       articlesList.add(articles);
     }
     return articlesList;
-  }
-
-  String _formatImage(String image) {
-    return '${image.replaceAll("'", '').replaceAll('background-image: url(', '').replaceAll(');', '').split('.jpg')[0]}.jpg';
   }
 }

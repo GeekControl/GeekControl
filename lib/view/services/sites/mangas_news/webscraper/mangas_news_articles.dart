@@ -1,13 +1,15 @@
+import 'package:geekcontrol/view/animes/articles/articles_impl.dart';
 import 'package:geekcontrol/view/animes/articles/entities/articles_entity.dart';
 import 'package:geekcontrol/view/animes/sites_enum.dart';
 import 'package:geekcontrol/core/utils/anime_sources.dart';
 import 'package:html/dom.dart';
 import 'package:scraper/scraper.dart';
 
-class MangaNews {
+class MangaNews implements ArticlesImpl {
   final _scraper = Scraper();
 
-  Future<List<ArticlesEntity>> scrapeArticles() async {
+  @override
+  Future<List<ArticlesEntity>> get(String url) async {
     final List<ArticlesEntity> scrapeList = [];
 
     final Document doc =
@@ -62,10 +64,8 @@ class MangaNews {
     return scrapeList;
   }
 
-  Future<ArticlesEntity> scrapeArticleDetails(
-    String url,
-    ArticlesEntity entity,
-  ) async {
+  @override
+  Future<ArticlesEntity> getDetails(String url, ArticlesEntity entity) async {
     final Document doc = await _scraper.getDocument(url: url);
 
     final images = _scraper.extractImages(
@@ -111,10 +111,11 @@ class MangaNews {
     );
   }
 
-  Future<List<ArticlesEntity>> searchArticle(String article) async {
+  @override
+  Future<List<ArticlesEntity>> search(String q) async {
     final List<ArticlesEntity> articlesList = [];
     final doc = await _scraper.getDocument(
-        url: '${AnimeSources.animesNewUriStr}?s=$article');
+        url: '${AnimeSources.animesNewUriStr}?s=$q');
 
     final element = doc.querySelectorAll('.p-wrap.p-grid.p-grid-1');
 
@@ -147,7 +148,7 @@ class MangaNews {
       );
     }
     if (articlesList.isEmpty) {
-      throw Exception('No articles found for the search term: $article');
+      throw Exception('No articles found for the search term: $q');
     }
     return articlesList;
   }

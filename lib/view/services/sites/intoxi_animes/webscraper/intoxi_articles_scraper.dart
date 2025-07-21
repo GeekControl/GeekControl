@@ -1,12 +1,15 @@
+import 'package:geekcontrol/view/animes/articles/articles_impl.dart';
 import 'package:geekcontrol/view/animes/articles/entities/articles_entity.dart';
 import 'package:geekcontrol/view/animes/sites_enum.dart';
 import 'package:geekcontrol/core/utils/anime_sources.dart';
 import 'package:scraper/scraper.dart';
 
-class IntoxiArticles {
+class IntoxiArticles implements ArticlesImpl {
   final _scraper = Scraper();
-  Future<List<ArticlesEntity>> scrapeArticles(String uri) async {
-    final doc = await _scraper.getDocument(url: uri);
+
+  @override
+  Future<List<ArticlesEntity>> get(String url) async {
+    final doc = await _scraper.getDocument(url: url);
 
     final List<ArticlesEntity> scrapeList = [];
     final element = doc.querySelectorAll('article');
@@ -67,13 +70,9 @@ class IntoxiArticles {
     return scrapeList;
   }
 
-  Future<List<ArticlesEntity>> searchArticles({required String article}) async {
-    return await scrapeArticles('${AnimeSources.intoxiUriStr}?s=$article');
-  }
-
-  Future<ArticlesEntity> scrapeArticleDetails(
-      String articleUrl, ArticlesEntity articles) async {
-    final doc = await _scraper.getDocument(url: articleUrl);
+  @override
+  Future<ArticlesEntity> getDetails(String url, ArticlesEntity entity) async {
+    final doc = await _scraper.getDocument(url: url);
 
     final title = _scraper.querySelector(
       doc: doc,
@@ -114,14 +113,19 @@ class IntoxiArticles {
       date: date ?? '',
       content:
           (content != null && content.isNotEmpty) ? content.join('\n') : '',
-      imageUrl: imageUrl != 'NA' ? imageUrl : articles.imageUrl,
+      imageUrl: imageUrl != 'NA' ? imageUrl : entity.imageUrl,
       resume: '',
-      sourceUrl: articles.url,
-      category: articles.category,
-      url: articles.url,
-      createdAt: articles.createdAt,
+      sourceUrl: entity.url,
+      category: entity.category,
+      url: entity.url,
+      createdAt: entity.createdAt,
       updatedAt: DateTime.now(),
       site: SitesEnum.intoxi.name,
     );
+  }
+
+  @override
+  Future<List<ArticlesEntity>> search(String q) async {
+    return await get('${AnimeSources.intoxiUriStr}?s=$q');
   }
 }
