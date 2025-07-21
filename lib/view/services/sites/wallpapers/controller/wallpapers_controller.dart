@@ -27,7 +27,7 @@ class WallpaperController extends HitagiController {
   @override
   Future<void> init({param}) async {
     final params = param is Map ? param : <String, dynamic>{};
-    setFullScreen(enabled: params['isFullScreen'] ?? true);
+    setFullScreen(enabled: params['isFullScreen'] ?? false);
     _pageController?.dispose();
     _pageController = PageController(initialPage: params['initialPage'] ?? 0);
     images.clear();

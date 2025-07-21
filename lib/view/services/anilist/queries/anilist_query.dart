@@ -138,7 +138,7 @@ query (\$id: Int) {
           }
         }
       }
-    recommendations {
+    recommendations(perPage: 21) {
       nodes {
           mediaRecommendation {
             id
