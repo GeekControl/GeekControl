@@ -6,6 +6,7 @@ import 'package:geekcontrol/view/animes/articles/pages/article_details_page.dart
 import 'package:geekcontrol/view/animes/season/season_releases.dart';
 import 'package:geekcontrol/view/animes/spoilers/pages/spoilers_page.dart';
 import 'package:geekcontrol/view/animes/ui/pages/details_page.dart';
+import 'package:geekcontrol/view/animes/ui/pages/full_reviews_page.dart';
 import 'package:geekcontrol/view/animes/ui/pages/latest_releases_page.dart';
 import 'package:geekcontrol/view/animes/ui/pages/top_rateds_page.dart';
 import 'package:geekcontrol/view/auth/ui/login_page.dart';
@@ -15,6 +16,7 @@ import 'package:geekcontrol/view/home/pages/search_anilist.dart';
 import 'package:geekcontrol/view/home/splash/splash_page.dart';
 import 'package:geekcontrol/view/library/ui/library_page.dart';
 import 'package:geekcontrol/view/services/anilist/entities/anilist_types_enum.dart';
+import 'package:geekcontrol/view/services/anilist/entities/reviews_entity.dart';
 import 'package:geekcontrol/view/services/sites/wallpapers/pages/wallpapers_fullscreen_page.dart';
 import 'package:geekcontrol/view/services/sites/wallpapers/pages/wallpapers_page.dart';
 import 'package:geekcontrol/view/settings/main_scaffold.dart';
@@ -58,6 +60,13 @@ class AppRoutes {
         builder: (context, state) {
           final id = state.extra as int;
           return DetailsPage(id: id);
+        },
+      ),
+      GoRoute(
+        path: '/full-review',
+        builder: (context, state) {
+          final reviews = state.extra as ReviewsEntity; 
+          return FullReviewPage(review: reviews);
         },
       ),
       GoRoute(
