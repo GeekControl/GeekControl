@@ -5,8 +5,10 @@ import 'package:geekcontrol/core/library/page_builder/hitagi_page.dart';
 import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/view/auth/ui/move_to_login.dart';
 import 'package:geekcontrol/view/library/controllers/library_controller.dart';
+import 'package:geekcontrol/view/library/ui/components/custom_bottom_sheet.dart';
 import 'package:geekcontrol/view/library/ui/components/library_content.dart';
 import 'package:geekcontrol/view/library/ui/components/library_category.dart';
+import 'package:geekcontrol/view/services/cache/keys_enum.dart';
 import 'package:go_router/go_router.dart';
 
 class LibraryPage extends HitagiPage<LibraryController> {
@@ -27,12 +29,44 @@ class LibraryPage extends HitagiPage<LibraryController> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 32),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: HitagiText(
-                        text: 'Minha Biblioteca',
-                        typography: HitagiTypography.title,
-                      ),
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: HitagiText(
+                            text: 'Minha Biblioteca',
+                            typography: HitagiTypography.title,
+                          ),
+                        ),
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: IconButton(
+                              onPressed: () async {
+                                final result =
+                                    await CustomBottomSheet.showSlider(
+                                  context: context,
+                                  title: 'Imagens por linha',
+                                  currentValue: controller.imagesPerLine,
+                                  min: 1,
+                                  max: 3,
+                                );
+                                if (result != null) {
+                                  setState(() {
+                                    controller.imagesPerLine = result;
+                                    controller.savePreferences(
+                                      context,
+                                      CacheKeys.itemsPerLine.value,
+                                      result,
+                                    );
+                                  });
+                                }
+                              },
+                              icon: const Icon(Icons.settings),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 16),
                     LibraryCategory(
@@ -62,6 +96,7 @@ class LibraryPage extends HitagiPage<LibraryController> {
                     LibraryContent(
                       filteredContent: filteredContent,
                       controller: controller,
+                      itemsPerLine: controller.imagesPerLine,
                     ),
                   ],
                 );

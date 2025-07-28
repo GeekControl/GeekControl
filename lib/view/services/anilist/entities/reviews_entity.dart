@@ -4,6 +4,7 @@ class ReviewsEntity {
   final String summary;
   final int userRating;
   final String avatar;
+  final String banner;
 
   ReviewsEntity({
     required this.id,
@@ -11,6 +12,7 @@ class ReviewsEntity {
     required this.summary,
     required this.userRating,
     required this.avatar,
+    required this.banner,
   });
 
   factory ReviewsEntity.fromMap(Map<String, dynamic> map) {
@@ -20,6 +22,7 @@ class ReviewsEntity {
       summary: map['summary'] ?? '',
       userRating: map['rating'] ?? 0,
       avatar: map['user']?['avatar']['large'] ?? '',
+      banner: map['user']?['bannerImage'] ?? '',
     );
   }
 
@@ -30,6 +33,7 @@ class ReviewsEntity {
       'summary': summary,
       'userRating': userRating,
       'avatar': avatar,
+      'banner': banner,
     };
   }
 
@@ -38,6 +42,7 @@ class ReviewsEntity {
         body = '',
         summary = '',
         userRating = 0,
+        banner = '',
         avatar = '';
 }
 
@@ -48,6 +53,7 @@ extension ReviewsEntityCopy on ReviewsEntity {
     String? summary,
     int? userRating,
     String? avatar,
+    String? banner,
   }) {
     return ReviewsEntity(
       id: id ?? this.id,
@@ -55,6 +61,7 @@ extension ReviewsEntityCopy on ReviewsEntity {
       summary: summary ?? this.summary,
       userRating: userRating ?? this.userRating,
       avatar: avatar ?? this.avatar,
+      banner: banner ?? this.banner,
     );
   }
 }

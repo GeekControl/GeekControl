@@ -3,6 +3,7 @@ import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/hitagi_toas
 import 'package:geekcontrol/core/library/page_builder/hitagi_page.dart';
 import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/view/library/model/category_entity.dart';
+import 'package:geekcontrol/view/services/cache/keys_enum.dart';
 import 'package:geekcontrol/view/services/firebase/firebase.dart';
 import 'package:geekcontrol/view/library/model/library_entity.dart';
 import 'package:logger/logger.dart';
@@ -14,10 +15,13 @@ class LibraryController extends HitagiController {
   List<CategoryEntity> categories = [];
   List<LibraryEntity> content = [];
 
+  int imagesPerLine = 3;
+
   @override
   Future<void> init({dynamic param}) async {
     await getCategories();
     await getLibrary();
+    await getPreferences();
     notifyListeners();
   }
 
@@ -133,6 +137,25 @@ class LibraryController extends HitagiController {
           message: 'Erro ao excluir categoria.',
           type: ToastType.error,
         );
+      }
+    });
+  }
+
+  Future<void> savePreferences(
+      BuildContext context, String key, dynamic value) async {
+    handleTry(() async {
+      await cache.setUserPreference(key, value);
+    });
+  }
+
+  Future<void> getPreferences() async {
+    handleTry(() async {
+      final itemsPerLine = await cache.getUserPreference<int>(
+        CacheKeys.itemsPerLine.value,
+      );
+      if (itemsPerLine != null) {
+        imagesPerLine = itemsPerLine;
+        notifyListeners();
       }
     });
   }

@@ -12,10 +12,12 @@ import 'package:go_router/go_router.dart';
 class LibraryContent extends StatefulWidget {
   final List<LibraryEntity> filteredContent;
   final LibraryController controller;
+  final int? itemsPerLine;
   const LibraryContent({
     super.key,
     required this.filteredContent,
     required this.controller,
+    this.itemsPerLine,
   });
 
   @override
@@ -25,7 +27,6 @@ class LibraryContent extends StatefulWidget {
 class _LibraryContentState extends State<LibraryContent> {
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -33,7 +34,7 @@ class _LibraryContentState extends State<LibraryContent> {
             ? GridView.builder(
                 itemCount: widget.filteredContent.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: width < 600 ? 2 : 3,
+                  crossAxisCount: widget.itemsPerLine ?? 2,
                   childAspectRatio: 0.65,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 20,

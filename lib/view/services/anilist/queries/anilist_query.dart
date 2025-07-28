@@ -132,6 +132,7 @@ query (\$id: Int) {
           rating
           user {
             name
+            bannerImage
             avatar {
               large
             }

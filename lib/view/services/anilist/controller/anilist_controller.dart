@@ -143,7 +143,7 @@ class AnilistController extends ChangeNotifier {
       final details = await _repository.getDetails(id);
       final translated = await translateDescription(details.description);
       translatedDescription = translated;
-      return details.copyWith(reviews: []);
+      return details.copyWith(reviews: details.reviews);
     } catch (e) {
       Logger().e('Erro ao carregar detalhes: $e');
       return DetailsEntity.empty;

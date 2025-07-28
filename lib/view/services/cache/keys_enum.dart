@@ -6,6 +6,7 @@ enum CacheKeys {
   articles(value: 'articles'),
   anonymousMode(value: 'anonymousMode'),
   translateReviews(value: 'translateReviews'),
+  itemsPerLine(value: 'itemsPerLine'),
   rates(value: 'rates');
 
   final String value;
