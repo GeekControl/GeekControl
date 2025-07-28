@@ -77,7 +77,7 @@ class MangaNews implements ArticlesImpl {
 
     final List<String>? content = _scraper.extractText(
       doc: doc,
-      query: ['.s-ct'],
+      query: ['.s-ct-inner', '.s-ct', '.s-ct-wrap'],
       tagToSelector: ['p', 'em', 'h1', 'li'],
     );
 
@@ -114,8 +114,8 @@ class MangaNews implements ArticlesImpl {
   @override
   Future<List<ArticlesEntity>> search(String q) async {
     final List<ArticlesEntity> articlesList = [];
-    final doc = await _scraper.getDocument(
-        url: '${AnimeSources.animesNewUriStr}?s=$q');
+    final doc =
+        await _scraper.getDocument(url: '${AnimeSources.animesNewUriStr}?s=$q');
 
     final element = doc.querySelectorAll('.p-wrap.p-grid.p-grid-1');
 

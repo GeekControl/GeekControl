@@ -64,7 +64,7 @@ class HomeDefaultWidget extends HitagiPage<HomeController> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                const SizedBox(height: 210, child: BannerCarousel()),
+                const SizedBox(height: 210, child: ArticlesCarousel()),
                 Padding(
                   padding: const EdgeInsets.only(left: 6.0),
                   child: Column(

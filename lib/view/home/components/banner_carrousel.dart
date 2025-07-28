@@ -8,14 +8,14 @@ import 'package:geekcontrol/view/animes/articles/entities/articles_entity.dart';
 import 'package:geekcontrol/view/animes/articles/pages/article_details_page.dart';
 import 'package:geekcontrol/view/home/components/carousel_skeletonizer.dart';
 
-class BannerCarousel extends StatefulWidget {
-  const BannerCarousel({super.key});
+class ArticlesCarousel extends StatefulWidget {
+  const ArticlesCarousel({super.key});
 
   @override
-  State<BannerCarousel> createState() => _BannerCarouselState();
+  State<ArticlesCarousel> createState() => _ArticlesCarouselState();
 }
 
-class _BannerCarouselState extends State<BannerCarousel> {
+class _ArticlesCarouselState extends State<ArticlesCarousel> {
   final ct = di<ArticlesController>();
   int currentIndex = 0;
   List<ArticlesEntity> articles = [];
