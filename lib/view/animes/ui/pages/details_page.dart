@@ -13,6 +13,7 @@ import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/view/animes/ui/components/reviews_component.dart';
 import 'package:geekcontrol/view/services/anilist/controller/anilist_controller.dart';
 import 'package:geekcontrol/view/services/anilist/entities/details_entity.dart';
+import 'package:geekcontrol/view/services/anilist/entities/reviews_entity.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logger/logger.dart';
 
@@ -31,12 +32,32 @@ class _DetailsPageState extends State<DetailsPage>
   final _controller = di<AnilistController>();
   late Future<DetailsEntity> _futureDetails;
   late TabController _tabController;
+  List<ReviewsEntity> reviews = [];
+  bool reviewsLoaded = false;
 
+  @override
   @override
   void initState() {
     super.initState();
     _futureDetails = _controller.getDetails(widget.id);
     _tabController = TabController(length: 2, vsync: this);
+
+    _tabController.addListener(() async {
+      if (_tabController.index == 1 && !reviewsLoaded) {
+        final details = await _futureDetails;
+
+        List<ReviewsEntity> loadedReviews = details.reviews;
+
+        if (Globals.translateReviews) {
+          loadedReviews = await _controller.translateReviews(details.reviews);
+        }
+
+        setState(() {
+          reviews = loadedReviews;
+          reviewsLoaded = true;
+        });
+      }
+    });
   }
 
   @override
@@ -290,9 +311,10 @@ class _DetailsPageState extends State<DetailsPage>
                                 ],
                               ),
                             ),
-                            ReviewsComponent(
-                              reviews: details.reviews,
-                            ),
+                            reviewsLoaded
+                                ? ReviewsComponent(reviews: reviews)
+                                : const Center(
+                                    child: CircularProgressIndicator()),
                           ],
                         ),
                       ),
