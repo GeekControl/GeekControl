@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/utils/global_variables.dart';
+import 'package:geekcontrol/view/services/cache/entity/cache_entity.dart';
 import 'package:geekcontrol/view/services/cache/keys_enum.dart';
 import 'package:geekcontrol/view/services/cache/local_cache.dart';
 import 'package:geekcontrol/view/services/firebase/firebase_auth.dart';
@@ -18,7 +19,12 @@ class SplashController extends ChangeNotifier {
     _update('Verificando autenticação...');
     await auth.waitForAuthReady();
     final isLogged = await auth.userIsLoggedIn();
-    final anonymous = await cache.get(CacheKeys.anonymousMode) != null;
+    final anonymous = await cache.get(
+      info: CacheEntity(
+        data: null,
+        key: CacheKeys.anonymousMode,
+      ),
+    );
 
     _update('Finalizando...');
     await Future.delayed(const Duration(milliseconds: 300));

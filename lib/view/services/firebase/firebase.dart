@@ -30,12 +30,6 @@ class FirebaseService {
     return snapshot.docs.map((e) => e.data()).toList();
   }
 
-  Future<void> update() async {
-    await _firestore.collection('users').doc('gabri').update({
-      'name': 'Gabriel',
-    });
-  }
-
   Future<void> delete({
     required String collection,
     required String doc,

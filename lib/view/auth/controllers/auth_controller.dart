@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:geekcontrol/core/library/hitagi_cup/features/dialogs/hitagi_toast.dart';
 import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/core/utils/logger.dart';
+import 'package:geekcontrol/view/services/cache/entity/cache_entity.dart';
 import 'package:geekcontrol/view/services/cache/keys_enum.dart';
 import 'package:geekcontrol/view/services/cache/local_cache.dart';
 import 'package:geekcontrol/view/services/firebase/firebase.dart';
@@ -94,7 +95,12 @@ class AuthController extends ChangeNotifier {
   }
 
   Future<void> setAnonymousMode() async {
-    await _cache.put(CacheKeys.anonymousMode, true);
+    await _cache.put(
+      info: CacheEntity(
+        data: true,
+        key: CacheKeys.anonymousMode,
+      ),
+    );
   }
 
   bool _isValidEmail() {

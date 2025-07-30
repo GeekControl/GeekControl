@@ -21,7 +21,7 @@ class TopRatedsCarousel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<AnilistRatesEntity>>(
-      future: di<AnilistController>().getRates(type: type),
+      future: di<AnilistController>().getMostRateds(type: type),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const CarouselSkeletonizer();

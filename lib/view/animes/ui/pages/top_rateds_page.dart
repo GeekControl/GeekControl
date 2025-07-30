@@ -35,7 +35,7 @@ class _TopRatedsPageState extends State<TopRatedsPage> {
 
   void _loadData() async {
     await _ct.init(widget.type);
-    final result = await _ct.getRates(type: widget.type);
+    final result = await _ct.getMostRateds(type: widget.type);
     if (!mounted) return;
     setState(() {
       _rates
