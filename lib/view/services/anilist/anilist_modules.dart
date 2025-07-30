@@ -2,6 +2,7 @@ import 'package:geekcontrol/core/utils/global_variables.dart';
 import 'package:geekcontrol/core/utils/module_factory.dart';
 import 'package:geekcontrol/view/services/anilist/controller/anilist_controller.dart';
 import 'package:geekcontrol/view/services/anilist/repository/anilist_repository.dart';
+import 'package:geekcontrol/view/services/anilist/services/anilist_service.dart';
 
 class AnilistModules implements Module {
   @override
@@ -11,5 +12,7 @@ class AnilistModules implements Module {
     di.registerFactory(() => AnilistController());
     //Repositories
     di.registerFactory(() => AnilistRepository());
+    //Services
+    di.registerFactory(() => AnilistService(di(), di()));
   }
 }
