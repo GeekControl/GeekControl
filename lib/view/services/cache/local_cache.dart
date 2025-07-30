@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:geekcontrol/view/services/cache/entity/cache_entity.dart';
 import 'package:geekcontrol/view/services/cache/keys_enum.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
@@ -32,9 +33,12 @@ class LocalCache {
         .put(db, jsonList);
   }
 
-  Future<bool> shouldUpdateCache(CacheKeys key, Duration maxAge,
-      {String? title}) async {
-    final cache = await get(key, site: title);
+  Future<bool> shouldUpdateCache(
+    Duration maxAge, {
+    String? title,
+    required CacheEntity info,
+  }) async {
+    final cache = await get(site: title, info: info);
     if (cache is List) {
       final timestamps = cache
           .map((e) => DateTime.tryParse(e['updatedAt'] ?? ''))
@@ -52,19 +56,22 @@ class LocalCache {
     return false;
   }
 
-  Future<void> put(CacheKeys key, dynamic value, {String? site}) async {
+  Future<void> put({
+    String? site,
+    required CacheEntity info,
+  }) async {
     final db = await _getDatabase();
     var store = StoreRef.main();
-    final k = site != null ? key.value + site : key.value;
+    final k = site != null ? info.key.value + site : info.key.value;
     Logger().i('Adicionando ao cache: $k');
-    await store.record(k).put(db, value);
+    await store.record(k).put(db, info.toJson());
   }
 
-  Future<dynamic> get(CacheKeys key, {String? site}) async {
+  Future<dynamic> get({String? site, required CacheEntity info}) async {
     final db = await _getDatabase();
     var store = StoreRef.main();
 
-    final k = site != null ? key.value + site : key.value;
+    final k = site != null ? info.key.value + site : info.key.value;
     Logger().i('Buscando do cache: $k');
 
     return await store.record(k).get(db);
