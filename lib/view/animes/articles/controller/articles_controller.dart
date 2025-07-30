@@ -6,6 +6,7 @@ import 'package:geekcontrol/view/animes/articles/pages/article_details_page.dart
 import 'package:geekcontrol/view/animes/components/scraper_adapter.dart';
 import 'package:geekcontrol/view/animes/sites_enum.dart';
 import 'package:geekcontrol/core/utils/anime_sources.dart';
+import 'package:geekcontrol/view/services/cache/entity/cache_entity.dart';
 import 'package:geekcontrol/view/services/cache/keys_enum.dart';
 import 'package:go_router/go_router.dart';
 
@@ -31,7 +32,8 @@ class ArticlesController extends HitagiController {
   void openArticle(BuildContext context, ArticlesEntity article) {
     GoRouter.of(context).push(
       ArticleDetailsPage.route,
-      extra: ArticleDetailsRouteEntity(news: article, current: currentSite.name),
+      extra:
+          ArticleDetailsRouteEntity(news: article, current: currentSite.name),
     );
   }
 
@@ -40,7 +42,8 @@ class ArticlesController extends HitagiController {
     currentIndex = site.index;
     if (_lastSearchTerm.isNotEmpty) {
       setState(ControllerState.loading);
-      _articlesSearch = await ScraperAdapter(site).searchArticles(_lastSearchTerm);
+      _articlesSearch =
+          await ScraperAdapter(site).searchArticles(_lastSearchTerm);
       setState(ControllerState.success);
     } else {
       await _loadSite(site, isChangeSite: true);
@@ -48,7 +51,8 @@ class ArticlesController extends HitagiController {
     notifyListeners();
   }
 
-  Future<void> changeSearchSite(SitesEnum site, {required String article}) async {
+  Future<void> changeSearchSite(SitesEnum site,
+      {required String article}) async {
     currentSite = site;
     currentIndex = site.index;
     _lastSearchTerm = article;
@@ -61,7 +65,8 @@ class ArticlesController extends HitagiController {
     currentSite = site;
     currentIndex = site.index;
     final cached = isChangeSite ? null : await _getCachedArticles();
-    final list = cached ?? await ScraperAdapter(site).scrapeArticles(_uriFor(site));
+    final list =
+        cached ?? await ScraperAdapter(site).scrapeArticles(_uriFor(site));
     _memoryCache[site] = list;
     articles = Future.value(list);
     if (cached == null) {
@@ -77,9 +82,14 @@ class ArticlesController extends HitagiController {
 
   Future<List<ArticlesEntity>> bannerNews() async {
     final sites = [SitesEnum.animesNew, SitesEnum.otakuPt, SitesEnum.intoxi];
-    var cached = await cache.get(CacheKeys.articles, site: currentSite.name);
+    var cached = await cache.get(
+      info: CacheEntity(data: null, key: CacheKeys.articles),
+      site: currentSite.name,
+    );
     final updateCache = await cache.shouldUpdateCache(
-      CacheKeys.articles, title: currentSite.name, cacheDuration,
+      title: currentSite.name,
+      cacheDuration,
+      info: CacheEntity(data: null, key: CacheKeys.articles),
     );
     if (cached == null || updateCache) {
       for (final site in sites) {
@@ -108,16 +118,19 @@ class ArticlesController extends HitagiController {
     }
     notifyListeners();
     return cached
-        ?.map((e) => ArticlesEntity.fromMap(e))
-        .whereType<ArticlesEntity>()
-        .toList()
-        .take(3)
-        .toList() ?? [];
+            ?.map((e) => ArticlesEntity.fromMap(e))
+            .whereType<ArticlesEntity>()
+            .toList()
+            .take(3)
+            .toList() ??
+        [];
   }
 
-  Future<ArticlesEntity> fetchArticleDetails(String url, ArticlesEntity article, String siteName) {
-    final adapt = ScraperAdapter(SitesEnum.values.firstWhere((e) => e.name == siteName))
-        .scrapeArticleDetails(url, article);
+  Future<ArticlesEntity> fetchArticleDetails(
+      String url, ArticlesEntity article, String siteName) {
+    final adapt =
+        ScraperAdapter(SitesEnum.values.firstWhere((e) => e.name == siteName))
+            .scrapeArticleDetails(url, article);
     notifyListeners();
     return adapt;
   }
@@ -128,30 +141,52 @@ class ArticlesController extends HitagiController {
   Future<void> markAsRead(String title) async {
     if (_memoryRead.contains(title)) return;
     _memoryRead.add(title);
-    await cache.put(CacheKeys.reads, _memoryRead);
+    await cache.put(
+      info: CacheEntity(
+        data: _memoryRead,
+        key: CacheKeys.reads,
+      ),
+    );
     notifyListeners();
   }
 
   Future<void> markAsUnread(String title) async {
     if (_memoryRead.remove(title)) {
-      await cache.put(CacheKeys.reads, _memoryRead);
+      await cache.put(
+          info: CacheEntity(
+        data: _memoryRead,
+        key: CacheKeys.reads,
+      ));
       notifyListeners();
     }
   }
 
   Future<void> _loadReadArticles() async {
-    final raw = await cache.get(CacheKeys.reads);
+    final raw = await cache.get(
+      info: CacheEntity(
+        key: CacheKeys.reads,
+        data: null,
+      ),
+    );
     if (raw is List<String>) _memoryRead = raw;
     notifyListeners();
   }
 
   Future<List<ArticlesEntity>?> _getCachedArticles() async {
-    final raw = await cache.get(CacheKeys.articles, site: currentSite.name);
+    final raw = await cache.get(
+      site: currentSite.name,
+      info: CacheEntity(
+        data: null,
+        key: CacheKeys.articles,
+      ),
+    );
     if (raw is List) {
       final list = raw.map((e) => ArticlesEntity.fromMap(e)).toList();
       final dates = list.map((e) => e.updatedAt).whereType<DateTime>().toList();
       if (dates.isNotEmpty &&
-          DateTime.now().difference(dates.reduce((a, b) => a.isAfter(b) ? a : b)) <= cacheDuration) {
+          DateTime.now()
+                  .difference(dates.reduce((a, b) => a.isAfter(b) ? a : b)) <=
+              cacheDuration) {
         return list;
       }
     }
